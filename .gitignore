@@ -1,0 +1,7 @@
+acker/certs/*
+packer/manifests/*
+
+cert-tool/terraform.tfstate
+
+terraform/terraform.tfvars
+terraform/terraform.tfstate*

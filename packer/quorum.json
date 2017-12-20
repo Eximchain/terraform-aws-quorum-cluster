@@ -1,0 +1,117 @@
+{
+  "min_packer_version": "0.12.0",
+  "variables": {
+    "aws_region": "us-east-1",
+    "vault_version": "0.9.0",
+    "consul_version": "1.0.1",
+    "consul_module_version": "v0.1.0",
+    "terraform_aws_vault_module_version": "v0.0.8",
+    "ca_public_key_path": "certs/ca-cert.pub",
+    "tls_public_key_path": "certs/cert.pub"
+  },
+  "builders": [{
+    "ami_name": "quorum-vault-consul-ubuntu-{{isotime | clean_ami_name}}",
+    "ami_description": "An Ubuntu 16.04 AMI with Quorum installed, that has Vault and Consul installed to use as a client.",
+    "instance_type": "t2.micro",
+    "name": "ubuntu16-quorum-ami",
+    "region": "{{user `aws_region`}}",
+    "type": "amazon-ebs",
+    "source_ami_filter": {
+      "filters": {
+        "virtualization-type": "hvm",
+        "architecture": "x86_64",
+        "name": "*ubuntu-xenial-16.04-amd64-server-*",
+        "block-device-mapping.volume-type": "gp2",
+        "root-device-type": "ebs"
+      },
+      "owners": ["099720109477"],
+      "most_recent": true
+    },
+    "ssh_username": "ubuntu"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "script": "provisioning-scripts/build-deps.sh",
+    "pause_before": "30s"
+  },{
+    "type": "shell",
+    "inline": [
+      "git clone --branch {{user `terraform_aws_vault_module_version`}} https://github.com/hashicorp/terraform-aws-vault.git /tmp/terraform-aws-vault",
+      "/tmp/terraform-aws-vault/modules/install-vault/install-vault --version {{user `vault_version`}}"
+    ]
+  },{
+    "type": "file",
+    "source": "{{user `ca_public_key_path`}}",
+    "destination": "/tmp/ca.crt.pem"
+  },{
+    "type": "file",
+    "source": "{{user `tls_public_key_path`}}",
+    "destination": "/tmp/vault.crt.pem"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/ca.crt.pem /opt/vault/tls/",
+      "sudo mv /tmp/vault.crt.pem /opt/vault/tls/",
+      "sudo chown vault:vault /opt/vault/tls/*",
+      "sudo chmod 600 /opt/vault/tls/*",
+      "sudo /tmp/terraform-aws-vault/modules/update-certificate-store/update-certificate-store --cert-file-path /opt/vault/tls/ca.crt.pem"
+    ]
+  },{
+    "type": "shell",
+    "inline": [
+      "git clone --branch {{user `consul_module_version`}} https://github.com/hashicorp/terraform-aws-consul.git /tmp/terraform-aws-consul",
+      "/tmp/terraform-aws-consul/modules/install-consul/install-consul --version {{user `consul_version`}}",
+      "/tmp/terraform-aws-consul/modules/install-dnsmasq/install-dnsmasq",
+      "echo 'export VAULT_ADDR=https://vault.service.consul:8200' > ~/.bash_profile"
+    ]
+  },{
+    "type": "shell",
+    "scripts": [
+      "provisioning-scripts/constellation.sh",
+      "provisioning-scripts/golang.sh",
+      "provisioning-scripts/quorum.sh",
+      "provisioning-scripts/quorum-setup.sh",
+      "provisioning-scripts/porosity.sh",
+      "provisioning-scripts/quorum-genesis.sh"
+    ]
+  },{
+    "type": "file",
+    "source": "instance-scripts/init-quorum.sh",
+    "destination": "/tmp/init-quorum.sh"
+  },{
+    "type": "file",
+    "source": "instance-scripts/generate-quorum-config.py",
+    "destination": "/tmp/generate-quorum-config.py"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/init-quorum.sh /opt/quorum/bin/",
+      "sudo mv /tmp/generate-quorum-config.py /opt/quorum/bin/",
+      "sudo chmod 744 /opt/quorum/bin/*"
+    ]
+  },{
+    "type": "file",
+    "source": "configs/init-quorum-supervisor.conf",
+    "destination": "/tmp/init-quorum-supervisor.conf"
+  },{
+    "type": "file",
+    "source": "configs/constellation-supervisor.conf",
+    "destination": "/tmp/constellation-supervisor.conf"
+  },{
+    "type": "file",
+    "source": "configs/old-style-constellation.conf",
+    "destination": "/tmp/constellation.conf"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/init-quorum-supervisor.conf /etc/supervisor/conf.d/",
+      "sudo mv /tmp/constellation-supervisor.conf /opt/quorum/private/",
+      "sudo mv /tmp/constellation.conf /opt/quorum/constellation/config.conf"
+    ]
+  }],
+  "post-processors": [{
+    "type": "manifest",
+    "output": "manifests/quorum.json",
+    "strip_path": true
+  }]
+}

@@ -1,0 +1,13 @@
+public_key_path = "~/.ssh/ec2_test.pub"
+private_key_path = "~/.ssh/ec2_test.pem"
+key_name = "ec2_test"
+aws_region = "us-east-1"
+vault_cluster_size = 1
+vault_instance_type = "t2.small"
+consul_cluster_size = 1
+consul_instance_type = "t2.small"
+quorum_node_instance_type = "t2.medium"
+num_maker_nodes = 1
+num_validator_nodes = 1
+num_observer_nodes = 1
+vote_threshold = 1
