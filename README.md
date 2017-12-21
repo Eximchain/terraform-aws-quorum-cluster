@@ -23,7 +23,7 @@ Use the cert tool to generate TLS certificates
 ```sh
 $ cd cert-tool
 $ terraform apply
-<Enter "yes" and wait for cert generation>
+# Enter "yes" and wait for cert generation
 $ cd ..
 ```
 
@@ -34,9 +34,9 @@ Use packer to build the AMIs needed to launch instances
 ```sh
 $ cd packer
 $ packer build vault-consul.json
-<Enter "yes" and wait for build>
+# Enter "yes" and wait for build
 $ packer build quorum.json
-<Enter "yes" and wait for build>
+# Enter "yes" and wait for build
 $ cd ..
 ```
 
@@ -68,7 +68,7 @@ Apply the terraform configuration
 
 ```sh
 $ terraform apply
-<Enter "yes" and wait for infrastructure creation>
+# Enter "yes" and wait for infrastructure creation
 ```
 
 Note the IPs in the output or retain the terminal output. You will need them to finish setting up the cluster.
