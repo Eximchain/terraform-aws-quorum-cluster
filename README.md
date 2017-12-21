@@ -6,7 +6,7 @@ Please be aware of the variables when using packer and terraform, as certain set
 # Work In Progress
 This repository is a work in progress. A more complete version of this README and code is coming soon.
 
-# Basic Usage
+# Quick Start Guide
 
 ## Prerequisites
 
@@ -116,3 +116,19 @@ $ /opt/vault/bin/setup-vault.sh $ROOT_TOKEN
 ```
 
 If any of these commands fail, wait a short time and try again. If waiting doesn't fix the issue, you may need to destroy and recreate the infrastructure.
+
+# Roadmap
+
+The master list of desired features for this tool. Feel free to contribute feature requests via pull requests editing this section. Items here may correspond with open issues.
+
+- [ ] Dedicated Boot Nodes for Geth and Constellation
+- [ ] Full initial documentation
+- [ ] Secure handling of TLS Certificate
+- [ ] Terraform Module
+- [ ] Quorum Node health checking and replacement
+- [ ] Anti-Fraglie Everything
+- [ ] Fine-grained Permissions for Private Keys in Vault
+- [ ] Tighten security parameters
+- [ ] Multi AZ Network
+- [ ] Multi Region Network
+- [ ] Network with External Participants
