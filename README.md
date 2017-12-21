@@ -27,6 +27,22 @@ $ terraform apply
 $ cd ..
 ```
 
+# Generate SSH key for EC2 instances
+
+Generate an RSA key with ssh-keygen. This only needs to be done once. If you change the output file location you must change the key paths in the terraform variables file later.
+
+```sh
+$ ssh-keygen -t rsa -f ~/.ssh/quorum
+# Enter a password if you wish
+```
+
+Add the key to your ssh agent. This must be done again if you restart your computer. If this is not done, it will cause problems provisioning the instances with terraform.
+
+```sh
+$ ssh-add ~/.ssh/quorum
+# Enter your password if there is one
+```
+
 ## Build AMIs to launch the instances with
 
 Use packer to build the AMIs needed to launch instances

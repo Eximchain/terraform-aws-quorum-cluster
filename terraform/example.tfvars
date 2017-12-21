@@ -1,6 +1,6 @@
-public_key_path = "~/.ssh/ec2_test.pub"
-private_key_path = "~/.ssh/ec2_test.pem"
-key_name = "ec2_test"
+public_key_path = "~/.ssh/quorum.pub"
+private_key_path = "~/.ssh/quorum"
+key_name = "quorum-cluster"
 aws_region = "us-east-1"
 vault_cluster_size = 1
 vault_instance_type = "t2.small"
