@@ -99,4 +99,4 @@ $ vault unseal $UNSEAL_KEY
 $ /opt/vault/bin/setup-vault.sh $ROOT_TOKEN
 ```
 
-If any of these commands fail, wait a short time and try again. If waiting doesn't fix the issue, you may need to destroy and recreate the infrastructure.`
+If any of these commands fail, wait a short time and try again. If waiting doesn't fix the issue, you may need to destroy and recreate the infrastructure.
