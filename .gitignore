@@ -1,5 +1,6 @@
 cert-tool/terraform.tfstate*
 
+terraform/amis.auto.tfvars.json
 terraform/terraform.tfvars
 terraform/terraform.tfstate*
 terraform/.terraform
