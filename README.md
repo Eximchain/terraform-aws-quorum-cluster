@@ -127,6 +127,7 @@ The master list of desired features for this tool. Feel free to contribute featu
 - [x] Replaceable Boot Nodes
 - [ ] Auto-starting geth and constellation processes
 - [ ] Full initial documentation
+- [ ] New Constellation Configuration Format
 - [ ] Secure handling of TLS Certificate
 - [ ] Terraform Module
 - [ ] Quorum Node health checking and replacement
