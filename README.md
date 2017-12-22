@@ -51,6 +51,8 @@ Use packer to build the AMIs needed to launch instances
 $ cd packer
 $ packer build vault-consul.json
 # Enter "yes" and wait for build
+$ packer build bootnode.json
+# Enter "yes" and wait for build
 $ packer build quorum.json
 # Enter "yes" and wait for build
 $ cd ..

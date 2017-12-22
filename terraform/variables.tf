@@ -28,6 +28,10 @@ variable "vault_amis" {
   type = "map"
 }
 
+variable "bootnode_amis" {
+  type = "map"
+}
+
 variable "vault_cluster_size" {
   default = 3
 }
@@ -42,6 +46,14 @@ variable "consul_cluster_size" {
 
 variable "consul_instance_type" {
   default = "t2.micro"
+}
+
+variable "bootnode_cluster_size" {
+  default = 1
+}
+
+variable "bootnode_instance_type" {
+  default = "t2.small"
 }
 
 variable "quorum_node_instance_type" {

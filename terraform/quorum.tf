@@ -38,7 +38,7 @@ resource "aws_instance" "quorum_maker_node" {
       "echo '${var.num_validator_nodes}' | sudo tee /opt/quorum/info/num-validators.txt",
       "echo 'maker' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
-      "nohup /opt/quorum/bin/init-quorum.sh </dev/null > /opt/quorum/logs/init-quorum.log 2>&1 &",
+      "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
     ]
   }
 }
@@ -83,7 +83,7 @@ resource "aws_instance" "quorum_validator_node" {
       "echo '${var.num_validator_nodes}' | sudo tee /opt/quorum/info/num-validators.txt",
       "echo 'validator' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
-      "nohup /opt/quorum/bin/init-quorum.sh </dev/null > /opt/quorum/logs/init-quorum.log 2>&1 &",
+      "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
     ]
   }
 }
@@ -128,7 +128,46 @@ resource "aws_instance" "quorum_observer_node" {
       "echo '${var.num_validator_nodes}' | sudo tee /opt/quorum/info/num-validators.txt",
       "echo 'observer' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
-      "nohup /opt/quorum/bin/init-quorum.sh </dev/null > /opt/quorum/logs/init-quorum.log 2>&1 &",
+      "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
+    ]
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# BOOTNODES
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_instance" "bootnode" {
+  connection {
+    # The default username for our AMI
+    user = "ubuntu"
+
+    # The connection will use the local SSH agent for authentication.
+  }
+
+  instance_type = "${var.bootnode_instance_type}"
+
+  count = "${var.bootnode_cluster_size}"
+
+  ami = "${lookup(var.bootnode_amis, var.aws_region)}"
+  user_data = "${data.template_file.user_data_quorum.rendered}"
+
+  key_name = "${aws_key_pair.auth.id}"
+
+  iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
+
+  vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
+
+  subnet_id = "${aws_subnet.default.id}"
+
+  tags {
+    Name = "bootnode-${count.index}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get -y update",
+      "echo '${count.index}' | sudo tee /opt/quorum/info/index.txt",
+      "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/network-size.txt",
     ]
   }
 }
@@ -181,9 +220,17 @@ resource "aws_security_group" "quorum" {
 
   # Quorum access from self to rpc port
   ingress {
-    from_port   = 21000
-    to_port     = 21000
+    from_port   = 22000
+    to_port     = 22000
     protocol    = "tcp"
+    self = true
+  }
+
+  # Bootnode udp access from self
+  ingress {
+    from_port   = 30301
+    to_port     = 30301
+    protocol    = "udp"
     self = true
   }
 

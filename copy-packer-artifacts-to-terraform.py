@@ -4,6 +4,7 @@ import os.path
 import shutil
 
 QUORUM_IN_FILE = "packer/manifests/quorum.json"
+BOOTNODE_IN_FILE = "packer/manifests/bootnode.json"
 VAULT_IN_FILE = "packer/manifests/vault-consul.json"
 OUT_FILE = "terraform/amis.auto.tfvars.json"
 
@@ -59,9 +60,10 @@ def main():
         shutil.copyfile(args.out_file, args.tfvar_backup_file)
 
     quorum_amis = parse_manifest_file(QUORUM_IN_FILE)
+    bootnode_amis = parse_manifest_file(BOOTNODE_IN_FILE)
     vault_amis = parse_manifest_file(VAULT_IN_FILE)
 
-    output = {'quorum_amis': quorum_amis, 'vault_amis': vault_amis}
+    output = {'quorum_amis': quorum_amis, 'vault_amis': vault_amis, 'bootnode_amis': bootnode_amis}
 
     with open(OUT_FILE, 'w') as out_file:
         json.dump(output, out_file, indent=2, separators=(',', ': '))

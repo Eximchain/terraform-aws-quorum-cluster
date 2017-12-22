@@ -21,7 +21,8 @@ function generate_quorum_supervisor_config {
     local IP=$3
     local ROLE=$4
     local NUM_MAKERS=$5
-    local CONSTELLATION_CONFIG=$6
+    local NUM_BOOTNODES=$6
+    local CONSTELLATION_CONFIG=$7
 
     local VERBOSITY=3
     local MIN_BLOCK_TIME=2
@@ -42,6 +43,15 @@ function generate_quorum_supervisor_config {
     else
         ARGS="$GLOBAL_ARGS"
     fi
+
+    local BOOTNODES=""
+    for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+    do
+        BOOTNODES="$BOOTNODES,$(vault read -field=enode quorum/bootnodes/$index)"
+    done
+    BOOTNODES=${BOOTNODES:1}
+
+    ARGS="$ARGS --bootnodes $BOOTNODES"
 
     local COMMAND="geth $ARGS"
 
@@ -132,6 +142,12 @@ do
     wait_for_successful_command "vault read -field=address quorum/addresses/$index"
 done
 
+NUM_BOOTNODES=$(cat /opt/quorum/info/num-bootnodes.txt)
+for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+do
+    wait_for_successful_command "vault read -field=enode quorum/bootnodes/$index"
+done
+
 # Configure constellation with other node IPs
 # TODO: New-style configs
 if [ 0 -eq $CLUSTER_INDEX ]
@@ -187,7 +203,7 @@ sudo mv /opt/quorum/private/constellation-supervisor.conf /home/ubuntu
 #sleep 60
 
 # Generate supervisor config to run quorum
-generate_quorum_supervisor_config $ADDRESS $GETH_PW $PRIVATE_IP $ROLE $NUM_MAKERS /opt/quorum/constellation/config.conf
+generate_quorum_supervisor_config $ADDRESS $GETH_PW $PRIVATE_IP $ROLE $NUM_MAKERS $NUM_BOOTNODES /opt/quorum/constellation/config.conf
 
 # TODO: Remove after booting automatically
 sudo mv /etc/supervisor/conf.d/quorum-supervisor.conf /home/ubuntu/
