@@ -124,6 +124,8 @@ If any of these commands fail, wait a short time and try again. If waiting doesn
 The master list of desired features for this tool. Feel free to contribute feature requests via pull requests editing this section. Items here may correspond with open issues.
 
 - [ ] Dedicated Boot Nodes for Geth and Constellation
+- [ ] Replaceable Boot Nodes
+- [ ] Auto-starting geth and constellation processes
 - [ ] Full initial documentation
 - [ ] Secure handling of TLS Certificate
 - [ ] Terraform Module
