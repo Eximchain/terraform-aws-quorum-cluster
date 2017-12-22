@@ -61,9 +61,9 @@ stdout_logfile=/opt/quorum/log/quorum-stdout.log
 stderr_logfile=/opt/quorum/log/quorum-error.log
 numprocs=1
 autostart=true
-autorestart=unexpected
+autorestart=true
 stopsignal=INT
-environment=PRIVATE_CONFIG=\"$CONSTELLATION_CONFIG\"" | sudo tee /etc/supervisor/conf.d/quorum-supervisor.conf
+user=ubuntu" | sudo tee /etc/supervisor/conf.d/quorum-supervisor.conf
 }
 
 function complete_constellation_config {
@@ -207,20 +207,19 @@ done
 # Initialize geth to run on the quorum network
 geth init /opt/quorum/private/quorum-genesis.json
 
+# Sleep to let constellation bootnodes start first
+sleep 30
+
 # Run Constellation
-# TODO: Boot Automatically Instead
-sudo mv /opt/quorum/private/constellation-supervisor.conf /home/ubuntu
-#sudo supervisorctl reread
-#sudo supervisorctl update
+sudo mv /opt/quorum/private/constellation-supervisor.conf /etc/supervisor/conf.d/
+sudo supervisorctl reread
+sudo supervisorctl update
 
 # Sleep to let constellation-node start
-#sleep 60
+sleep 5
 
 # Generate supervisor config to run quorum
 generate_quorum_supervisor_config $ADDRESS $GETH_PW $PRIVATE_IP $ROLE $NUM_MAKERS $NUM_BOOTNODES /opt/quorum/constellation/config.conf
-
-# TODO: Remove after booting automatically
-sudo mv /etc/supervisor/conf.d/quorum-supervisor.conf /home/ubuntu/
 
 # Remove the config that runs this and run quorum
 sudo rm /etc/supervisor/conf.d/init-quorum-supervisor.conf

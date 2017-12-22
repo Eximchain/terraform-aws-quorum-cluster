@@ -125,7 +125,7 @@ The master list of desired features for this tool. Feel free to contribute featu
 
 - [x] Dedicated Boot Nodes for Geth and Constellation
 - [x] Replaceable Boot Nodes
-- [ ] Auto-starting geth and constellation processes
+- [x] Auto-starting geth and constellation processes
 - [ ] Full initial documentation
 - [ ] New Constellation Configuration Format
 - [ ] Secure handling of TLS Certificate
