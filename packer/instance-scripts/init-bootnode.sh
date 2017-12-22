@@ -16,14 +16,26 @@ function wait_for_successful_command {
 }
 
 function complete_constellation_config {
-    local PRIVATE_IP=$1
-    local CONSTELLATION_CONFIG_PATH=$2
+    local NUM_BOOTNODES=$1
+    local CLUSTER_INDEX=$2
+    local PRIVATE_IP=$3
+    local CONSTELLATION_CONFIG_PATH=$4
 
     # Configure constellation with other node IPs
     # TODO: New-style configs
-    # TODO: Connect bootnodes to each other?
-    CONSTELLATION_OTHER_NODES="otherNodeUrls = []"
-    echo "$CONSTELLATION_OTHER_NODES" >> $CONSTELLATION_CONFIG_PATH
+    OTHER_NODES=""
+    for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+    do
+        if [ $index -ne $CLUSTER_INDEX ]
+        then
+            BOOTNODE=$(vault read -field=private_ip quorum/bootnodes/addresses/$index)
+            OTHER_NODES="$OTHER_NODES,\"http://$BOOTNODE:9000/\""
+        fi
+    done
+    OTHER_NODES=${OTHER_NODES:1}
+#    OTHER_NODES_LINE="othernodes = [$OTHER_NODES]"
+    OTHER_NODES_LINE="otherNodeUrls = [$OTHER_NODES]"
+    echo "$OTHER_NODES_LINE" >> $CONSTELLATION_CONFIG_PATH
     # Configure constellation with URL
     echo "url = \"http://$PRIVATE_IP:9000/\"" >> $CONSTELLATION_CONFIG_PATH
 }
@@ -93,11 +105,19 @@ CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key
 CONSTELLATION_A_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation_a.key)
 PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 
-complete_constellation_config $PRIVATE_IP /opt/quorum/constellation/config.conf
-
 # Write bootnode address to vault
 wait_for_successful_command "vault write quorum/bootnodes/keys/$INDEX bootnode_key=\"$BOOT_KEY\" constellation_priv_key=\"$CONSTELLATION_PRIV_KEY\" constellation_a_priv_key=\"$CONSTELLATION_A_PRIV_KEY\""
 wait_for_successful_command "vault write quorum/bootnodes/addresses/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB private_ip=$PRIVATE_IP constellation_pub_key=$CONSTELLATION_PUB_KEY constellation_a_pub_key=$CONSTELLATION_A_PUB_KEY"
+
+# Wait for all bootnodes to write their address to vault
+NUM_BOOTNODES=$(cat /opt/quorum/info/num-bootnodes.txt)
+for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+do
+    wait_for_successful_command "vault read -field=enode quorum/bootnodes/addresses/$index"
+done
+
+# Finish filling in the constellation config
+complete_constellation_config $NUM_BOOTNODES $INDEX $PRIVATE_IP /opt/quorum/constellation/config.conf
 
 # Run the bootnode
 sudo mv /opt/quorum/private/bootnode-supervisor.conf /etc/supervisor/conf.d/

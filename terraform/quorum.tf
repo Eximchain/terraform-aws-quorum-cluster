@@ -168,6 +168,7 @@ resource "aws_instance" "bootnode" {
       "sudo apt-get -y update",
       "echo '${count.index}' | sudo tee /opt/quorum/info/index.txt",
       "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/network-size.txt",
+      "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
     ]
   }
 }
