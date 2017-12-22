@@ -18,6 +18,14 @@ path "quorum/passwords/*" {
   capabilities = ["read", "create", "update"]
 }
 
-path "quorum/bootnodes/*" {
+path "quorum/bootnodes/addresses/*" {
+  capabilities = ["read", "create", "update"]
+}
+
+path "quorum/bootnodes/keys/*" {
+  capabilities = ["read", "create", "update"]
+}
+
+path "quorum/bootnodes/passwords/*" {
   capabilities = ["read", "create", "update"]
 }
