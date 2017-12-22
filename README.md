@@ -108,16 +108,65 @@ $ KEY_THRESHOLD=<Number of keys needed to unseal the vault>
 $ vault init -key-shares=$KEY_SHARES -key-threshold=$KEY_THRESHOLD 
 ```
 
-Unseal the vault and initialize it with permissions for the quorum nodes. Once setup-vault.sh is complete, the quorum nodes will be able to finish their boot-up procedure.
+Unseal the vault and initialize it with permissions for the quorum nodes. Once setup-vault.sh is complete, the quorum nodes will be able to finish their boot-up procedure. Note that this example is for a single key initialization, and if the key is sharded with a threshold greater than one, multiple users will need to run the unseal command with their shards.
 
 ```sh
 $ UNSEAL_KEY=<Unseal key output by vault init command>
-$ ROOT_TOKEN=<Root token output by vault init command>
 $ vault unseal $UNSEAL_KEY
+$ ROOT_TOKEN=<Root token output by vault init command>
 $ /opt/vault/bin/setup-vault.sh $ROOT_TOKEN
 ```
 
 If any of these commands fail, wait a short time and try again. If waiting doesn't fix the issue, you may need to destroy and recreate the infrastructure.
+
+### Unseal additional vault servers
+
+You can proceed with initial setup with only one unsealed server, but if all unsealed servers crash, the vault will become inaccessable even though the severs will be replaced. If you have multiple vault servers, you may unseal all of them now and if the server serving requests crashes, the other servers will be on standby to take over.
+
+SSH each vault server and for enough unseal keys to reach the threshold run:
+```sh
+$ UNSEAL_KEY=<Unseal key output by vault init command>
+$ vault unseal $UNSEAL_KEY
+```
+
+## Access the Quorum Node
+
+SSH any quorum node and wait for the geth and constellation processes to start. There is an intentional delay to allow bootnodes to start first.
+
+### Check processes have started
+
+One way to check is to inspect the log folder. If geth and constellation have started, we expect to find logs for `constellation` and `quorum`, not just `init-quorum`.
+
+```sh
+$ ls /opt/quorum/log
+```
+
+Another way is to check the supervisor config folder. if geth and constellation have started, we expect to find files `quorum-supervisor.conf` and `constellation-supervisor.conf`.
+
+```sh
+$ ls /etc/supervisor/conf.d
+```
+
+Finally, you can check for the running processes themselves.  Expect to find a running process other than your grep for each of these.
+
+```sh
+$ ps -aux | grep constellation-node
+$ ps -aux | grep geth
+```
+
+### Attach the Geth Console
+
+Once the processes are all running, you can attach your console to the geth JavaScript console
+
+```sh
+$ geth attach
+```
+
+You should be able to see your other nodes as peers
+
+```javascript
+> admin.peers
+```
 
 # Roadmap
 
@@ -126,6 +175,7 @@ The master list of desired features for this tool. Feel free to contribute featu
 - [x] Dedicated Boot Nodes for Geth and Constellation
 - [x] Replaceable Boot Nodes
 - [x] Auto-starting geth and constellation processes
+- [ ] Private transaction test case
 - [ ] Full initial documentation
 - [ ] New Constellation Configuration Format
 - [ ] Secure handling of TLS Certificate
