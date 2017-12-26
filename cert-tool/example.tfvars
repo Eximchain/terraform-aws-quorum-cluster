@@ -1,10 +1,10 @@
 ca_public_key_file_path = "../packer/certs/ca-cert.pub"
 public_key_file_path = "../packer/certs/cert.pub"
 private_key_file_path = "../packer/certs/cert.pem"
-owner = "loulamia"
-organization_name = "Eximchain"
-ca_common_name = "eximchain ca cert"
-common_name = "eximchain cert"
+owner = "FIXME"
+organization_name = "FIXME"
+ca_common_name = "FIXME"
+common_name = "FIXME"
 dns_names = ["vault.service.consul"]
 ip_addresses = ["127.0.0.1"]
 validity_period_hours = 8760

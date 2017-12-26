@@ -18,10 +18,16 @@ This repository is a work in progress. A more complete version of this README an
 
 ## Generate TLS Certificates for vault
 
-Use the cert tool to generate TLS certificates
+Set up the terraform variables for the cert tool
 
 ```sh
 $ cd cert-tool
+$ cp example.tfvars terraform.tfvars
+```
+
+Open `terraform.tfvars` in an editor and fix the variables set to `FIXME`, taking spacial care to set owner to your current username. Use the cert tool to generate TLS certificates:
+
+```sh
 $ terraform apply
 # Enter "yes" and wait for cert generation
 $ cd ..
