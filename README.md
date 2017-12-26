@@ -1,3 +1,26 @@
+Table of Contents
+=================
+
+   * [Warning](#warning)
+   * [Work In Progress](#work-in-progress)
+   * [Quick Start Guide](#quick-start-guide)
+      * [Prerequisites](#prerequisites)
+      * [Generate TLS Certificates for vault](#generate-tls-certificates-for-vault)
+   * [Generate SSH key for EC2 instances](#generate-ssh-key-for-ec2-instances)
+      * [Build AMIs to launch the instances with](#build-amis-to-launch-the-instances-with)
+      * [Launch Network with Terraform](#launch-network-with-terraform)
+      * [Launch and configure vault](#launch-and-configure-vault)
+         * [Unseal additional vault servers](#unseal-additional-vault-servers)
+      * [Access the Quorum Node](#access-the-quorum-node)
+         * [Check processes have started](#check-processes-have-started)
+         * [Attach the Geth Console](#attach-the-geth-console)
+         * [Run Private Transaction Test](#run-private-transaction-test)
+            * [Deploy the private contract](#deploy-the-private-contract)
+         * [Destroy the Network](#destroy-the-network)
+   * [Roadmap](#roadmap)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
+
 # Warning
 This software launches and uses real AWS resources. It is not a demo or test. By using this software, you will incur the costs of any resources it uses in your AWS account.
 
