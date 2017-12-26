@@ -83,10 +83,20 @@
     "source": "instance-scripts/generate-quorum-config.py",
     "destination": "/tmp/generate-quorum-config.py"
   },{
+    "type": "file",
+    "source": "instance-scripts/private-transaction-test-sender.sh",
+    "destination": "/tmp/private-transaction-test-sender.sh"
+  },{
+    "type": "file",
+    "source": "instance-scripts/private-transaction-test-recipient.sh",
+    "destination": "/tmp/private-transaction-test-recipient.sh"
+  },{
     "type": "shell",
     "inline": [
       "sudo mv /tmp/init-quorum.sh /opt/quorum/bin/",
       "sudo mv /tmp/generate-quorum-config.py /opt/quorum/bin/",
+      "sudo mv /tmp/private-transaction-test-sender.sh /opt/quorum/bin/",
+      "sudo mv /tmp/private-transaction-test-recipient.sh /opt/quorum/bin/",
       "sudo chmod 744 /opt/quorum/bin/*"
     ]
   },{

@@ -168,6 +168,56 @@ You should be able to see your other nodes as peers
 > admin.peers
 ```
 
+### Run Private Transaction Test
+
+The nodes come equipped to run a simple private transaction test (sourced from the official quorum-examples repository) between two nodes.
+
+#### Deploy the private contract
+
+SSH into the sending node (e.g. node 0) and run the following to deploy the private contract
+
+```sh
+# This assumes the recipient is node 1 (the second maker node, or the first validator node in a single maker network)
+# If you would like to choose a different recipient, replace the 0 with the appropriate index
+$ RECIPIENT_PUB_KEY=$(vault read -field=constellation_pub_key quorum/addresses/1)
+$ /opt/quorum/bin/private-transaction-test-sender.sh $RECIPIENT_PUB_KEY
+```
+
+The geth console will be attached. Wait for output indicating the contract was mined, which should appear as follows:
+
+```javascript
+> Contract mined! Address: 0x74d977a43deaac2281b6f3d489719f6d2e4aae74
+[object Object]
+```
+
+Take note of the address, then in another terminal, SSH into the recipient node and run the following to load the private contract:
+
+```sh
+$ CONTRACT_ADDR=<Address of the mined private contract>
+$ /opt/quorum/bin/private-transaction-test-recipient.sh $CONTRACT_ADDR
+```
+
+The geth console will be attached and the private contract will be loaded. Both the sender and recipient should be able to get the following result from querying the contract:
+
+```javascript
+> simple.get()
+42
+```
+
+To demonstrate privacy, you can run the recipient script on a third instance that is not the intended recipient:
+
+```sh
+$ CONTRACT_ADDR=<Address of the mined private contract>
+$ /opt/quorum/bin/private-transaction-test-recipient.sh $CONTRACT_ADDR
+```
+
+The third instance should get the following result instead when querying the contract:
+
+```javascript
+> simple.get()
+0
+```
+
 # Roadmap
 
 The master list of desired features for this tool. Feel free to contribute feature requests via pull requests editing this section. Items here may correspond with open issues.
@@ -175,7 +225,7 @@ The master list of desired features for this tool. Feel free to contribute featu
 - [x] Dedicated Boot Nodes for Geth and Constellation
 - [x] Replaceable Boot Nodes
 - [x] Auto-starting geth and constellation processes
-- [ ] Private transaction test case
+- [x] Private transaction test case
 - [ ] Full initial documentation
 - [ ] New Constellation Configuration Format
 - [ ] Secure handling of TLS Certificate
