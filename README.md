@@ -56,11 +56,11 @@ Use packer to build the AMIs needed to launch instances
 ```sh
 $ cd packer
 $ packer build vault-consul.json
-# Enter "yes" and wait for build
+# Wait for build
 $ packer build bootnode.json
-# Enter "yes" and wait for build
+# Wait for build
 $ packer build quorum.json
-# Enter "yes" and wait for build
+# Wait for build
 $ cd ..
 ```
 
@@ -79,14 +79,16 @@ $ python copy-packer-artifacts-to-terraform.py --tfvars-backup-file $BACKUP
 
 ## Launch Network with Terraform
 
-Copy the examples.tfvars file
+Copy the example.tfvars file
 
 ```sh
 $ cd terraform
-$ cp examples.tfvars terraform.tfvars
+$ cp example.tfvars terraform.tfvars
 ```
 
 Check terraform.tfvars and change any values you would like to change. Note that the values given in examples.tfvars is NOT completely AWS free tier eligible, as they include t2.small instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.
+
+If it is your first time using this package, you will need to run `terraform init` before applying the configuration.
 
 Apply the terraform configuration
 
