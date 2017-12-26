@@ -232,14 +232,14 @@ The master list of desired features for this tool. Feel free to contribute featu
 - [x] Replaceable Boot Nodes
 - [x] Auto-starting geth and constellation processes
 - [x] Private transaction test case
+- [ ] Multi AZ Network
+- [ ] Multi Region Network
+- [ ] Quorum Node health checking and replacement
 - [ ] Full initial documentation
 - [ ] New Constellation Configuration Format
 - [ ] Secure handling of TLS Certificate
 - [ ] Terraform Module
-- [ ] Quorum Node health checking and replacement
 - [ ] Anti-Fraglie Everything
 - [ ] Fine-grained Permissions for Private Keys in Vault
 - [ ] Tighten security parameters
-- [ ] Multi AZ Network
-- [ ] Multi Region Network
 - [ ] Network with External Participants
