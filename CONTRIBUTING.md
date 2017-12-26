@@ -47,6 +47,7 @@ Improvement suggestions are tracked as GitHub issues. Once you have determined a
 * Provide a step-by-step description of the suggested enhancement, using as many details as possible.
 * Describe the current behavior and what limitations the improvement would address.
 * Describe the behavior that would be observed with the improvement implemented, and why that would be an improvement.
+* If the improvement is significant in scope, submit a pull request to add it to the project [roadmap](README.md#roadmap)
 
 ## Styleguides
 
