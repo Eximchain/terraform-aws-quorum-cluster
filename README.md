@@ -228,6 +228,34 @@ The third instance should get the following result instead when querying the con
 0
 ```
 
+### Destroy the Network
+
+If this is a test network and you are finished with it, you will likely want to destroy your network to avoid incurring extra AWS costs:
+
+```sh
+# From the terraform directory
+$ terraform destroy
+# Enter "yes" and wait for the network to be destroyed
+```
+
+If it finishes with a single error that looks like as follows, ignore it.  Rerunning `terraform destroy` will show that there are no changes to make.
+
+```
+Error: Error applying plan:
+
+1 error(s) occurred:
+
+* aws_s3_bucket.quorum_vault (destroy): 1 error(s) occurred:
+
+* aws_s3_bucket.quorum_vault: Error deleting S3 Bucket: NoSuchBucket: The specified bucket does not exist
+	status code: 404, request id: 8641A613A9B146ED, host id: TjS8J2QzS7xFgXdgtjzf6FR1Z2x9uqA5UZLHaMEWKg7I9JDRVtilo6u/XSN9+Qnkx+u5M83p4/w= "quorum-vault"
+
+Terraform does not automatically rollback in the face of errors.
+Instead, your Terraform state file has been partially updated with
+any resources that successfully completed. Please address the error
+above and apply again to incrementally change your infrastructure.
+```
+
 # Roadmap
 
 The master list of desired features for this tool. Feel free to contribute feature requests via pull requests editing this section. Items here may correspond with open issues.
