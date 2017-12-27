@@ -48,7 +48,7 @@ $ cd cert-tool
 $ cp example.tfvars terraform.tfvars
 ```
 
-Open `terraform.tfvars` in an editor and fix the variables set to `FIXME`, taking spacial care to set owner to your current username. Use the cert tool to generate TLS certificates:
+Open `terraform.tfvars` in an editor and fix the variables set to `FIXME`, taking special care to set owner to your current username. Use the cert tool to generate TLS certificates:
 
 ```sh
 $ terraform apply
