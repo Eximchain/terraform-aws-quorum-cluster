@@ -22,7 +22,7 @@ resource "aws_instance" "quorum_maker_node" {
 
   vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
 
-  subnet_id = "${aws_subnet.default.id}"
+  subnet_id = "${element(aws_subnet.quorum_cluster.*.id, count.index)}"
 
   tags {
     Name = "quorum-maker-node-${count.index}"
@@ -68,7 +68,7 @@ resource "aws_instance" "quorum_validator_node" {
 
   vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
 
-  subnet_id = "${aws_subnet.default.id}"
+  subnet_id = "${element(aws_subnet.quorum_cluster.*.id, count.index + var.num_maker_nodes)}"
 
   tags {
     Name = "quorum-validator-node-${count.index}"
@@ -114,7 +114,7 @@ resource "aws_instance" "quorum_observer_node" {
 
   vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
 
-  subnet_id = "${aws_subnet.default.id}"
+  subnet_id = "${element(aws_subnet.quorum_cluster.*.id, count.index + var.num_maker_nodes + var.num_validator_nodes)}"
 
   tags {
     Name = "quorum-observer-node-${count.index}"
@@ -160,7 +160,7 @@ resource "aws_instance" "bootnode" {
 
   vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
 
-  subnet_id = "${aws_subnet.default.id}"
+  subnet_id = "${element(aws_subnet.quorum_cluster.*.id, count.index)}"
 
   tags {
     Name = "bootnode-${count.index}"
@@ -196,7 +196,7 @@ data "template_file" "user_data_quorum" {
 resource "aws_security_group" "quorum" {
   name        = "quorum_nodes"
   description = "Used for quorum nodes"
-  vpc_id      = "${aws_vpc.default.id}"
+  vpc_id      = "${aws_vpc.quorum_cluster.id}"
 
   # SSH access from anywhere
   ingress {

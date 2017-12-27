@@ -19,8 +19,8 @@ module "vault_cluster" {
   s3_bucket_name = "${aws_s3_bucket.quorum_vault.id}"
   force_destroy_s3_bucket = true
 
-  vpc_id = "${aws_vpc.default.id}"
-  subnet_ids = ["${aws_subnet.default.id}"]
+  vpc_id = "${aws_vpc.quorum_cluster.id}"
+  subnet_ids = "${aws_subnet.quorum_cluster.*.id}"
 
   allowed_ssh_cidr_blocks            = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks        = ["0.0.0.0/0"]
@@ -104,8 +104,8 @@ module "consul_cluster" {
   ami_id    = "${lookup(var.vault_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_consul.rendered}"
 
-  vpc_id     = "${aws_vpc.default.id}"
-  subnet_ids = ["${aws_subnet.default.id}"]
+  vpc_id     = "${aws_vpc.quorum_cluster.id}"
+  subnet_ids = "${aws_subnet.quorum_cluster.*.id}"
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.

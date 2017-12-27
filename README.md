@@ -285,8 +285,8 @@ The master list of desired features for this tool. Feel free to contribute featu
 - [x] Replaceable Boot Nodes
 - [x] Auto-starting geth and constellation processes
 - [x] Private transaction test case
+- [x] Multi AZ Network
 - [ ] Isolate different AWS users in the same account
-- [ ] Multi AZ Network
 - [ ] Multi Region Network
 - [ ] Quorum Node health checking and replacement
 - [ ] Full initial documentation
