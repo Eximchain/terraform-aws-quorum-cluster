@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu -o pipefail
 
-RELEASE="alpha-unstable"
+RELEASE="v1.2.1-modified"
 
 source /home/ubuntu/.bash_profile
 git clone https://github.com/Eximchain/quorum.git

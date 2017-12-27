@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eu -o pipefail
 
-VER=v0.1.0
-DIR_NAME=constellation-0.1.0-ubuntu1604
+VER=v0.2.0
+DIR_NAME=constellation-0.2.0-ubuntu1604
 
 wget https://github.com/jpmorganchase/constellation/releases/download/$VER/$DIR_NAME.tar.xz
 tar -xf $DIR_NAME.tar.xz
