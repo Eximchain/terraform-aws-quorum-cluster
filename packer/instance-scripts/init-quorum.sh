@@ -92,6 +92,76 @@ function complete_constellation_config {
     echo "url = \"http://$PRIVATE_IP:9000/\"" >> $CONSTELLATION_CONFIG_PATH
 }
 
+function generate_genesis_file {
+    # Assemble lists of addresses
+    local VOTE_THRESHOLD=$(cat /opt/quorum/info/vote-threshold.txt)
+    local NUM_MAKERS=$(cat /opt/quorum/info/num-makers.txt)
+    local NUM_VALIDATORS=$(cat /opt/quorum/info/num-validators.txt)
+    local NUM_OBSERVERS=$(cat /opt/quorum/info/num-observers.txt)
+    local MAKERS=()
+    local VALIDATORS=()
+    local OBSERVERS=()
+
+    for index in $(seq 0 $(expr $NUM_MAKERS - 1))
+    do
+        MAKERS[$index]="$(vault read -field=address quorum/makers/$index)"
+    done
+
+    for index in $(seq 0 $(expr $NUM_VALIDATORS - 1))
+    do
+        VALIDATORS[$index]="$(vault read -field=address quorum/validators/$index)"
+    done
+
+    for index in $(seq 0 $(expr $NUM_OBSERVERS - 1))
+    do
+        OBSERVERS[$index]="$(vault read -field=address quorum/observers/$index)"
+    done
+
+    # Generate the quorum config and genesis now that we have all the info we need
+    python /opt/quorum/bin/generate-quorum-config.py --makers ${MAKERS[@]} --validators ${VALIDATORS[@]} --observers ${OBSERVERS[@]} --vote-threshold $VOTE_THRESHOLD
+    (cd /opt/quorum/private && quorum-genesis)
+
+    # Make sure genesis file exists before continuing
+    until [ -e /opt/quorum/private/quorum-genesis.json ]
+    do
+        sleep 1
+    done
+}
+
+function broadcast_role_info {
+    local ROLE=$1
+
+    local ROLE_INDEX=$(cat /opt/quorum/info/role-index.txt)
+
+    if [ "$ROLE" == "maker" ]
+    then
+        wait_for_successful_command "vault write quorum/makers/$ROLE_INDEX address=$ADDRESS"
+    elif [ "$ROLE" == "validator" ]
+    then
+        wait_for_successful_command "vault write quorum/validators/$ROLE_INDEX address=$ADDRESS"
+    else # ROLE == observer
+        wait_for_successful_command "vault write quorum/observers/$ROLE_INDEX address=$ADDRESS"
+    fi
+}
+
+function wait_for_all_nodes {
+    local NETWORK_SIZE=$(cat /opt/quorum/info/network-size.txt)
+
+    for index in $(seq 0 $(expr $NETWORK_SIZE - 1))
+    do
+        wait_for_successful_command "vault read -field=address quorum/addresses/$index"
+    done
+}
+
+function wait_for_all_bootnodes {
+    local NUM_BOOTNODES=$1
+
+    for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+    do
+        wait_for_successful_command "vault read -field=enode quorum/bootnodes/addresses/$index"
+    done
+}
+
 # Wait for operator to initialize and unseal vault
 wait_for_successful_command 'vault init -check'
 wait_for_successful_command 'vault status'
@@ -149,69 +219,21 @@ PRIV_KEY=$(cat /home/ubuntu/.ethereum/keystore/*$(echo $ADDRESS | cut -d 'x' -f2
 
 # Determine role and advertise as role
 ROLE=$(cat /opt/quorum/info/role.txt)
-ROLE_INDEX=$(cat /opt/quorum/info/role-index.txt)
-
-if [ "$ROLE" == "maker" ]
-then
-    vault write quorum/makers/$ROLE_INDEX address=$ADDRESS
-elif [ "$ROLE" == "validator" ]
-then
-    vault write quorum/validators/$ROLE_INDEX address=$ADDRESS
-else # ROLE == observer
-    vault write quorum/observers/$ROLE_INDEX address=$ADDRESS
-fi
+broadcast_role_info $ROLE
 
 # Write key and address into the vault
 wait_for_successful_command "vault write quorum/keys/$CLUSTER_INDEX geth_key=$PRIV_KEY constellation_priv_key=$CONSTELLATION_PRIV_KEY constellation_a_priv_key=$CONSTELLATION_A_PRIV_KEY"
 wait_for_successful_command "vault write quorum/addresses/$CLUSTER_INDEX address=$ADDRESS constellation_pub_key=$CONSTELLATION_PUB_KEY constellation_a_pub_key=$CONSTELLATION_A_PUB_KEY private_ip=$PRIVATE_IP"
 
 # Wait for all nodes to write their address to vault
-NETWORK_SIZE=$(cat /opt/quorum/info/network-size.txt)
-for index in $(seq 0 $(expr $NETWORK_SIZE - 1))
-do
-    wait_for_successful_command "vault read -field=address quorum/addresses/$index"
-done
-
 NUM_BOOTNODES=$(cat /opt/quorum/info/num-bootnodes.txt)
-for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
-do
-    wait_for_successful_command "vault read -field=enode quorum/bootnodes/addresses/$index"
-done
+wait_for_all_nodes
+wait_for_all_bootnodes $NUM_BOOTNODES
 
 complete_constellation_config $NUM_BOOTNODES $PRIVATE_IP /opt/quorum/constellation/config.conf
 
-# Assemble the list of makers and validators
-NUM_MAKERS=$(cat /opt/quorum/info/num-makers.txt)
-MAKERS=()
-for index in $(seq 0 $(expr $NUM_MAKERS - 1))
-do
-    MAKERS[$index]="$(vault read -field=address quorum/makers/$index)"
-done
-
-NUM_VALIDATORS=$(cat /opt/quorum/info/num-validators.txt)
-VALIDATORS=()
-for index in $(seq 0 $(expr $NUM_VALIDATORS - 1))
-do
-    VALIDATORS[$index]="$(vault read -field=address quorum/validators/$index)"
-done
-
-NUM_OBSERVERS=$(cat /opt/quorum/info/num-observers.txt)
-OBSERVERS=()
-for index in $(seq 0 $(expr $NUM_OBSERVERS - 1))
-do
-    OBSERVERS[$index]="$(vault read -field=address quorum/observers/$index)"
-done
-
-# Generate the quorum config and genesis now that we have all the info we need
-VOTE_THRESHOLD=$(cat /opt/quorum/info/vote-threshold.txt)
-python /opt/quorum/bin/generate-quorum-config.py --makers ${MAKERS[@]} --validators ${VALIDATORS[@]} --observers ${OBSERVERS[@]} --vote-threshold $VOTE_THRESHOLD
-(cd /opt/quorum/private && quorum-genesis)
-
-# Make sure genesis file exists before continuing
-until [ -e /opt/quorum/private/quorum-genesis.json ]
-do
-    sleep 1
-done
+# Generate the genesis file
+generate_genesis_file
 
 # Initialize geth to run on the quorum network
 geth init /opt/quorum/private/quorum-genesis.json
@@ -228,7 +250,7 @@ sudo supervisorctl update
 sleep 5
 
 # Generate supervisor config to run quorum
-generate_quorum_supervisor_config $ADDRESS $GETH_PW $PRIVATE_IP $ROLE $NUM_MAKERS $NUM_BOOTNODES /opt/quorum/constellation/config.conf
+generate_quorum_supervisor_config $ADDRESS $GETH_PW $PRIVATE_IP $ROLE $(cat /opt/quorum/info/num-makers.txt) $NUM_BOOTNODES /opt/quorum/constellation/config.conf
 
 # Remove the config that runs this and run quorum
 sudo rm /etc/supervisor/conf.d/init-quorum-supervisor.conf

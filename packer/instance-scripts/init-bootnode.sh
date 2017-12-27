@@ -40,6 +40,16 @@ function complete_constellation_config {
     echo "url = \"http://$PRIVATE_IP:9000/\"" >> $CONSTELLATION_CONFIG_PATH
 }
 
+function wait_for_all_bootnodes {
+    local NUM_BOOTNODES=$1
+
+    for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+    do
+        wait_for_successful_command "vault read -field=enode quorum/bootnodes/addresses/$index"
+    done
+}
+
+
 # Wait for operator to initialize and unseal vault
 wait_for_successful_command 'vault init -check'
 wait_for_successful_command 'vault status'
@@ -111,10 +121,7 @@ wait_for_successful_command "vault write quorum/bootnodes/addresses/$INDEX enode
 
 # Wait for all bootnodes to write their address to vault
 NUM_BOOTNODES=$(cat /opt/quorum/info/num-bootnodes.txt)
-for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
-do
-    wait_for_successful_command "vault read -field=enode quorum/bootnodes/addresses/$index"
-done
+wait_for_all_bootnodes $NUM_BOOTNODES
 
 # Finish filling in the constellation config
 complete_constellation_config $NUM_BOOTNODES $INDEX $PRIVATE_IP /opt/quorum/constellation/config.conf
