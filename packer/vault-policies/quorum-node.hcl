@@ -10,6 +10,10 @@ path "quorum/validators/*" {
   capabilities = ["read", "create", "update"]
 }
 
+path "quorum/observers/*" {
+  capabilities = ["read", "create", "update"]
+}
+
 path "quorum/keys/*" {
   capabilities = ["read", "create", "update"]
 }

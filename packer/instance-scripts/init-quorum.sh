@@ -28,6 +28,7 @@ function generate_quorum_supervisor_config {
     local MIN_BLOCK_TIME=2
     local MAX_BLOCK_TIME=5
     local NETID=64813
+    local PW_FILE="/tmp/geth-pw"
     local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $IP --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --verbosity $VERBOSITY --jitvm=false --privateconfigpath $CONSTELLATION_CONFIG"
 
     if [ "$ROLE" == "maker" ]
@@ -40,8 +41,9 @@ function generate_quorum_supervisor_config {
     elif [ "$ROLE" == "validator" ]
     then
         ARGS="$GLOBAL_ARGS --voteaccount \"$ADDRESS\" --votepassword \"$PASSWORD\""
-    else
-        ARGS="$GLOBAL_ARGS"
+    else # observer node
+        echo "$PASSWORD" > $PW_FILE
+        ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\" --password \"$PW_FILE\""
     fi
 
     local BOOTNODES=""
@@ -145,18 +147,18 @@ CONSTELLATION_A_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation_a
 PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 PRIV_KEY=$(cat /home/ubuntu/.ethereum/keystore/*$(echo $ADDRESS | cut -d 'x' -f2))
 
-# Determine role and advertise as maker or validator if appropriate
+# Determine role and advertise as role
 ROLE=$(cat /opt/quorum/info/role.txt)
 ROLE_INDEX=$(cat /opt/quorum/info/role-index.txt)
 
 if [ "$ROLE" == "maker" ]
 then
     vault write quorum/makers/$ROLE_INDEX address=$ADDRESS
-fi
-
-if [ "$ROLE" == "validator" ]
+elif [ "$ROLE" == "validator" ]
 then
     vault write quorum/validators/$ROLE_INDEX address=$ADDRESS
+else # ROLE == observer
+    vault write quorum/observers/$ROLE_INDEX address=$ADDRESS
 fi
 
 # Write key and address into the vault
@@ -193,9 +195,16 @@ do
     VALIDATORS[$index]="$(vault read -field=address quorum/validators/$index)"
 done
 
+NUM_OBSERVERS=$(cat /opt/quorum/info/num-observers.txt)
+OBSERVERS=()
+for index in $(seq 0 $(expr $NUM_OBSERVERS - 1))
+do
+    OBSERVERS[$index]="$(vault read -field=address quorum/observers/$index)"
+done
+
 # Generate the quorum config and genesis now that we have all the info we need
 VOTE_THRESHOLD=$(cat /opt/quorum/info/vote-threshold.txt)
-python /opt/quorum/bin/generate-quorum-config.py --makers ${MAKERS[@]} --validators ${VALIDATORS[@]} --vote-threshold $VOTE_THRESHOLD
+python /opt/quorum/bin/generate-quorum-config.py --makers ${MAKERS[@]} --validators ${VALIDATORS[@]} --observers ${OBSERVERS[@]} --vote-threshold $VOTE_THRESHOLD
 (cd /opt/quorum/private && quorum-genesis)
 
 # Make sure genesis file exists before continuing
