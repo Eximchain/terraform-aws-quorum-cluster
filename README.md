@@ -205,8 +205,6 @@ The nodes come equipped to run a simple private transaction test (sourced from t
 
 #### Deploy the private contract
 
-Note that this currently does not work as-is with an observer node.
-
 SSH into the sending node (e.g. node 0) and run the following to deploy the private contract
 
 ```sh
