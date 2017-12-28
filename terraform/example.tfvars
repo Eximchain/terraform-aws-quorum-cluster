@@ -2,6 +2,7 @@ public_key_path = "~/.ssh/quorum.pub"
 private_key_path = "~/.ssh/quorum"
 key_name = "quorum-cluster"
 aws_region = "us-east-1"
+network_id = 64813
 quorum_azs = ["us-east-1a", "us-east-1b", "us-east-1c"]
 vault_cluster_size = 1
 vault_instance_type = "t2.small"

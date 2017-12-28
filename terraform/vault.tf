@@ -33,7 +33,7 @@ module "vault_cluster" {
 # ALLOW VAULT CLUSTER TO USE AWS AUTH
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_policy" "allow_aws_auth" {
-  name = "allow_aws_auth"
+  name = "allow_aws_auth_network_${var.network_id}"
   description = "Allow authentication to vault by AWS mechanisms"
 
   policy = <<EOF

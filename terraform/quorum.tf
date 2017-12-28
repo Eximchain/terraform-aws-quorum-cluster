@@ -40,6 +40,7 @@ resource "aws_instance" "quorum_maker_node" {
       "echo 'maker' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
       "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
+      "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
     ]
   }
 }
@@ -86,6 +87,7 @@ resource "aws_instance" "quorum_validator_node" {
       "echo 'validator' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
       "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
+      "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
     ]
   }
 }
@@ -132,6 +134,7 @@ resource "aws_instance" "quorum_observer_node" {
       "echo 'observer' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
       "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
+      "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
     ]
   }
 }
@@ -172,6 +175,7 @@ resource "aws_instance" "bootnode" {
       "echo '${count.index}' | sudo tee /opt/quorum/info/index.txt",
       "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/network-size.txt",
       "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
+      "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
     ]
   }
 }
@@ -251,7 +255,7 @@ resource "aws_security_group" "quorum" {
 # QUORUM NODE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "quorum_node" {
-    name = "quorum-node"
+    name = "quorum-node-network-${var.network_id}"
     assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -273,7 +277,7 @@ EOF
 # QUORUM NODE IAM POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_policy" "quorum_node" {
-    name = "quorum-node-policy"
+    name = "quorum-node-policy-network-${var.network_id}"
     description = "A policy for quorum nodes"
     policy = <<EOF
 {
@@ -302,6 +306,6 @@ resource "aws_iam_role_policy_attachment" "quorum_node" {
 }
 
 resource "aws_iam_instance_profile" "quorum_node" {
-    name = "quorum-node"
+    name = "quorum-node-network-${var.network_id}"
     role = "${aws_iam_role.quorum_node.name}"
 }

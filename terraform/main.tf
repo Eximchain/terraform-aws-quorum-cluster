@@ -38,6 +38,6 @@ resource "aws_subnet" "quorum_cluster" {
 }
 
 resource "aws_key_pair" "auth" {
-  key_name = "${var.key_name}"
+  key_name = "quorum-cluster-${var.network_id}"
   public_key = "${file(var.public_key_path)}"
 }

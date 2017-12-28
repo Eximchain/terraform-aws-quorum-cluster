@@ -20,6 +20,15 @@ variable "aws_region" {
   default     = "us-west-2"
 }
 
+variable "network_id" {
+  description = <<DESCRIPTION
+Ethereum network ID, also used in naming some resources for uniqueness.
+Must be unique amongst networks in the same AWS account and launched with this tool.
+Ideally is globally unique amongst ethereum and quorum networks.
+DESCRIPTION
+  default = 64813
+}
+
 variable "quorum_azs" {
   description = "Run the EC2 Instances in these Availability Zones"
   type = "list"
