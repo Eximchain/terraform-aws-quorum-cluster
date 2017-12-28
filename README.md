@@ -286,7 +286,7 @@ The master list of desired features for this tool. Feel free to contribute featu
 - [x] Auto-starting geth and constellation processes
 - [x] Private transaction test case
 - [x] Multi AZ Network
-- [ ] Isolate different AWS users in the same account
+- [x] Isolate different AWS users in the same account
 - [ ] Multi Region Network
 - [ ] Quorum Node health checking and replacement
 - [ ] Full initial documentation
