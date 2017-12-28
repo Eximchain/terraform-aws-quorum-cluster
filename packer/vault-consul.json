@@ -76,14 +76,14 @@
     ]
   },{
     "type": "file",
-    "source": "instance-scripts/setup-vault.sh",
-    "destination": "/tmp/setup-vault.sh"
+    "source": "instance-scripts/generate-setup-vault.sh",
+    "destination": "/tmp/generate-setup-vault.sh"
   },{
     "type": "shell",
     "inline": [
-      "sudo mv /tmp/setup-vault.sh /opt/vault/bin/",
-      "sudo chown ubuntu /opt/vault/bin/setup-vault.sh",
-      "sudo chmod 744 /opt/vault/bin/setup-vault.sh"
+      "sudo mv /tmp/generate-setup-vault.sh /opt/vault/bin/",
+      "sudo chown ubuntu /opt/vault/bin/generate-setup-vault.sh",
+      "sudo chmod 744 /opt/vault/bin/generate-setup-vault.sh"
     ]
   },{
     "type": "shell",

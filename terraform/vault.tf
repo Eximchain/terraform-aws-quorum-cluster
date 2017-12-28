@@ -83,6 +83,7 @@ data "template_file" "user_data_vault_cluster" {
     s3_bucket_name           = "${aws_s3_bucket.quorum_vault.id}"
     consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
     consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
+    network_id               = "${var.network_id}"
   }
 }
 

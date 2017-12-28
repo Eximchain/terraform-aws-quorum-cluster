@@ -15,5 +15,8 @@ readonly VAULT_TLS_CERT_FILE="/opt/vault/tls/vault.crt.pem"
 readonly VAULT_TLS_KEY_FILE="/opt/vault/tls/vault.key.pem"
 
 # The variables below are filled in via Terraform interpolation
+/opt/vault/bin/generate-setup-vault.sh ${network_id}
+
+
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
 /opt/vault/bin/run-vault --s3-bucket "${s3_bucket_name}" --s3-bucket-region "${aws_region}" --tls-cert-file "$VAULT_TLS_CERT_FILE"  --tls-key-file "$VAULT_TLS_KEY_FILE"
