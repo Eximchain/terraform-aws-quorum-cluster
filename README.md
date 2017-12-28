@@ -109,7 +109,7 @@ $ cd terraform
 $ cp example.tfvars terraform.tfvars
 ```
 
-Check terraform.tfvars and change any values you would like to change. Note that the values given in examples.tfvars is NOT completely AWS free tier eligible, as they include t2.small instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.
+Check terraform.tfvars and change any values you would like to change. Note that the values given in examples.tfvars is NOT completely AWS free tier eligible, as they include t2.small and t2.medium instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.
 
 If it is your first time using this package, you will need to run `terraform init` before applying the configuration.
 
