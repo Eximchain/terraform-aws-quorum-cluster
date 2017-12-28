@@ -11,10 +11,6 @@ variable "private_key_path" {
   description = "Path to SSH private key corresponding to the public key in public_key_path"
 }
 
-variable "key_name" {
-  description = "Desired name of AWS key pair"
-}
-
 variable "aws_region" {
   description = "AWS region to launch servers."
   default     = "us-west-2"
