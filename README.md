@@ -209,7 +209,7 @@ SSH into the sending node (e.g. node 0) and run the following to deploy the priv
 
 ```sh
 # This assumes the recipient is node 1 (the second maker node, or the first validator node in a single maker network)
-# If you would like to choose a different recipient, replace the 0 with the appropriate index
+# If you would like to choose a different recipient, replace the 1 with the appropriate index
 $ RECIPIENT_PUB_KEY=$(vault read -field=constellation_pub_key quorum/addresses/1)
 $ /opt/quorum/bin/private-transaction-test-sender.sh $RECIPIENT_PUB_KEY
 ```
