@@ -77,15 +77,13 @@ function complete_constellation_config {
     local OTHER_NODES=""
 
     # Configure constellation with bootnode IPs
-    # TODO: New-style configs
     for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
     do
         BOOTNODE=$(vault read -field=private_ip quorum/bootnodes/addresses/$index)
         OTHER_NODES="$OTHER_NODES,\"http://$BOOTNODE:9000/\""
     done
     OTHER_NODES=${OTHER_NODES:1}
-#    OTHER_NODES_LINE="othernodes = [$OTHER_NODES]"
-    OTHER_NODES_LINE="otherNodeUrls = [$OTHER_NODES]"
+    OTHER_NODES_LINE="othernodes = [$OTHER_NODES]"
 
     echo "$OTHER_NODES_LINE" >> $CONSTELLATION_CONFIG_PATH
 
@@ -183,8 +181,6 @@ then
     # Generate constellation key files
     vault read -field=constellation_pub_key quorum/addresses/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation.pub
     vault read -field=constellation_priv_key quorum/keys/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation.key
-    vault read -field=constellation_a_pub_key quorum/addresses/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation_a.pub
-    vault read -field=constellation_a_priv_key quorum/keys/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation_a.key
 elif [ -e /home/ubuntu/.ethereum/keystore/* ]
 then
     # Address was created but not stored in vault. This is a process reboot after a previous failure.
@@ -196,7 +192,6 @@ then
     if [ ! -e /opt/quorum/constellation/private/constellation.* ]
     then
         echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation
-        echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation_a
     fi
 else
     # This is the first run, generate a new key and password
@@ -209,12 +204,9 @@ else
     ADDRESS=0x$(echo -ne "$GETH_PW\n$GETH_PW\n" | geth account new | grep Address | awk '{ gsub("{|}", "") ; print $2 }')
     # Generate constellation keys
     echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation
-    echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation_a
 fi
 CONSTELLATION_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation.pub)
-CONSTELLATION_A_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation_a.pub)
 CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key)
-CONSTELLATION_A_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation_a.key)
 PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 PRIV_KEY=$(cat /home/ubuntu/.ethereum/keystore/*$(echo $ADDRESS | cut -d 'x' -f2))
 
@@ -223,8 +215,8 @@ ROLE=$(cat /opt/quorum/info/role.txt)
 broadcast_role_info $ROLE
 
 # Write key and address into the vault
-wait_for_successful_command "vault write quorum/keys/$CLUSTER_INDEX geth_key=$PRIV_KEY constellation_priv_key=$CONSTELLATION_PRIV_KEY constellation_a_priv_key=$CONSTELLATION_A_PRIV_KEY"
-wait_for_successful_command "vault write quorum/addresses/$CLUSTER_INDEX address=$ADDRESS constellation_pub_key=$CONSTELLATION_PUB_KEY constellation_a_pub_key=$CONSTELLATION_A_PUB_KEY private_ip=$PRIVATE_IP"
+wait_for_successful_command "vault write quorum/keys/$CLUSTER_INDEX geth_key=$PRIV_KEY constellation_priv_key=$CONSTELLATION_PRIV_KEY"
+wait_for_successful_command "vault write quorum/addresses/$CLUSTER_INDEX address=$ADDRESS constellation_pub_key=$CONSTELLATION_PUB_KEY private_ip=$PRIVATE_IP"
 
 # Wait for all nodes to write their address to vault
 NUM_BOOTNODES=$(cat /opt/quorum/info/num-bootnodes.txt)

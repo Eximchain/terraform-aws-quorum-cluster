@@ -287,10 +287,10 @@ The master list of desired features for this tool. Feel free to contribute featu
 - [x] Private transaction test case
 - [x] Multi AZ Network
 - [x] Isolate different AWS users in the same account
+- [x] New Constellation Configuration Format
 - [ ] Multi Region Network
 - [ ] Quorum Node health checking and replacement
 - [ ] Full initial documentation
-- [ ] New Constellation Configuration Format
 - [ ] Secure handling of TLS Certificate
 - [ ] Terraform Module
 - [ ] Anti-Fraglie Everything

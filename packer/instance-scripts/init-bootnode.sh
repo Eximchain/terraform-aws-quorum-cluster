@@ -80,8 +80,6 @@ then
     # Generate constellation key files
     vault read -field=constellation_pub_key quorum/bootnodes/addresses/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation.pub
     vault read -field=constellation_priv_key quorum/bootnodes/keys/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation.key
-    vault read -field=constellation_a_pub_key quorum/bootnodes/addresses/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation_a.pub
-    vault read -field=constellation_a_priv_key quorum/bootnodes/keys/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation_a.key
 elif [ -e $BOOT_ADDR_FILE ]
 then
     # Address in file but not in vault yet, this is a process restart
@@ -93,7 +91,6 @@ then
     if [ ! -e /opt/quorum/constellation/private/constellation.* ]
     then
         echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation
-        echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation_a
     fi
 else
     # This is a new bootnode
@@ -107,17 +104,14 @@ else
     echo $BOOT_ADDR > $BOOT_ADDR_FILE
     # Generate constellation keys
     echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation
-    echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation_a
 fi
 CONSTELLATION_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation.pub)
-CONSTELLATION_A_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation_a.pub)
 CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key)
-CONSTELLATION_A_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation_a.key)
 PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 
 # Write bootnode address to vault
-wait_for_successful_command "vault write quorum/bootnodes/keys/$INDEX bootnode_key=\"$BOOT_KEY\" constellation_priv_key=\"$CONSTELLATION_PRIV_KEY\" constellation_a_priv_key=\"$CONSTELLATION_A_PRIV_KEY\""
-wait_for_successful_command "vault write quorum/bootnodes/addresses/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB private_ip=$PRIVATE_IP constellation_pub_key=$CONSTELLATION_PUB_KEY constellation_a_pub_key=$CONSTELLATION_A_PUB_KEY"
+wait_for_successful_command "vault write quorum/bootnodes/keys/$INDEX bootnode_key=\"$BOOT_KEY\" constellation_priv_key=\"$CONSTELLATION_PRIV_KEY\""
+wait_for_successful_command "vault write quorum/bootnodes/addresses/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB private_ip=$PRIVATE_IP constellation_pub_key=$CONSTELLATION_PUB_KEY"
 
 # Wait for all bootnodes to write their address to vault
 NUM_BOOTNODES=$(cat /opt/quorum/info/num-bootnodes.txt)

@@ -109,7 +109,7 @@
     "destination": "/tmp/constellation-supervisor.conf"
   },{
     "type": "file",
-    "source": "configs/old-style-constellation.conf",
+    "source": "configs/constellation.conf",
     "destination": "/tmp/constellation.conf"
   },{
     "type": "shell",
