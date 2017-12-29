@@ -33,9 +33,9 @@ This repository is a work in progress. A more complete version of this README an
 
 ## Prerequisites
 
-* You must have AWS credentials at the default location (typically ~/.aws/credentials)
+* You must have AWS credentials at the default location (typically `~/.aws/credentials`)
 * You must have the following programs installed on the machine you will be using to launch the network:
-    * Python 2
+    * Python 2.7
     * Hashicorp Packer
     * Hashicorp Terraform
 
