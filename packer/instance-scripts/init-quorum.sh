@@ -79,7 +79,7 @@ function complete_constellation_config {
     # Configure constellation with bootnode IPs
     for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
     do
-        BOOTNODE=$(vault read -field=private_ip quorum/bootnodes/addresses/$index)
+        BOOTNODE=$(wait_for_successful_command "vault read -field=private_ip quorum/bootnodes/addresses/$index")
         OTHER_NODES="$OTHER_NODES,\"http://$BOOTNODE:9000/\""
     done
     OTHER_NODES=${OTHER_NODES:1}
@@ -103,17 +103,17 @@ function generate_genesis_file {
 
     for index in $(seq 0 $(expr $NUM_MAKERS - 1))
     do
-        MAKERS[$index]="$(vault read -field=address quorum/makers/$index)"
+        MAKERS[$index]=$(wait_for_successful_command "vault read -field=address quorum/makers/$index")
     done
 
     for index in $(seq 0 $(expr $NUM_VALIDATORS - 1))
     do
-        VALIDATORS[$index]="$(vault read -field=address quorum/validators/$index)"
+        VALIDATORS[$index]=$(wait_for_successful_command "vault read -field=address quorum/validators/$index")
     done
 
     for index in $(seq 0 $(expr $NUM_OBSERVERS - 1))
     do
-        OBSERVERS[$index]="$(vault read -field=address quorum/observers/$index)"
+        OBSERVERS[$index]=$(wait_for_successful_command "vault read -field=address quorum/observers/$index")
     done
 
     # Generate the quorum config and genesis now that we have all the info we need
@@ -176,17 +176,17 @@ ADDRESS=$(vault read -field=address quorum/addresses/$CLUSTER_INDEX)
 if [ $? -eq 0 ]
 then
     # Address is already in vault and this is a replacement instance.  Load info from vault
-    GETH_PW=$(vault read -field=geth_pw quorum/passwords/$CLUSTER_INDEX)
-    CONSTELLATION_PW=$(vault read -field=constellation_pw quorum/passwords/$CLUSTER_INDEX)
+    GETH_PW=$(wait_for_successful_command "vault read -field=geth_pw quorum/passwords/$CLUSTER_INDEX")
+    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw quorum/passwords/$CLUSTER_INDEX")
     # Generate constellation key files
-    vault read -field=constellation_pub_key quorum/addresses/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation.pub
-    vault read -field=constellation_priv_key quorum/keys/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation.key
+    wait_for_successful_command "vault read -field=constellation_pub_key quorum/addresses/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.pub
+    wait_for_successful_command "vault read -field=constellation_priv_key quorum/keys/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.key
 elif [ -e /home/ubuntu/.ethereum/keystore/* ]
 then
     # Address was created but not stored in vault. This is a process reboot after a previous failure.
     # Load address from file and password from vault
-    GETH_PW=$(vault read -field=geth_pw quorum/passwords/$CLUSTER_INDEX)
-    CONSTELLATION_PW=$(vault read -field=constellation_pw quorum/passwords/$CLUSTER_INDEX)
+    GETH_PW=$(wait_for_successful_command "vault read -field=geth_pw quorum/passwords/$CLUSTER_INDEX")
+    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw quorum/passwords/$CLUSTER_INDEX")
     ADDRESS=0x$(cat /home/ubuntu/.ethereum/keystore/* | jq -r .address)
     # Generate constellation keys if they weren't generated last run
     if [ ! -e /opt/quorum/constellation/private/constellation.* ]
@@ -199,7 +199,7 @@ else
     # TODO: Get non-empty passwords to work
     CONSTELLATION_PW=""
     # Store the password first so we don't lose it
-    vault write quorum/passwords/$CLUSTER_INDEX geth_pw="$GETH_PW" constellation_pw="$CONSTELLATION_PW"
+    wait_for_successful_command "vault write quorum/passwords/$CLUSTER_INDEX geth_pw=\"$GETH_PW\" constellation_pw=\"$CONSTELLATION_PW\""
     # Generate the new key pair
     ADDRESS=0x$(echo -ne "$GETH_PW\n$GETH_PW\n" | geth account new | grep Address | awk '{ gsub("{|}", "") ; print $2 }')
     # Generate constellation keys
@@ -207,7 +207,7 @@ else
 fi
 CONSTELLATION_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation.pub)
 CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key)
-PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
+PRIVATE_IP=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/local-ipv4')
 PRIV_KEY=$(cat /home/ubuntu/.ethereum/keystore/*$(echo $ADDRESS | cut -d 'x' -f2))
 
 # Determine role and advertise as role
@@ -243,7 +243,8 @@ sudo supervisorctl update
 sleep 5
 
 # Generate supervisor config to run quorum
-generate_quorum_supervisor_config $ADDRESS $GETH_PW $PRIVATE_IP $ROLE $(cat /opt/quorum/info/num-makers.txt) $NUM_BOOTNODES /opt/quorum/constellation/config.conf
+NUM_MAKERS=$(cat /opt/quorum/info/num-makers.txt)
+generate_quorum_supervisor_config $ADDRESS $GETH_PW $PRIVATE_IP $ROLE $NUM_MAKERS $NUM_BOOTNODES /opt/quorum/constellation/config.conf
 
 # Remove the config that runs this and run quorum
 sudo rm /etc/supervisor/conf.d/init-quorum-supervisor.conf

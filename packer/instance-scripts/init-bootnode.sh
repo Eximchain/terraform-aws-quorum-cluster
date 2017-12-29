@@ -28,13 +28,12 @@ function complete_constellation_config {
     do
         if [ $index -ne $CLUSTER_INDEX ]
         then
-            BOOTNODE=$(vault read -field=private_ip quorum/bootnodes/addresses/$index)
+            BOOTNODE=$(wait_for_successful_command "vault read -field=private_ip quorum/bootnodes/addresses/$index")
             OTHER_NODES="$OTHER_NODES,\"http://$BOOTNODE:9000/\""
         fi
     done
     OTHER_NODES=${OTHER_NODES:1}
-#    OTHER_NODES_LINE="othernodes = [$OTHER_NODES]"
-    OTHER_NODES_LINE="otherNodeUrls = [$OTHER_NODES]"
+    OTHER_NODES_LINE="othernodes = [$OTHER_NODES]"
     echo "$OTHER_NODES_LINE" >> $CONSTELLATION_CONFIG_PATH
     # Configure constellation with URL
     echo "url = \"http://$PRIVATE_IP:9000/\"" >> $CONSTELLATION_CONFIG_PATH
@@ -59,7 +58,7 @@ wait_for_successful_command 'vault auth -method=aws'
 
 # Get the overall index, IP, and boot port for this instance
 INDEX=$(cat /opt/quorum/info/index.txt)
-PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
+PRIVATE_IP=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/local-ipv4')
 BOOT_PORT=30301
 
 # Generate bootnode key and construct bootnode address
@@ -67,23 +66,23 @@ BOOT_KEY_FILE=/opt/quorum/private/boot.key
 BOOT_PUB_FILE=/opt/quorum/private/boot.pub
 BOOT_ADDR_FILE=/opt/quorum/private/boot_addr
 
-BOOT_ADDR=$(vault read -field=address quorum/bootnodes/addresses/$INDEX)
+BOOT_ADDR=$(ait_for_successful_command "vault read -field=address quorum/bootnodes/addresses/$INDEX")
 if [ $? -eq 0 ]
 then
     # Address already in vault, this is a replacement instance
-    CONSTELLATION_PW=$(vault read -field=constellation_pw qorum/bootnodes/passwords/$INDEX)
-    BOOT_PUB=$(vault read -field=pub_key quorum/bootnodes/addresses/$INDEX)
-    BOOT_KEY=$(vault read -field=bootnode_key quorum/bootnodes/keys/$INDEX)
+    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw qorum/bootnodes/passwords/$INDEX")
+    BOOT_PUB=$(wait_for_successful_command "vault read -field=pub_key quorum/bootnodes/addresses/$INDEX")
+    BOOT_KEY=$(wait_for_successful_command "vault read -field=bootnode_key quorum/bootnodes/keys/$INDEX")
     echo $BOOT_KEY > $BOOT_KEY_FILE
     echo $BOOT_PUB > $BOOT_PUB_FILE
     echo $BOOT_ADDR > $BOOT_ADDR_FILE
     # Generate constellation key files
-    vault read -field=constellation_pub_key quorum/bootnodes/addresses/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation.pub
-    vault read -field=constellation_priv_key quorum/bootnodes/keys/$CLUSTER_INDEX > /opt/quorum/constellation/private/constellation.key
+    wait_for_successful_command "vault read -field=constellation_pub_key quorum/bootnodes/addresses/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.pub
+    wait_for_successful_command "vault read -field=constellation_priv_key quorum/bootnodes/keys/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.key
 elif [ -e $BOOT_ADDR_FILE ]
 then
     # Address in file but not in vault yet, this is a process restart
-    CONSTELLATION_PW=$(vault read -field=constellation_pw qorum/bootnodes/passwords/$INDEX)
+    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw qorum/bootnodes/passwords/$INDEX")
     BOOT_ADDR=$(cat $BOOT_ADDR_FILE)
     BOOT_PUB=$(cat $BOOT_PUB_FILE)
     BOOT_KEY=$(cat $BOOT_KEY_FILE)
@@ -107,7 +106,6 @@ else
 fi
 CONSTELLATION_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation.pub)
 CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key)
-PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 
 # Write bootnode address to vault
 wait_for_successful_command "vault write quorum/bootnodes/keys/$INDEX bootnode_key=\"$BOOT_KEY\" constellation_priv_key=\"$CONSTELLATION_PRIV_KEY\""
