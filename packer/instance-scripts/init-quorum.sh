@@ -161,12 +161,22 @@ function wait_for_all_bootnodes {
     done
 }
 
+function wait_for_terraform_provisioners {
+    # Ensure terraform has run all provisioners
+    while [ ! -e /opt/quorum/info/network-id.txt ]
+    do
+        sleep 5
+    done
+}
+
 # Wait for operator to initialize and unseal vault
 wait_for_successful_command 'vault init -check'
 wait_for_successful_command 'vault status'
 
 # Wait for vault to be fully configured by the root user
 wait_for_successful_command 'vault auth -method=aws'
+
+wait_for_terraform_provisioners
 
 # Get the overall index for this instance
 CLUSTER_INDEX=$(cat /opt/quorum/info/overall-index.txt)
@@ -181,6 +191,12 @@ then
     # Generate constellation key files
     wait_for_successful_command "vault read -field=constellation_pub_key quorum/addresses/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.pub
     wait_for_successful_command "vault read -field=constellation_priv_key quorum/keys/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.key
+    # Generate geth key file
+    GETH_KEY_FILE_NAME=$(wait_for_successful_command "vault read -field=geth_key_file quorum/keys/$CLUSTER_INDEX")
+    GETH_KEY_FILE_DIR="/home/ubuntu/.ethereum/keystore"
+    mkdir -p $GETH_KEY_FILE_DIR
+    GETH_KEY_FILE_PATH="$GETH_KEY_FILE_DIR/$GETH_KEY_FILE_NAME"
+    wait_for_successful_command "vault read -field=geth_key quorum/keys/$CLUSTER_INDEX" > $GETH_KEY_FILE_PATH
 elif [ -e /home/ubuntu/.ethereum/keystore/* ]
 then
     # Address was created but not stored in vault. This is a process reboot after a previous failure.
@@ -209,13 +225,14 @@ CONSTELLATION_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation.pub)
 CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key)
 PRIVATE_IP=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/local-ipv4')
 PRIV_KEY=$(cat /home/ubuntu/.ethereum/keystore/*$(echo $ADDRESS | cut -d 'x' -f2))
+PRIV_KEY_FILENAME=$(ls /home/ubuntu/.ethereum/keystore/)
 
 # Determine role and advertise as role
 ROLE=$(cat /opt/quorum/info/role.txt)
 broadcast_role_info $ROLE
 
 # Write key and address into the vault
-wait_for_successful_command "vault write quorum/keys/$CLUSTER_INDEX geth_key=$PRIV_KEY constellation_priv_key=$CONSTELLATION_PRIV_KEY"
+wait_for_successful_command "vault write quorum/keys/$CLUSTER_INDEX geth_key=$PRIV_KEY geth_key_file=$PRIV_KEY_FILENAME constellation_priv_key=$CONSTELLATION_PRIV_KEY"
 wait_for_successful_command "vault write quorum/addresses/$CLUSTER_INDEX address=$ADDRESS constellation_pub_key=$CONSTELLATION_PUB_KEY private_ip=$PRIVATE_IP"
 
 # Wait for all nodes to write their address to vault

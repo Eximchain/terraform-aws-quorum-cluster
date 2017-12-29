@@ -40,6 +40,7 @@ resource "aws_instance" "quorum_maker_node" {
       "echo 'maker' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
       "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
+      # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
     ]
   }
@@ -87,6 +88,7 @@ resource "aws_instance" "quorum_validator_node" {
       "echo 'validator' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
       "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
+      # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
     ]
   }
@@ -134,6 +136,7 @@ resource "aws_instance" "quorum_observer_node" {
       "echo 'observer' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
       "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
+      # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
     ]
   }
@@ -175,6 +178,7 @@ resource "aws_instance" "bootnode" {
       "echo '${count.index}' | sudo tee /opt/quorum/info/index.txt",
       "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/network-size.txt",
       "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
+      # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
     ]
   }

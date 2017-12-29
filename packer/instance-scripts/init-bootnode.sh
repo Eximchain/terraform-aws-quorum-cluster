@@ -48,6 +48,13 @@ function wait_for_all_bootnodes {
     done
 }
 
+function wait_for_terraform_provisioners {
+    # Ensure terraform has run all provisioners
+    while [ ! -e /opt/quorum/info/network-id.txt ]
+    do
+        sleep 5
+    done
+}
 
 # Wait for operator to initialize and unseal vault
 wait_for_successful_command 'vault init -check'
@@ -55,6 +62,8 @@ wait_for_successful_command 'vault status'
 
 # Wait for vault to be fully configured by the root user
 wait_for_successful_command 'vault auth -method=aws'
+
+wait_for_terraform_provisioners
 
 # Get the overall index, IP, and boot port for this instance
 INDEX=$(cat /opt/quorum/info/index.txt)
