@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "quorum_vault" {
-    bucket = "quorum-vault"
+  bucket = "quorum-vault"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -9,17 +9,17 @@ resource "aws_s3_bucket" "quorum_vault" {
 module "vault_cluster" {
   source = "github.com/hashicorp/terraform-aws-vault.git//modules/vault-cluster?ref=v0.0.8"
 
-  cluster_name = "quorum-vault"
-  cluster_size = "${var.vault_cluster_size}"
+  cluster_name  = "quorum-vault"
+  cluster_size  = "${var.vault_cluster_size}"
   instance_type = "${var.vault_instance_type}"
 
-  ami_id = "${lookup(var.vault_amis, var.aws_region)}"
+  ami_id    = "${lookup(var.vault_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_vault_cluster.rendered}"
 
-  s3_bucket_name = "${aws_s3_bucket.quorum_vault.id}"
+  s3_bucket_name          = "${aws_s3_bucket.quorum_vault.id}"
   force_destroy_s3_bucket = true
 
-  vpc_id = "${aws_vpc.quorum_cluster.id}"
+  vpc_id     = "${aws_vpc.quorum_cluster.id}"
   subnet_ids = "${aws_subnet.quorum_cluster.*.id}"
 
   allowed_ssh_cidr_blocks            = ["0.0.0.0/0"]
@@ -33,7 +33,7 @@ module "vault_cluster" {
 # ALLOW VAULT CLUSTER TO USE AWS AUTH
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_policy" "allow_aws_auth" {
-  name = "allow_aws_auth_network_${var.network_id}"
+  name        = "allow_aws_auth_network_${var.network_id}"
   description = "Allow authentication to vault by AWS mechanisms"
 
   policy = <<EOF
@@ -54,7 +54,7 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "allow_aws_auth" {
-  role = "${module.vault_cluster.iam_role_id}"
+  role       = "${module.vault_cluster.iam_role_id}"
   policy_arn = "${aws_iam_policy.allow_aws_auth.arn}"
 }
 
@@ -137,7 +137,7 @@ data "template_file" "user_data_consul" {
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_instances" "vault_servers" {
   filter {
-    name = "tag:aws:autoscaling:groupName"
+    name   = "tag:aws:autoscaling:groupName"
     values = ["${module.vault_cluster.asg_name}"]
   }
 }

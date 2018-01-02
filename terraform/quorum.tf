@@ -10,10 +10,9 @@ resource "aws_instance" "quorum_maker_node" {
   }
 
   instance_type = "${var.quorum_node_instance_type}"
+  count         = "${var.num_maker_nodes}"
 
-  count = "${var.num_maker_nodes}"
-
-  ami = "${lookup(var.quorum_amis, var.aws_region)}"
+  ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
@@ -21,8 +20,7 @@ resource "aws_instance" "quorum_maker_node" {
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
   vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
-
-  subnet_id = "${element(aws_subnet.quorum_cluster.*.id, count.index)}"
+  subnet_id              = "${element(aws_subnet.quorum_cluster.*.id, count.index)}"
 
   tags {
     Name = "quorum-maker-node-${count.index}"
@@ -58,10 +56,9 @@ resource "aws_instance" "quorum_validator_node" {
   }
 
   instance_type = "${var.quorum_node_instance_type}"
+  count         = "${var.num_validator_nodes}"
 
-  count = "${var.num_validator_nodes}"
-
-  ami = "${lookup(var.quorum_amis, var.aws_region)}"
+  ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
@@ -69,8 +66,7 @@ resource "aws_instance" "quorum_validator_node" {
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
   vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
-
-  subnet_id = "${element(aws_subnet.quorum_cluster.*.id, count.index + var.num_maker_nodes)}"
+  subnet_id              = "${element(aws_subnet.quorum_cluster.*.id, count.index + var.num_maker_nodes)}"
 
   tags {
     Name = "quorum-validator-node-${count.index}"
@@ -106,10 +102,9 @@ resource "aws_instance" "quorum_observer_node" {
   }
 
   instance_type = "${var.quorum_node_instance_type}"
+  count         = "${var.num_observer_nodes}"
 
-  count = "${var.num_observer_nodes}"
-
-  ami = "${lookup(var.quorum_amis, var.aws_region)}"
+  ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
@@ -117,8 +112,7 @@ resource "aws_instance" "quorum_observer_node" {
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
   vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
-
-  subnet_id = "${element(aws_subnet.quorum_cluster.*.id, count.index + var.num_maker_nodes + var.num_validator_nodes)}"
+  subnet_id              = "${element(aws_subnet.quorum_cluster.*.id, count.index + var.num_maker_nodes + var.num_validator_nodes)}"
 
   tags {
     Name = "quorum-observer-node-${count.index}"
@@ -154,10 +148,9 @@ resource "aws_instance" "bootnode" {
   }
 
   instance_type = "${var.bootnode_instance_type}"
+  count         = "${var.bootnode_cluster_size}"
 
-  count = "${var.bootnode_cluster_size}"
-
-  ami = "${lookup(var.bootnode_amis, var.aws_region)}"
+  ami       = "${lookup(var.bootnode_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
@@ -165,8 +158,7 @@ resource "aws_instance" "bootnode" {
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
   vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
-
-  subnet_id = "${element(aws_subnet.quorum_cluster.*.id, count.index)}"
+  subnet_id              = "${element(aws_subnet.quorum_cluster.*.id, count.index)}"
 
   tags {
     Name = "bootnode-${count.index}"
@@ -216,34 +208,34 @@ resource "aws_security_group" "quorum" {
 
   # Constellation access from self
   ingress {
-    from_port   = 9000
-    to_port     = 9000
-    protocol    = "tcp"
-    self = true
+    from_port = 9000
+    to_port   = 9000
+    protocol  = "tcp"
+    self      = true
   }
 
   # Quorum access from self
   ingress {
-    from_port   = 21000
-    to_port     = 21000
-    protocol    = "tcp"
-    self = true
+    from_port = 21000
+    to_port   = 21000
+    protocol  = "tcp"
+    self      = true
   }
 
   # Quorum access from self to rpc port
   ingress {
-    from_port   = 22000
-    to_port     = 22000
-    protocol    = "tcp"
-    self = true
+    from_port = 22000
+    to_port   = 22000
+    protocol  = "tcp"
+    self      = true
   }
 
   # Bootnode udp access from self
   ingress {
-    from_port   = 30301
-    to_port     = 30301
-    protocol    = "udp"
-    self = true
+    from_port = 30301
+    to_port   = 30301
+    protocol  = "udp"
+    self      = true
   }
 
   # outbound internet access
@@ -259,20 +251,19 @@ resource "aws_security_group" "quorum" {
 # QUORUM NODE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "quorum_node" {
-    name = "quorum-node-network-${var.network_id}"
-    assume_role_policy = <<EOF
+  name = "quorum-node-network-${var.network_id}"
+
+  assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
+  "Statement": [{
+    "Action": "sts:AssumeRole",
+    "Principal": {
+      "Service": "ec2.amazonaws.com"
+    },
+    "Effect": "Allow",
+    "Sid": ""
+  }]
 }
 EOF
 }
@@ -281,22 +272,22 @@ EOF
 # QUORUM NODE IAM POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_policy" "quorum_node" {
-    name = "quorum-node-policy-network-${var.network_id}"
-    description = "A policy for quorum nodes"
-    policy = <<EOF
+  name        = "quorum-node-policy-network-${var.network_id}"
+  description = "A policy for quorum nodes"
+
+  policy = <<EOF
 {
-   "Version": "2012-10-17",
-   "Statement": [{
-      "Effect": "Allow",
-      "Action": [
-         "ec2:DescribeInstances",
-         "ec2:DescribeImages",
-         "ec2:DescribeTags",
-         "ec2:DescribeSnapshots"
-      ],
-      "Resource": "*"
-   }
-   ]
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": [
+      "ec2:DescribeInstances",
+      "ec2:DescribeImages",
+      "ec2:DescribeTags",
+      "ec2:DescribeSnapshots"
+    ],
+    "Resource": "*"
+  }]
 }
 EOF
 }
@@ -305,11 +296,11 @@ EOF
 # QUORUM NODE IAM POLICY ATTACHMENT AND INSTANCE PROFILE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy_attachment" "quorum_node" {
-    role = "${aws_iam_role.quorum_node.name}"
-    policy_arn = "${aws_iam_policy.quorum_node.arn}"
+  role       = "${aws_iam_role.quorum_node.name}"
+  policy_arn = "${aws_iam_policy.quorum_node.arn}"
 }
 
 resource "aws_iam_instance_profile" "quorum_node" {
-    name = "quorum-node-network-${var.network_id}"
-    role = "${aws_iam_role.quorum_node.name}"
+  name = "quorum-node-network-${var.network_id}"
+  role = "${aws_iam_role.quorum_node.name}"
 }
