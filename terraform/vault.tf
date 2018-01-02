@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "quorum_vault" {
-  bucket_prefix = "quorum-vault-"
+  bucket_prefix = "quorum-vault-network-${var.network_id}-"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
