@@ -12,5 +12,6 @@ sudo mkdir $QUOR_ROOT/lib
 sudo mkdir $QUOR_ROOT/constellation
 sudo mkdir $QUOR_ROOT/constellation/private
 sudo mkdir $QUOR_ROOT/constellation/private/keystore
+sudo mkdir $QUOR_ROOT/constellation/private/s3fs
 sudo chown -R ubuntu $QUOR_ROOT
 sudo chmod -R 777 $QUOR_ROOT

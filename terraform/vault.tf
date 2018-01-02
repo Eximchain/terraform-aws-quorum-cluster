@@ -17,7 +17,7 @@ module "vault_cluster" {
   user_data = "${data.template_file.user_data_vault_cluster.rendered}"
 
   s3_bucket_name          = "${aws_s3_bucket.quorum_vault.id}"
-  force_destroy_s3_bucket = true
+  force_destroy_s3_bucket = "${var.force_destroy_s3_buckets}"
 
   vpc_id     = "${aws_vpc.quorum_cluster.id}"
   subnet_ids = "${aws_subnet.quorum_cluster.*.id}"

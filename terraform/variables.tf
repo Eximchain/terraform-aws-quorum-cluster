@@ -25,10 +25,15 @@ DESCRIPTION
   default = 64813
 }
 
+variable "force_destroy_s3_buckets" {
+  description = "Whether or not to force destroy s3 buckets. Set to true for an easily destroyed test environment. DO NOT set to true for a production environment."
+  default     = false
+}
+
 variable "quorum_azs" {
   description = "Run the EC2 Instances in these Availability Zones"
-  type = "list"
-  default = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  type        = "list"
+  default     = ["us-west-2a", "us-west-2b", "us-west-2c"]
 }
 
 variable "quorum_amis" {

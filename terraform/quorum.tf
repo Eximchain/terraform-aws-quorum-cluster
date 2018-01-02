@@ -29,6 +29,8 @@ resource "aws_instance" "quorum_maker_node" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get -y update",
+      "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
+      "sudo mount -a",
       "echo '${count.index}' | sudo tee /opt/quorum/info/role-index.txt",
       "echo '${count.index}' | sudo tee /opt/quorum/info/overall-index.txt",
       "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/network-size.txt",
@@ -75,6 +77,8 @@ resource "aws_instance" "quorum_validator_node" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get -y update",
+      "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
+      "sudo mount -a",
       "echo '${count.index}' | sudo tee /opt/quorum/info/role-index.txt",
       "echo '${var.num_maker_nodes + count.index}' | sudo tee /opt/quorum/info/overall-index.txt",
       "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/network-size.txt",
@@ -121,6 +125,8 @@ resource "aws_instance" "quorum_observer_node" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get -y update",
+      "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
+      "sudo mount -a",
       "echo '${count.index}' | sudo tee /opt/quorum/info/role-index.txt",
       "echo '${var.num_maker_nodes + var.num_validator_nodes + count.index}' | sudo tee /opt/quorum/info/overall-index.txt",
       "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/network-size.txt",
@@ -167,6 +173,8 @@ resource "aws_instance" "bootnode" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get -y update",
+      "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
+      "sudo mount -a",
       "echo '${count.index}' | sudo tee /opt/quorum/info/index.txt",
       "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/network-size.txt",
       "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
@@ -287,6 +295,13 @@ resource "aws_iam_policy" "quorum_node" {
       "ec2:DescribeSnapshots"
     ],
     "Resource": "*"
+  },{
+    "Effect": "Allow",
+    "Action": ["s3:*"],
+    "Resource": [
+      "${aws_s3_bucket.quorum_constellation.arn}",
+      "${aws_s3_bucket.quorum_constellation.arn}/*"
+    ]
   }]
 }
 EOF
@@ -303,4 +318,12 @@ resource "aws_iam_role_policy_attachment" "quorum_node" {
 resource "aws_iam_instance_profile" "quorum_node" {
   name = "quorum-node-network-${var.network_id}"
   role = "${aws_iam_role.quorum_node.name}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# S3FS BUCKET FOR CONSTELLATION
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_s3_bucket" "quorum_constellation" {
+  bucket_prefix = "quorum-constellation-network-${var.network_id}-"
+  force_destroy = "${var.force_destroy_s3_buckets}"
 }
