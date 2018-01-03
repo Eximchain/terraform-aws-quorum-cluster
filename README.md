@@ -17,6 +17,7 @@ Table of Contents
          * [Run Private Transaction Test](#run-private-transaction-test)
             * [Deploy the private contract](#deploy-the-private-contract)
          * [Destroy the Network](#destroy-the-network)
+   * [Using as a Terraform Module](#using-as-a-terraform-module)
    * [Roadmap](#roadmap)
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
@@ -275,6 +276,42 @@ Terraform does not automatically rollback in the face of errors.
 Instead, your Terraform state file has been partially updated with
 any resources that successfully completed. Please address the error
 above and apply again to incrementally change your infrastructure.
+```
+
+# Using as a Terraform Module
+
+This repository maintains a terraform module, which you can add to your code by adding a `module` configuration and setting the `source` to the URL of the module:
+
+```hcl
+module "quorum_cluster" {
+  # Use v0.0.1-alpha
+  source = "github.com/Eximchain/terraform-aws-quorum-cluster//terraform/modules/quorum-cluster?ref=v0.0.1-alpha"
+
+  # These values from example.tfvars
+  public_key_path           = "~/.ssh/quorum.pub"
+  private_key_path          = "~/.ssh/quorum"
+  key_name                  = "quorum-cluster"
+  aws_region                = "us-east-1"
+  network_id                = 64813
+  force_destroy_s3_buckets  = true
+  quorum_azs                = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  vault_cluster_size        = 1
+  vault_instance_type       = "t2.small"
+  consul_cluster_size       = 1
+  consul_instance_type      = "t2.small"
+  bootnode_cluster_size     = 1
+  bootnode_instance_type    = "t2.small"
+  quorum_node_instance_type = "t2.medium"
+  num_maker_nodes           = 1
+  num_validator_nodes       = 1
+  num_observer_nodes        = 1
+  vote_threshold            = 1
+
+  # Currently assuming these are filled in by variables
+  quorum_amis   = "${var.quorum_amis}"
+  vault_amis    = "${var.vault_amis}"
+  bootnode_amis = "${var.bootnode_amis}"
+}
 ```
 
 # Roadmap
