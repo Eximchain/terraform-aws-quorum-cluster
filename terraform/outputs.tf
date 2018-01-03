@@ -1,19 +1,19 @@
 output "quorum_maker_node_ips" {
-  value = "${aws_instance.quorum_maker_node.*.public_ip}"
+  value = "${module.quorum_cluster.quorum_maker_node_ips}"
 }
 
 output "quorum_validator_node_ips" {
-  value = "${aws_instance.quorum_validator_node.*.public_ip}"
+  value = "${module.quorum_cluster.quorum_validator_node_ips}"
 }
 
 output "quorum_observer_node_ips" {
-  value = "${aws_instance.quorum_observer_node.*.public_ip}"
+  value = "${module.quorum_cluster.quorum_observer_node_ips}"
 }
 
 output "bootnode_ips" {
-  value = "${aws_instance.bootnode.*.public_ip}"
+  value = "${module.quorum_cluster.bootnode_ips}"
 }
 
 output "vault_server_ips" {
-  value = "${data.aws_instances.vault_servers.public_ips}"
+  value = "${module.quorum_cluster.vault_server_ips}"
 }

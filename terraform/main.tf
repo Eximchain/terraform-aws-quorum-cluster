@@ -1,43 +1,28 @@
-terraform {
-  required_version = ">= 0.9.3"
-}
+module "quorum_cluster" {
+  # Source from github if using in another project
+  source = "modules/quorum-cluster"
 
-provider "aws" {
-  version = "~> 1.5"
+  # Variables sourced from terraform.tfvars
+  public_key_path           = "${var.public_key_path}"
+  private_key_path          = "${var.private_key_path}"
+  aws_region                = "${var.aws_region}"
+  network_id                = "${var.network_id}"
+  force_destroy_s3_buckets  = "${var.force_destroy_s3_buckets}"
+  quorum_azs                = "${var.quorum_azs}"
+  vault_cluster_size        = "${var.vault_cluster_size}"
+  vault_instance_type       = "${var.vault_instance_type}"
+  consul_cluster_size       = "${var.consul_cluster_size}"
+  consul_instance_type      = "${var.consul_instance_type}"
+  bootnode_cluster_size     = "${var.bootnode_cluster_size}"
+  bootnode_instance_type    = "${var.bootnode_instance_type}"
+  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  num_maker_nodes           = "${var.num_maker_nodes}"
+  num_validator_nodes       = "${var.num_validator_nodes}"
+  num_observer_nodes        = "${var.num_observer_nodes}"
+  vote_threshold            = "${var.vote_threshold}"
 
-  region  = "${var.aws_region}"
-}
-
-provider "template" {
-  version = "~> 1.0"
-}
-
-resource "aws_vpc" "quorum_cluster" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_hostnames = true
-}
-
-# Create an internet gateway to give our subnet access to the outside world
-resource "aws_internet_gateway" "default" {
-  vpc_id = "${aws_vpc.quorum_cluster.id}"
-}
-
-# Grant the VPC internet access on its main route table
-resource "aws_route" "internet_access" {
-  route_table_id         = "${aws_vpc.quorum_cluster.main_route_table_id}"
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.default.id}"
-}
-
-resource "aws_subnet" "quorum_cluster" {
-  vpc_id                  = "${aws_vpc.quorum_cluster.id}"
-  count                   = "${length(var.quorum_azs)}"
-  availability_zone       = "${element(var.quorum_azs, count.index)}"
-  cidr_block              = "10.0.${count.index + 1}.0/24"
-  map_public_ip_on_launch = true
-}
-
-resource "aws_key_pair" "auth" {
-  key_name   = "quorum-cluster-${var.network_id}"
-  public_key = "${file(var.public_key_path)}"
+  # AMI variables sourced from amis.auto.tfvars.json
+  quorum_amis   = "${var.quorum_amis}"
+  vault_amis    = "${var.vault_amis}"
+  bootnode_amis = "${var.bootnode_amis}"
 }
