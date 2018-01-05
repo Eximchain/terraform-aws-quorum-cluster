@@ -78,6 +78,10 @@
     ]
   },{
     "type": "file",
+    "source": "instance-scripts/run-init-quorum",
+    "destination": "/tmp/run-init-quorum"
+  },{
+    "type": "file",
     "source": "instance-scripts/init-quorum.sh",
     "destination": "/tmp/init-quorum.sh"
   },{
@@ -96,15 +100,12 @@
     "type": "shell",
     "inline": [
       "sudo mv /tmp/init-quorum.sh /opt/quorum/bin/",
+      "sudo mv /tmp/run-init-quorum /opt/quorum/bin/",
       "sudo mv /tmp/generate-quorum-config.py /opt/quorum/bin/",
       "sudo mv /tmp/private-transaction-test-sender.sh /opt/quorum/bin/",
       "sudo mv /tmp/private-transaction-test-recipient.sh /opt/quorum/bin/",
       "sudo chmod 744 /opt/quorum/bin/*"
     ]
-  },{
-    "type": "file",
-    "source": "configs/init-quorum-supervisor.conf",
-    "destination": "/tmp/init-quorum-supervisor.conf"
   },{
     "type": "file",
     "source": "configs/constellation-supervisor.conf",
@@ -116,7 +117,6 @@
   },{
     "type": "shell",
     "inline": [
-      "sudo mv /tmp/init-quorum-supervisor.conf /etc/supervisor/conf.d/",
       "sudo mv /tmp/constellation-supervisor.conf /opt/quorum/private/",
       "sudo mv /tmp/constellation.conf /opt/quorum/constellation/config.conf"
     ]

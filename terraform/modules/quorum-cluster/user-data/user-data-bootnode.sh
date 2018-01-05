@@ -14,4 +14,4 @@ exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
 # These variables are passed in via Terraform template interpolation
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
-/opt/quorum/bin/run-init-quorum
+/opt/quorum/bin/run-init-bootnode

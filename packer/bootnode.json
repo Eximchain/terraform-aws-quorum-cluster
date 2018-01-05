@@ -77,6 +77,10 @@
     ]
   },{
     "type": "file",
+    "source": "instance-scripts/run-init-bootnode",
+    "destination": "/tmp/run-init-bootnode"
+  },{
+    "type": "file",
     "source": "instance-scripts/init-bootnode.sh",
     "destination": "/tmp/init-bootnode.sh"
   },{
@@ -87,13 +91,10 @@
     "type": "shell",
     "inline": [
       "sudo mv /tmp/init-bootnode.sh /opt/quorum/bin/",
+      "sudo mv /tmp/run-init-bootnode /opt/quorum/bin/",
       "sudo mv /tmp/generate-quorum-config.py /opt/quorum/bin/",
       "sudo chmod 744 /opt/quorum/bin/*"
     ]
-  },{
-    "type": "file",
-    "source": "configs/init-bootnode-supervisor.conf",
-    "destination": "/tmp/init-bootnode-supervisor.conf"
   },{
     "type": "file",
     "source": "configs/bootnode-supervisor.conf",
@@ -109,7 +110,6 @@
   },{
     "type": "shell",
     "inline": [
-      "sudo mv /tmp/init-bootnode-supervisor.conf /etc/supervisor/conf.d/",
       "sudo mv /tmp/constellation-supervisor.conf /opt/quorum/private/",
       "sudo mv /tmp/bootnode-supervisor.conf /opt/quorum/private/",
       "sudo mv /tmp/constellation.conf /opt/quorum/constellation/config.conf"

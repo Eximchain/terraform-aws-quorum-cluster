@@ -143,6 +143,20 @@ resource "aws_instance" "quorum_observer_node" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# THE USER DATA SCRIPT THAT WILL RUN ON EACH QUORUM NODE WHEN IT'S BOOTING
+# This script will configure and start the Consul Agent
+# ---------------------------------------------------------------------------------------------------------------------
+
+data "template_file" "user_data_quorum" {
+  template = "${file("${path.module}/user-data/user-data-quorum.sh")}"
+
+  vars {
+    consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
+    consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # BOOTNODES
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_instance" "bootnode" {
@@ -185,12 +199,12 @@ resource "aws_instance" "bootnode" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# THE USER DATA SCRIPT THAT WILL RUN ON EACH QUORUM NODE WHEN IT'S BOOTING
+# THE USER DATA SCRIPT THAT WILL RUN ON EACH BOOTNODE WHEN IT'S BOOTING
 # This script will configure and start the Consul Agent
 # ---------------------------------------------------------------------------------------------------------------------
 
-data "template_file" "user_data_quorum" {
-  template = "${file("${path.module}/user-data/user-data-quorum.sh")}"
+data "template_file" "user_data_bootnode" {
+  template = "${file("${path.module}/user-data/user-data-bootnode.sh")}"
 
   vars {
     consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
