@@ -171,7 +171,7 @@ resource "aws_instance" "bootnode" {
   count         = "${var.bootnode_cluster_size}"
 
   ami       = "${lookup(var.bootnode_amis, var.aws_region)}"
-  user_data = "${data.template_file.user_data_quorum.rendered}"
+  user_data = "${data.template_file.user_data_bootnode.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
 
