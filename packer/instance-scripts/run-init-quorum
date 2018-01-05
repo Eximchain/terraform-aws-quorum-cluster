@@ -14,6 +14,7 @@ autostart=true
 autorestart=unexpected
 stopsignal=INT
 user=ubuntu
+environment=VAULT_ADDR=https://vault.service.consul:8200
 EOF
 
 # Read and run the supervisor config

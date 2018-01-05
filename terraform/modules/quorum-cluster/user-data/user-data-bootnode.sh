@@ -3,10 +3,13 @@
 # run-consul script to configure and start Consul in server mode. Note that this script assumes it's running in an AMI
 # built from the Packer template in examples/vault-consul-ami/vault-consul.json.
 
-set -e
+set -eu
+
+BASH_PROFILE_FILE=/home/ubuntu/.bash_profile
 
 # This is necessary to retrieve the address for vault
-source /home/ubuntu/.bash_profile
+echo "export VAULT_ADDR=https://${vault_dns}:${vault_port}" >> $BASH_PROFILE_FILE
+source $BASH_PROFILE_FILE
 
 # Send the log output from this script to user-data.log, syslog, and the console
 # From: https://alestic.com/2010/12/ec2-user-data-output/

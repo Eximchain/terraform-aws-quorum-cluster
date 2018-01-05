@@ -151,6 +151,9 @@ data "template_file" "user_data_quorum" {
   template = "${file("${path.module}/user-data/user-data-quorum.sh")}"
 
   vars {
+    vault_dns  = "vault.service.consul"
+    vault_port = 8200
+
     consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
     consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
   }
@@ -207,6 +210,9 @@ data "template_file" "user_data_bootnode" {
   template = "${file("${path.module}/user-data/user-data-bootnode.sh")}"
 
   vars {
+    vault_dns  = "vault.service.consul"
+    vault_port = 8200
+
     consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
     consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
   }
