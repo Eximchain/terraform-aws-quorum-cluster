@@ -1,9 +1,6 @@
 #!/bin/bash
 set -u -o pipefail
 
-# Set vault address since this will be run by user-data
-export VAULT_ADDR=https://vault.service.consul:8200
-
 function wait_for_successful_command {
     local COMMAND=$1
 
