@@ -5,7 +5,6 @@ Table of Contents
    * [Work In Progress](#work-in-progress)
    * [Quick Start Guide](#quick-start-guide)
       * [Prerequisites](#prerequisites)
-      * [Generate TLS Certificates for vault](#generate-tls-certificates-for-vault)
    * [Generate SSH key for EC2 instances](#generate-ssh-key-for-ec2-instances)
       * [Build AMIs to launch the instances with](#build-amis-to-launch-the-instances-with)
       * [Launch Network with Terraform](#launch-network-with-terraform)
@@ -39,23 +38,6 @@ This repository is a work in progress. A more complete version of this README an
     * Python 2.7
     * Hashicorp Packer
     * Hashicorp Terraform
-
-## Generate TLS Certificates for vault
-
-Set up the terraform variables for the cert tool
-
-```sh
-$ cd cert-tool
-$ cp example.tfvars terraform.tfvars
-```
-
-Open `terraform.tfvars` in an editor and fix the variables set to `FIXME`, taking special care to set owner to your current username. Use the cert tool to generate TLS certificates:
-
-```sh
-$ terraform apply
-# Enter "yes" and wait for cert generation
-$ cd ..
-```
 
 # Generate SSH key for EC2 instances
 
@@ -108,6 +90,12 @@ Copy the example.tfvars file
 ```sh
 $ cd terraform
 $ cp example.tfvars terraform.tfvars
+```
+
+Fill in your username as the `cert_owner`:
+
+```sh
+$ sed -i '' "s/FIXME_USER/$USER/" terraform.tfvars
 ```
 
 Check terraform.tfvars and change any values you would like to change. Note that the values given in examples.tfvars is NOT completely AWS free tier eligible, as they include t2.small and t2.medium instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.

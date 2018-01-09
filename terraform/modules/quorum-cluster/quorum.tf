@@ -151,12 +151,17 @@ data "template_file" "user_data_quorum" {
   template = "${file("${path.module}/user-data/user-data-quorum.sh")}"
 
   vars {
-    vault_dns  = "vault.service.consul"
+    vault_dns  = "${aws_lb.quorum_vault.dns_name}"
     vault_port = 8200
 
     consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
     consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
+
+    vault_cert_bucket = "${aws_s3_bucket.vault_certs.bucket}"
   }
+
+  # user-data needs to download these objects
+  depends_on = ["aws_s3_bucket_object.vault_ca_public_key", "aws_s3_bucket_object.vault_public_key", "aws_s3_bucket_object.vault_private_key"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -210,12 +215,17 @@ data "template_file" "user_data_bootnode" {
   template = "${file("${path.module}/user-data/user-data-bootnode.sh")}"
 
   vars {
-    vault_dns  = "vault.service.consul"
+    vault_dns  = "${aws_lb.quorum_vault.dns_name}"
     vault_port = 8200
 
     consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
     consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
+
+    vault_cert_bucket = "${aws_s3_bucket.vault_certs.bucket}"
   }
+
+  # user-data needs to download these objects
+  depends_on = ["aws_s3_bucket_object.vault_ca_public_key", "aws_s3_bucket_object.vault_public_key", "aws_s3_bucket_object.vault_private_key"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -321,6 +331,17 @@ resource "aws_iam_policy" "quorum_node" {
     "Resource": [
       "${aws_s3_bucket.quorum_constellation.arn}",
       "${aws_s3_bucket.quorum_constellation.arn}/*"
+    ]
+  },{
+    "Effect": "Allow",
+    "Action": ["s3:ListBucket"],
+    "Resource": ["${aws_s3_bucket.vault_certs.arn}"]
+  },{
+    "Effect": "Allow",
+    "Action": ["s3:GetObject"],
+    "Resource": [
+      "${aws_s3_bucket.vault_certs.arn}/ca.crt.pem",
+      "${aws_s3_bucket.vault_certs.arn}/vault.crt.pem"
     ]
   }]
 }

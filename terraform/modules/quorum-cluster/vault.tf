@@ -1,5 +1,39 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# S3 BUCKET FOR VAULT BACKEND
+# ---------------------------------------------------------------------------------------------------------------------
 resource "aws_s3_bucket" "quorum_vault" {
   bucket_prefix = "quorum-vault-network-${var.network_id}-"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# LOAD BALANCER FOR VAULT
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_lb" "quorum_vault" {
+  # TODO: Make external in multi-region case
+  internal = true
+
+  subnets         = ["${aws_subnet.quorum_cluster.*.id}"]
+  security_groups = ["${module.vault_cluster.security_group_id}"]
+}
+
+resource "aws_lb_target_group" "quorum_vault" {
+  name = "vault-lb-target-net-${var.network_id}"
+  port = 8200
+  protocol = "HTTPS"
+  vpc_id = "${aws_vpc.quorum_cluster.id}"
+}
+
+resource "aws_lb_listener" "quorum_vault" {
+  load_balancer_arn = "${aws_lb.quorum_vault.arn}"
+  port              = "8200"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "${aws_iam_server_certificate.vault_certs.arn}"
+
+  default_action {
+    target_group_arn = "${aws_lb_target_group.quorum_vault.arn}"
+    type             = "forward"
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -21,6 +55,8 @@ module "vault_cluster" {
 
   vpc_id     = "${aws_vpc.quorum_cluster.id}"
   subnet_ids = "${aws_subnet.quorum_cluster.*.id}"
+
+  target_group_arns = ["${aws_lb_target_group.quorum_vault.arn}"]
 
   allowed_ssh_cidr_blocks            = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks        = ["0.0.0.0/0"]
@@ -84,7 +120,11 @@ data "template_file" "user_data_vault_cluster" {
     consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
     consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
     network_id               = "${var.network_id}"
+    vault_cert_bucket        = "${aws_s3_bucket.vault_certs.bucket}"
   }
+
+  # user-data needs to download these objects
+  depends_on = ["aws_s3_bucket_object.vault_ca_public_key", "aws_s3_bucket_object.vault_public_key", "aws_s3_bucket_object.vault_private_key"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

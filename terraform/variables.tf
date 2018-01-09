@@ -11,6 +11,10 @@ variable "private_key_path" {
   description = "Path to SSH private key corresponding to the public key in public_key_path"
 }
 
+variable "cert_owner" {
+  description = "The OS user to be made the owner of the local copy of the vault certificates. Should usually be set to the user operating the tool."
+}
+
 variable "aws_region" {
   description = "AWS region to launch servers."
   default     = "us-west-2"

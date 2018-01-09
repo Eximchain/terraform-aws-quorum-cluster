@@ -12,6 +12,10 @@ provider "template" {
   version = "~> 1.0"
 }
 
+provider "tls" {
+  version = "~> 1.0"
+}
+
 resource "aws_vpc" "quorum_cluster" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true

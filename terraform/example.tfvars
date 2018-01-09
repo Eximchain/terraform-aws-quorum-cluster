@@ -1,5 +1,6 @@
 public_key_path           = "~/.ssh/quorum.pub"
 private_key_path          = "~/.ssh/quorum"
+cert_owner                = "FIXME_USER"
 key_name                  = "quorum-cluster"
 aws_region                = "us-east-1"
 network_id                = 64813
