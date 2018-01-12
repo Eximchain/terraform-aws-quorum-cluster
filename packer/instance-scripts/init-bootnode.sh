@@ -15,7 +15,7 @@ function wait_for_successful_command {
 function complete_constellation_config {
     local NUM_BOOTNODES=$1
     local CLUSTER_INDEX=$2
-    local PRIVATE_IP=$3
+    local HOSTNAME=$3
     local CONSTELLATION_CONFIG_PATH=$4
 
     # Configure constellation with other node IPs
@@ -25,7 +25,7 @@ function complete_constellation_config {
     do
         if [ $index -ne $CLUSTER_INDEX ]
         then
-            BOOTNODE=$(wait_for_successful_command "vault read -field=private_ip quorum/bootnodes/addresses/$index")
+            BOOTNODE=$(wait_for_successful_command "vault read -field=hostname quorum/bootnodes/addresses/$index")
             OTHER_NODES="$OTHER_NODES,\"http://$BOOTNODE:9000/\""
         fi
     done
@@ -33,7 +33,7 @@ function complete_constellation_config {
     OTHER_NODES_LINE="othernodes = [$OTHER_NODES]"
     echo "$OTHER_NODES_LINE" >> $CONSTELLATION_CONFIG_PATH
     # Configure constellation with URL
-    echo "url = \"http://$PRIVATE_IP:9000/\"" >> $CONSTELLATION_CONFIG_PATH
+    echo "url = \"http://$HOSTNAME:9000/\"" >> $CONSTELLATION_CONFIG_PATH
 }
 
 function wait_for_all_bootnodes {
@@ -62,9 +62,10 @@ wait_for_successful_command 'vault auth -method=aws'
 
 wait_for_terraform_provisioners
 
-# Get the overall index, IP, and boot port for this instance
+# Get metadata for this instance
 INDEX=$(cat /opt/quorum/info/index.txt)
 PRIVATE_IP=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/local-ipv4')
+HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
 BOOT_PORT=30301
 
 # Generate bootnode key and construct bootnode address
@@ -72,7 +73,7 @@ BOOT_KEY_FILE=/opt/quorum/private/boot.key
 BOOT_PUB_FILE=/opt/quorum/private/boot.pub
 BOOT_ADDR_FILE=/opt/quorum/private/boot_addr
 
-BOOT_ADDR=$(ait_for_successful_command "vault read -field=address quorum/bootnodes/addresses/$INDEX")
+BOOT_ADDR=$(vault read -field=enode quorum/bootnodes/addresses/$INDEX)
 if [ $? -eq 0 ]
 then
     # Address already in vault, this is a replacement instance
@@ -115,14 +116,14 @@ CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key
 
 # Write bootnode address to vault
 wait_for_successful_command "vault write quorum/bootnodes/keys/$INDEX bootnode_key=\"$BOOT_KEY\" constellation_priv_key=\"$CONSTELLATION_PRIV_KEY\""
-wait_for_successful_command "vault write quorum/bootnodes/addresses/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB private_ip=$PRIVATE_IP constellation_pub_key=$CONSTELLATION_PUB_KEY"
+wait_for_successful_command "vault write quorum/bootnodes/addresses/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB hostname=$HOSTNAME constellation_pub_key=$CONSTELLATION_PUB_KEY"
 
 # Wait for all bootnodes to write their address to vault
 NUM_BOOTNODES=$(cat /opt/quorum/info/num-bootnodes.txt)
 wait_for_all_bootnodes $NUM_BOOTNODES
 
 # Finish filling in the constellation config
-complete_constellation_config $NUM_BOOTNODES $INDEX $PRIVATE_IP /opt/quorum/constellation/config.conf
+complete_constellation_config $NUM_BOOTNODES $INDEX $HOSTNAME /opt/quorum/constellation/config.conf
 
 # Run the bootnode
 sudo mv /opt/quorum/private/bootnode-supervisor.conf /etc/supervisor/conf.d/

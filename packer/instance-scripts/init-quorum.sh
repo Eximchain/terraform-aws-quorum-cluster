@@ -15,7 +15,7 @@ function wait_for_successful_command {
 function generate_quorum_supervisor_config {
     local ADDRESS=$1
     local PASSWORD=$2
-    local IP=$3
+    local HOSTNAME=$3
     local ROLE=$4
     local NUM_MAKERS=$5
     local NUM_BOOTNODES=$6
@@ -27,7 +27,7 @@ function generate_quorum_supervisor_config {
     local MIN_BLOCK_TIME=2
     local MAX_BLOCK_TIME=5
     local PW_FILE="/tmp/geth-pw"
-    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $IP --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --verbosity $VERBOSITY --jitvm=false --privateconfigpath $CONSTELLATION_CONFIG"
+    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --verbosity $VERBOSITY --jitvm=false --privateconfigpath $CONSTELLATION_CONFIG"
 
     if [ "$ROLE" == "maker" ]
     then
@@ -68,7 +68,7 @@ user=ubuntu" | sudo tee /etc/supervisor/conf.d/quorum-supervisor.conf
 
 function complete_constellation_config {
     local NUM_BOOTNODES=$1
-    local PRIVATE_IP=$2
+    local HOSTNAME=$2
     local CONSTELLATION_CONFIG_PATH=$3
 
     local OTHER_NODES=""
@@ -76,7 +76,7 @@ function complete_constellation_config {
     # Configure constellation with bootnode IPs
     for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
     do
-        BOOTNODE=$(wait_for_successful_command "vault read -field=private_ip quorum/bootnodes/addresses/$index")
+        BOOTNODE=$(wait_for_successful_command "vault read -field=hostname quorum/bootnodes/addresses/$index")
         OTHER_NODES="$OTHER_NODES,\"http://$BOOTNODE:9000/\""
     done
     OTHER_NODES=${OTHER_NODES:1}
@@ -85,7 +85,7 @@ function complete_constellation_config {
     echo "$OTHER_NODES_LINE" >> $CONSTELLATION_CONFIG_PATH
 
     # Configure constellation with URL
-    echo "url = \"http://$PRIVATE_IP:9000/\"" >> $CONSTELLATION_CONFIG_PATH
+    echo "url = \"http://$HOSTNAME:9000/\"" >> $CONSTELLATION_CONFIG_PATH
 }
 
 function generate_genesis_file {
@@ -220,7 +220,7 @@ else
 fi
 CONSTELLATION_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation.pub)
 CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key)
-PRIVATE_IP=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/local-ipv4')
+HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
 PRIV_KEY=$(cat /home/ubuntu/.ethereum/keystore/*$(echo $ADDRESS | cut -d 'x' -f2))
 PRIV_KEY_FILENAME=$(ls /home/ubuntu/.ethereum/keystore/)
 
@@ -230,14 +230,14 @@ broadcast_role_info $ROLE
 
 # Write key and address into the vault
 wait_for_successful_command "vault write quorum/keys/$CLUSTER_INDEX geth_key=$PRIV_KEY geth_key_file=$PRIV_KEY_FILENAME constellation_priv_key=$CONSTELLATION_PRIV_KEY"
-wait_for_successful_command "vault write quorum/addresses/$CLUSTER_INDEX address=$ADDRESS constellation_pub_key=$CONSTELLATION_PUB_KEY private_ip=$PRIVATE_IP"
+wait_for_successful_command "vault write quorum/addresses/$CLUSTER_INDEX address=$ADDRESS constellation_pub_key=$CONSTELLATION_PUB_KEY hostname=$HOSTNAME"
 
 # Wait for all nodes to write their address to vault
 NUM_BOOTNODES=$(cat /opt/quorum/info/num-bootnodes.txt)
 wait_for_all_nodes
 wait_for_all_bootnodes $NUM_BOOTNODES
 
-complete_constellation_config $NUM_BOOTNODES $PRIVATE_IP /opt/quorum/constellation/config.conf
+complete_constellation_config $NUM_BOOTNODES $HOSTNAME /opt/quorum/constellation/config.conf
 
 # Generate the genesis file
 generate_genesis_file
@@ -258,7 +258,7 @@ sleep 5
 
 # Generate supervisor config to run quorum
 NUM_MAKERS=$(cat /opt/quorum/info/num-makers.txt)
-generate_quorum_supervisor_config $ADDRESS $GETH_PW $PRIVATE_IP $ROLE $NUM_MAKERS $NUM_BOOTNODES /opt/quorum/constellation/config.conf
+generate_quorum_supervisor_config $ADDRESS $GETH_PW $HOSTNAME $ROLE $NUM_MAKERS $NUM_BOOTNODES /opt/quorum/constellation/config.conf
 
 # Remove the config that runs this and run quorum
 sudo rm /etc/supervisor/conf.d/init-quorum-supervisor.conf
