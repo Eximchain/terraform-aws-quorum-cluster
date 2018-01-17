@@ -6,7 +6,9 @@ AWS_ACCOUNT_ID=$(curl http://169.254.169.254/latest/meta-data/iam/info | jq .Ins
 
 NETWORK_ID=$1
 
-ROLE_NAME="quorum-node-network-$NETWORK_ID"
+# TODO: Separate permissions of quorum nodes and bootnodes
+QUORUM_ROLE_NAME="quorum-node-network-$NETWORK_ID"
+BOOTNODE_ROLE_NAME="bootnode-network-$NETWORK_ID"
 
 # Write the setup-vault script
 cat << EOF > $OUTPUT_FILE
@@ -35,7 +37,8 @@ QUORUM_NODE_POLICY=/opt/vault/config/policies/quorum-node.hcl
 vault policy-write quorum_node \$QUORUM_NODE_POLICY
 
 # Write policy to the role used by instances
-vault write auth/aws/role/$ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$ROLE_NAME
+vault write auth/aws/role/$QUORUM_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$QUORUM_ROLE_NAME
+vault write auth/aws/role/$BOOTNODE_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$BOOTNODE_ROLE_NAME
 
 # Revoke the root token to reduce security risk
 vault token-revoke \$ROOT_TOKEN

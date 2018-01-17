@@ -64,7 +64,7 @@ wait_for_terraform_provisioners
 
 # Get metadata for this instance
 INDEX=$(cat /opt/quorum/info/index.txt)
-PRIVATE_IP=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/local-ipv4')
+PUBLIC_IP=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-ipv4')
 HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
 BOOT_PORT=30301
 
@@ -106,7 +106,7 @@ else
     wait_for_successful_command "vault write quorum/bootnodes/passwords/$INDEX constellation_pw=$CONSTELLATION_PW"
     BOOT_PUB=$(bootnode --genkey=$BOOT_KEY_FILE --writeaddress)
     BOOT_KEY=$(cat $BOOT_KEY_FILE)
-    BOOT_ADDR="enode://$BOOT_PUB@$PRIVATE_IP:$BOOT_PORT"
+    BOOT_ADDR="enode://$BOOT_PUB@$PUBLIC_IP:$BOOT_PORT"
     echo $BOOT_ADDR > $BOOT_ADDR_FILE
     # Generate constellation keys
     echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation

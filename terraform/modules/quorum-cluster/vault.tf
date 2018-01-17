@@ -9,8 +9,7 @@ resource "aws_s3_bucket" "quorum_vault" {
 # LOAD BALANCER FOR VAULT
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_lb" "quorum_vault" {
-  # TODO: Make external in multi-region case
-  internal = true
+  internal = false
 
   subnets         = ["${aws_subnet.quorum_cluster.*.id}"]
   security_groups = ["${module.vault_cluster.security_group_id}"]

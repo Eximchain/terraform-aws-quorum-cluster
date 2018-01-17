@@ -1,3 +1,6 @@
+# ---------------------------------------------------------------------------------------------------------------------
+# PROVIDERS
+# ---------------------------------------------------------------------------------------------------------------------
 terraform {
   required_version = ">= 0.9.3"
 }
@@ -16,32 +19,60 @@ provider "tls" {
   version = "~> 1.0"
 }
 
-resource "aws_vpc" "quorum_cluster" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_hostnames = true
-}
-
-# Create an internet gateway to give our subnet access to the outside world
-resource "aws_internet_gateway" "default" {
-  vpc_id = "${aws_vpc.quorum_cluster.id}"
-}
-
-# Grant the VPC internet access on its main route table
-resource "aws_route" "internet_access" {
-  route_table_id         = "${aws_vpc.quorum_cluster.main_route_table_id}"
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.default.id}"
-}
-
-resource "aws_subnet" "quorum_cluster" {
-  vpc_id                  = "${aws_vpc.quorum_cluster.id}"
-  count                   = "${length(var.quorum_azs)}"
-  availability_zone       = "${element(var.quorum_azs, count.index)}"
-  cidr_block              = "10.0.${count.index + 1}.0/24"
-  map_public_ip_on_launch = true
-}
-
+# ---------------------------------------------------------------------------------------------------------------------
+# KEY PAIR FOR ALL INSTANCES
+# ---------------------------------------------------------------------------------------------------------------------
 resource "aws_key_pair" "auth" {
   key_name   = "quorum-cluster-${var.network_id}"
   public_key = "${file(var.public_key_path)}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# S3FS BUCKET FOR CONSTELLATION PAYLOADS
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_s3_bucket" "quorum_constellation" {
+  bucket_prefix = "quorum-constellation-network-${var.network_id}-"
+  force_destroy = "${var.force_destroy_s3_buckets}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# QUORUM NODE AND BOOTNODE POLICY
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_iam_policy" "quorum" {
+  name        = "quorum-policy-network-${var.network_id}"
+  description = "A policy for quorum nodes and bootnodes"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": [
+      "ec2:DescribeInstances",
+      "ec2:DescribeImages",
+      "ec2:DescribeTags",
+      "ec2:DescribeSnapshots"
+    ],
+    "Resource": "*"
+  },{
+    "Effect": "Allow",
+    "Action": ["s3:*"],
+    "Resource": [
+      "${aws_s3_bucket.quorum_constellation.arn}",
+      "${aws_s3_bucket.quorum_constellation.arn}/*"
+    ]
+  },{
+    "Effect": "Allow",
+    "Action": ["s3:ListBucket"],
+    "Resource": ["${aws_s3_bucket.vault_certs.arn}"]
+  },{
+    "Effect": "Allow",
+    "Action": ["s3:GetObject"],
+    "Resource": [
+      "${aws_s3_bucket.vault_certs.arn}/ca.crt.pem",
+      "${aws_s3_bucket.vault_certs.arn}/vault.crt.pem"
+    ]
+  }]
+}
+EOF
 }
