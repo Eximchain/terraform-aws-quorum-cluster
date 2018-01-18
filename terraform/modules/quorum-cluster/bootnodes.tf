@@ -18,8 +18,8 @@ resource "aws_route" "bootnodes" {
 
 resource "aws_subnet" "bootnodes" {
   vpc_id                  = "${aws_vpc.bootnodes.id}"
-  count                   = "${length(var.quorum_azs)}"
-  availability_zone       = "${element(var.quorum_azs, count.index)}"
+  count                   = "${length(var.quorum_azs[var.aws_region])}"
+  availability_zone       = "${element(var.quorum_azs[var.aws_region], count.index)}"
   cidr_block              = "172.16.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
 }

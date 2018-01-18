@@ -20,8 +20,8 @@ resource "aws_route" "quorum_cluster" {
 
 resource "aws_subnet" "quorum_cluster" {
   vpc_id                  = "${aws_vpc.quorum_cluster.id}"
-  count                   = "${length(var.quorum_azs)}"
-  availability_zone       = "${element(var.quorum_azs, count.index)}"
+  count                   = "${length(var.quorum_azs[var.aws_region])}"
+  availability_zone       = "${element(var.quorum_azs[var.aws_region], count.index)}"
   cidr_block              = "10.0.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
 }
