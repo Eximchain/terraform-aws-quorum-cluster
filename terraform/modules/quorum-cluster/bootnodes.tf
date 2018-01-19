@@ -138,7 +138,7 @@ resource "aws_security_group_rule" "bootnode_rpc" {
   to_port   = 22000
   protocol  = "tcp"
 
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks = ["127.0.0.1/32"]
 }
 
 resource "aws_security_group_rule" "bootnode_bootnode" {
