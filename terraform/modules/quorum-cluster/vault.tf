@@ -1,4 +1,30 @@
 # ---------------------------------------------------------------------------------------------------------------------
+# VAULT CLUSTER NETWORKING
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_vpc" "vault" {
+  cidr_block           = "192.168.0.0/16"
+  enable_dns_hostnames = true
+}
+
+resource "aws_internet_gateway" "vault" {
+  vpc_id = "${aws_vpc.vault.id}"
+}
+
+resource "aws_route" "vault" {
+  route_table_id         = "${aws_vpc.vault.main_route_table_id}"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = "${aws_internet_gateway.vault.id}"
+}
+
+resource "aws_subnet" "vault" {
+  vpc_id                  = "${aws_vpc.vault.id}"
+  count                   = "${length(var.quorum_azs[var.aws_region])}"
+  availability_zone       = "${element(var.quorum_azs[var.aws_region], count.index)}"
+  cidr_block              = "192.168.${count.index + 1}.0/24"
+  map_public_ip_on_launch = true
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # S3 BUCKET FOR VAULT BACKEND
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_s3_bucket" "quorum_vault" {
@@ -11,7 +37,7 @@ resource "aws_s3_bucket" "quorum_vault" {
 resource "aws_lb" "quorum_vault" {
   internal = false
 
-  subnets         = ["${aws_subnet.quorum_cluster.*.id}"]
+  subnets         = ["${aws_subnet.vault.*.id}"]
   security_groups = ["${module.vault_cluster.security_group_id}"]
 }
 
@@ -19,7 +45,7 @@ resource "aws_lb_target_group" "quorum_vault" {
   name = "vault-lb-target-net-${var.network_id}"
   port = 8200
   protocol = "HTTPS"
-  vpc_id = "${aws_vpc.quorum_cluster.id}"
+  vpc_id = "${aws_vpc.vault.id}"
 }
 
 resource "aws_lb_listener" "quorum_vault" {
@@ -52,14 +78,13 @@ module "vault_cluster" {
   s3_bucket_name          = "${aws_s3_bucket.quorum_vault.id}"
   force_destroy_s3_bucket = "${var.force_destroy_s3_buckets}"
 
-  vpc_id     = "${aws_vpc.quorum_cluster.id}"
-  subnet_ids = "${aws_subnet.quorum_cluster.*.id}"
+  vpc_id     = "${aws_vpc.vault.id}"
+  subnet_ids = "${aws_subnet.vault.*.id}"
 
   target_group_arns = ["${aws_lb_target_group.quorum_vault.arn}"]
 
   allowed_ssh_cidr_blocks            = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks        = ["0.0.0.0/0"]
-#  allowed_inbound_security_group_ids = ["${aws_security_group.default.id}"]
   allowed_inbound_security_group_ids = []
   ssh_key_name                       = "${aws_key_pair.auth.id}"
 }
@@ -144,15 +169,14 @@ module "consul_cluster" {
   ami_id    = "${lookup(var.vault_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_consul.rendered}"
 
-  vpc_id     = "${aws_vpc.quorum_cluster.id}"
-  subnet_ids = "${aws_subnet.quorum_cluster.*.id}"
+  vpc_id     = "${aws_vpc.vault.id}"
+  subnet_ids = "${aws_subnet.vault.*.id}"
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
 
   allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
-#  allowed_inbound_security_group_ids = ["${aws_security_group.default.id}"]
   ssh_key_name                = "${aws_key_pair.auth.id}"
 }
 
