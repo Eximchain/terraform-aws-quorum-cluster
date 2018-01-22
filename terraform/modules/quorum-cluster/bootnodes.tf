@@ -59,7 +59,8 @@ resource "aws_instance" "bootnode" {
       "sudo mount -a",
       "echo '${count.index}' | sudo tee /opt/quorum/info/index.txt",
       "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/network-size.txt",
-      "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/num-bootnodes.txt",
+      "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/bootnode-counts/${var.aws_region}.txt",
+      "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
     ]

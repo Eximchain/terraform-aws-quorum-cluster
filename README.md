@@ -5,6 +5,7 @@ Table of Contents
    * [Work In Progress](#work-in-progress)
    * [Quick Start Guide](#quick-start-guide)
       * [Prerequisites](#prerequisites)
+      * [Supported Regions](#supported-regions)
    * [Generate SSH key for EC2 instances](#generate-ssh-key-for-ec2-instances)
       * [Build AMIs to launch the instances with](#build-amis-to-launch-the-instances-with)
       * [Launch Network with Terraform](#launch-network-with-terraform)
@@ -38,6 +39,27 @@ This repository is a work in progress. A more complete version of this README an
     * Python 2.7
     * Hashicorp Packer
     * Hashicorp Terraform
+
+## Supported Regions
+
+The following AWS regions are supported for use with this tool. Attempting to use regions not on this list may result in unexpected behavior. Note that this list may change over time
+in the event new regions are added to AWS infrastructure or incompatibilities with existing regions are added or discovered.
+
+* us-east-1
+* us-east-2
+* us-west-1
+* us-west-2
+* eu-central-1
+* eu-west-1
+* eu-west-2
+* eu-west-3
+* ap-south-1
+* ap-northeast-1
+* ap-northeast-2
+* ap-southeast-1
+* ap-southeast-2
+* ca-central-1
+* sa-east-1
 
 # Generate SSH key for EC2 instances
 
@@ -197,9 +219,11 @@ The nodes come equipped to run a simple private transaction test (sourced from t
 SSH into the sending node (e.g. node 0) and run the following to deploy the private contract
 
 ```sh
-# This assumes the recipient is node 1 (the second maker node, or the first validator node in a single maker network)
-# If you would like to choose a different recipient, replace the 1 with the appropriate index
-$ RECIPIENT_PUB_KEY=$(vault read -field=constellation_pub_key quorum/addresses/1)
+# This assumes that the entire network is running in us-east-1
+# This assumes there are at least two nodes in us-east-1 and the recipient is the node with index 1
+# (the second maker node, or the first validator node if there is only one maker in us-east-1)
+# If you would like to choose a different recipient, modify the path beginning with "quorum/addresses"
+$ RECIPIENT_PUB_KEY=$(vault read -field=constellation_pub_key quorum/addresses/us-east-1/1)
 $ /opt/quorum/bin/private-transaction-test-sender.sh $RECIPIENT_PUB_KEY
 ```
 

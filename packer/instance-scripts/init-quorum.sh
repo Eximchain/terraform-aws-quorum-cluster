@@ -17,11 +17,10 @@ function generate_quorum_supervisor_config {
     local PASSWORD=$2
     local HOSTNAME=$3
     local ROLE=$4
-    local NUM_MAKERS=$5
-    local NUM_BOOTNODES=$6
-    local CONSTELLATION_CONFIG=$7
+    local CONSTELLATION_CONFIG=$5
 
     local NETID=$(cat /opt/quorum/info/network-id.txt)
+    local REGIONS=$(cat /opt/quorum/info/regions.txt)
 
     local VERBOSITY=3
     local MIN_BLOCK_TIME=2
@@ -29,10 +28,25 @@ function generate_quorum_supervisor_config {
     local PW_FILE="/tmp/geth-pw"
     local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --verbosity $VERBOSITY --jitvm=false --privateconfigpath $CONSTELLATION_CONFIG"
 
+    # Assemble list of bootnodes and check number of makers
+    local BOOTNODES=""
+    local TOTAL_MAKERS=0
+    for region in ${REGIONS[@]}
+    do
+        local NUM_BOOTNODES=$(cat /opt/quorum/info/bootnode-counts/${region}.txt)
+        local NUM_MAKERS=$(cat /opt/quorum/info/maker-counts/${region}.txt)
+        local TOTAL_MAKERS=$(( NUM_MAKERS + TOTAL_MAKERS ))
+        for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+        do
+            BOOTNODES="$BOOTNODES,$(vault read -field=enode quorum/bootnodes/addresses/${region}/$index)"
+        done
+    done
+    BOOTNODES=${BOOTNODES:1}
+
     if [ "$ROLE" == "maker" ]
     then
         ARGS="$GLOBAL_ARGS --blockmakeraccount \"$ADDRESS\" --blockmakerpassword \"$PASSWORD\" --minblocktime $MIN_BLOCK_TIME --maxblocktime $MAX_BLOCK_TIME"
-        if [ $NUM_MAKERS -eq 1 ]
+        if [ $TOTAL_MAKERS -eq 1 ]
         then
             ARGS="$ARGS --singleblockmaker"
         fi
@@ -43,13 +57,6 @@ function generate_quorum_supervisor_config {
         echo "$PASSWORD" > $PW_FILE
         ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\" --password \"$PW_FILE\""
     fi
-
-    local BOOTNODES=""
-    for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
-    do
-        BOOTNODES="$BOOTNODES,$(vault read -field=enode quorum/bootnodes/addresses/$index)"
-    done
-    BOOTNODES=${BOOTNODES:1}
 
     ARGS="$ARGS --bootnodes $BOOTNODES"
 
@@ -67,17 +74,21 @@ user=ubuntu" | sudo tee /etc/supervisor/conf.d/quorum-supervisor.conf
 }
 
 function complete_constellation_config {
-    local NUM_BOOTNODES=$1
-    local HOSTNAME=$2
-    local CONSTELLATION_CONFIG_PATH=$3
+    local HOSTNAME=$1
+    local CONSTELLATION_CONFIG_PATH=$2
 
+    local REGIONS=$(cat /opt/quorum/info/regions.txt)
     local OTHER_NODES=""
 
     # Configure constellation with bootnode IPs
-    for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+    for region in ${REGIONS[@]}
     do
-        BOOTNODE=$(wait_for_successful_command "vault read -field=hostname quorum/bootnodes/addresses/$index")
-        OTHER_NODES="$OTHER_NODES,\"http://$BOOTNODE:9000/\""
+        local NUM_BOOTNODES=$(cat /opt/quorum/info/bootnode-counts/${region}.txt)
+        for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+        do
+            BOOTNODE=$(wait_for_successful_command "vault read -field=hostname quorum/bootnodes/addresses/${region}/$index")
+            OTHER_NODES="$OTHER_NODES,\"http://$BOOTNODE:9000/\""
+        done
     done
     OTHER_NODES=${OTHER_NODES:1}
     OTHER_NODES_LINE="othernodes = [$OTHER_NODES]"
@@ -90,27 +101,37 @@ function complete_constellation_config {
 
 function generate_genesis_file {
     # Assemble lists of addresses
+    local REGIONS=$(cat /opt/quorum/info/regions.txt)
     local VOTE_THRESHOLD=$(cat /opt/quorum/info/vote-threshold.txt)
-    local NUM_MAKERS=$(cat /opt/quorum/info/num-makers.txt)
-    local NUM_VALIDATORS=$(cat /opt/quorum/info/num-validators.txt)
-    local NUM_OBSERVERS=$(cat /opt/quorum/info/num-observers.txt)
     local MAKERS=()
     local VALIDATORS=()
     local OBSERVERS=()
 
-    for index in $(seq 0 $(expr $NUM_MAKERS - 1))
+    for region in ${REGIONS[@]}
     do
-        MAKERS[$index]=$(wait_for_successful_command "vault read -field=address quorum/makers/$index")
+        local NUM_MAKERS=$(cat /opt/quorum/info/maker-counts/${region}.txt)
+        for index in $(seq 0 $(expr $NUM_MAKERS - 1))
+        do
+            MAKERS+=($(wait_for_successful_command "vault read -field=address quorum/makers/${region}/$index"))
+        done
     done
 
-    for index in $(seq 0 $(expr $NUM_VALIDATORS - 1))
+    for region in ${REGIONS[@]}
     do
-        VALIDATORS[$index]=$(wait_for_successful_command "vault read -field=address quorum/validators/$index")
+        local NUM_VALIDATORS=$(cat /opt/quorum/info/validator-counts/${region}.txt)
+        for index in $(seq 0 $(expr $NUM_VALIDATORS - 1))
+        do
+            VALIDATORS+=($(wait_for_successful_command "vault read -field=address quorum/validators/${region}/$index"))
+        done
     done
 
-    for index in $(seq 0 $(expr $NUM_OBSERVERS - 1))
+    for region in ${REGIONS[@]}
     do
-        OBSERVERS[$index]=$(wait_for_successful_command "vault read -field=address quorum/observers/$index")
+        local NUM_OBSERVERS=$(cat /opt/quorum/info/observer-counts/${region}.txt)
+        for index in $(seq 0 $(expr $NUM_OBSERVERS - 1))
+        do
+            OBSERVERS+=($(wait_for_successful_command "vault read -field=address quorum/observers/${region}/$index"))
+        done
     done
 
     # Generate the quorum config and genesis now that we have all the info we need
@@ -126,35 +147,44 @@ function generate_genesis_file {
 
 function broadcast_role_info {
     local ROLE=$1
+    local AWS_REGION=$2
 
     local ROLE_INDEX=$(cat /opt/quorum/info/role-index.txt)
 
     if [ "$ROLE" == "maker" ]
     then
-        wait_for_successful_command "vault write quorum/makers/$ROLE_INDEX address=$ADDRESS"
+        wait_for_successful_command "vault write quorum/makers/$AWS_REGION/$ROLE_INDEX address=$ADDRESS"
     elif [ "$ROLE" == "validator" ]
     then
-        wait_for_successful_command "vault write quorum/validators/$ROLE_INDEX address=$ADDRESS"
+        wait_for_successful_command "vault write quorum/validators/$AWS_REGION/$ROLE_INDEX address=$ADDRESS"
     else # ROLE == observer
-        wait_for_successful_command "vault write quorum/observers/$ROLE_INDEX address=$ADDRESS"
+        wait_for_successful_command "vault write quorum/observers/$AWS_REGION/$ROLE_INDEX address=$ADDRESS"
     fi
 }
 
 function wait_for_all_nodes {
-    local NETWORK_SIZE=$(cat /opt/quorum/info/network-size.txt)
+    local REGIONS=$(cat /opt/quorum/info/regions.txt)
 
-    for index in $(seq 0 $(expr $NETWORK_SIZE - 1))
+    for region in ${REGIONS[@]}
     do
-        wait_for_successful_command "vault read -field=address quorum/addresses/$index"
+        local NUM_NODES=$(cat /opt/quorum/info/node-counts/${region}.txt)
+        for index in $(seq 0 $(expr $NUM_NODES - 1))
+        do
+            wait_for_successful_command "vault read -field=address quorum/addresses/${region}/$index"
+        done
     done
 }
 
 function wait_for_all_bootnodes {
-    local NUM_BOOTNODES=$1
+    local REGIONS=$(cat /opt/quorum/info/regions.txt)
 
-    for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+    for region in ${REGIONS[@]}
     do
-        wait_for_successful_command "vault read -field=enode quorum/bootnodes/addresses/$index"
+        local NUM_BOOTNODES=$(cat /opt/quorum/info/bootnode-counts/${region}.txt)
+        for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+        do
+            wait_for_successful_command "vault read -field=enode quorum/bootnodes/addresses/$region/$index"
+        done
     done
 }
 
@@ -175,31 +205,32 @@ wait_for_successful_command 'vault auth -method=aws'
 
 wait_for_terraform_provisioners
 
-# Get the overall index for this instance
+# Get the region and overall index for this instance
 CLUSTER_INDEX=$(cat /opt/quorum/info/overall-index.txt)
+AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
 
 # Load Address, Password, and Key if we already generated them or generate new ones if none exist
-ADDRESS=$(vault read -field=address quorum/addresses/$CLUSTER_INDEX)
+ADDRESS=$(vault read -field=address quorum/addresses/$AWS_REGION/$CLUSTER_INDEX)
 if [ $? -eq 0 ]
 then
     # Address is already in vault and this is a replacement instance.  Load info from vault
-    GETH_PW=$(wait_for_successful_command "vault read -field=geth_pw quorum/passwords/$CLUSTER_INDEX")
-    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw quorum/passwords/$CLUSTER_INDEX")
+    GETH_PW=$(wait_for_successful_command "vault read -field=geth_pw quorum/passwords/$AWS_REGION/$CLUSTER_INDEX")
+    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw quorum/passwords/$AWS_REGION/$CLUSTER_INDEX")
     # Generate constellation key files
-    wait_for_successful_command "vault read -field=constellation_pub_key quorum/addresses/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.pub
-    wait_for_successful_command "vault read -field=constellation_priv_key quorum/keys/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.key
+    wait_for_successful_command "vault read -field=constellation_pub_key quorum/addresses/$AWS_REGION/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.pub
+    wait_for_successful_command "vault read -field=constellation_priv_key quorum/keys/$AWS_REGION/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.key
     # Generate geth key file
-    GETH_KEY_FILE_NAME=$(wait_for_successful_command "vault read -field=geth_key_file quorum/keys/$CLUSTER_INDEX")
+    GETH_KEY_FILE_NAME=$(wait_for_successful_command "vault read -field=geth_key_file quorum/keys/$AWS_REGION/$CLUSTER_INDEX")
     GETH_KEY_FILE_DIR="/home/ubuntu/.ethereum/keystore"
     mkdir -p $GETH_KEY_FILE_DIR
     GETH_KEY_FILE_PATH="$GETH_KEY_FILE_DIR/$GETH_KEY_FILE_NAME"
-    wait_for_successful_command "vault read -field=geth_key quorum/keys/$CLUSTER_INDEX" > $GETH_KEY_FILE_PATH
+    wait_for_successful_command "vault read -field=geth_key quorum/keys/$AWS_REGION/$CLUSTER_INDEX" > $GETH_KEY_FILE_PATH
 elif [ -e /home/ubuntu/.ethereum/keystore/* ]
 then
     # Address was created but not stored in vault. This is a process reboot after a previous failure.
     # Load address from file and password from vault
-    GETH_PW=$(wait_for_successful_command "vault read -field=geth_pw quorum/passwords/$CLUSTER_INDEX")
-    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw quorum/passwords/$CLUSTER_INDEX")
+    GETH_PW=$(wait_for_successful_command "vault read -field=geth_pw quorum/passwords/$AWS_REGION/$CLUSTER_INDEX")
+    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw quorum/passwords/$AWS_REGION/$CLUSTER_INDEX")
     ADDRESS=0x$(cat /home/ubuntu/.ethereum/keystore/* | jq -r .address)
     # Generate constellation keys if they weren't generated last run
     if [ ! -e /opt/quorum/constellation/private/constellation.* ]
@@ -212,7 +243,7 @@ else
     # TODO: Get non-empty passwords to work
     CONSTELLATION_PW=""
     # Store the password first so we don't lose it
-    wait_for_successful_command "vault write quorum/passwords/$CLUSTER_INDEX geth_pw=\"$GETH_PW\" constellation_pw=\"$CONSTELLATION_PW\""
+    wait_for_successful_command "vault write quorum/passwords/$AWS_REGION/$CLUSTER_INDEX geth_pw=\"$GETH_PW\" constellation_pw=\"$CONSTELLATION_PW\""
     # Generate the new key pair
     ADDRESS=0x$(echo -ne "$GETH_PW\n$GETH_PW\n" | geth account new | grep Address | awk '{ gsub("{|}", "") ; print $2 }')
     # Generate constellation keys
@@ -226,18 +257,17 @@ PRIV_KEY_FILENAME=$(ls /home/ubuntu/.ethereum/keystore/)
 
 # Determine role and advertise as role
 ROLE=$(cat /opt/quorum/info/role.txt)
-broadcast_role_info $ROLE
+broadcast_role_info $ROLE $AWS_REGION
 
 # Write key and address into the vault
-wait_for_successful_command "vault write quorum/keys/$CLUSTER_INDEX geth_key=$PRIV_KEY geth_key_file=$PRIV_KEY_FILENAME constellation_priv_key=$CONSTELLATION_PRIV_KEY"
-wait_for_successful_command "vault write quorum/addresses/$CLUSTER_INDEX address=$ADDRESS constellation_pub_key=$CONSTELLATION_PUB_KEY hostname=$HOSTNAME"
+wait_for_successful_command "vault write quorum/keys/$AWS_REGION/$CLUSTER_INDEX geth_key=$PRIV_KEY geth_key_file=$PRIV_KEY_FILENAME constellation_priv_key=$CONSTELLATION_PRIV_KEY"
+wait_for_successful_command "vault write quorum/addresses/$AWS_REGION/$CLUSTER_INDEX address=$ADDRESS constellation_pub_key=$CONSTELLATION_PUB_KEY hostname=$HOSTNAME"
 
 # Wait for all nodes to write their address to vault
-NUM_BOOTNODES=$(cat /opt/quorum/info/num-bootnodes.txt)
 wait_for_all_nodes
-wait_for_all_bootnodes $NUM_BOOTNODES
+wait_for_all_bootnodes
 
-complete_constellation_config $NUM_BOOTNODES $HOSTNAME /opt/quorum/constellation/config.conf
+complete_constellation_config $HOSTNAME /opt/quorum/constellation/config.conf
 
 # Generate the genesis file
 generate_genesis_file
@@ -258,7 +288,7 @@ sleep 5
 
 # Generate supervisor config to run quorum
 NUM_MAKERS=$(cat /opt/quorum/info/num-makers.txt)
-generate_quorum_supervisor_config $ADDRESS $GETH_PW $HOSTNAME $ROLE $NUM_MAKERS $NUM_BOOTNODES /opt/quorum/constellation/config.conf
+generate_quorum_supervisor_config $ADDRESS $GETH_PW $HOSTNAME $ROLE /opt/quorum/constellation/config.conf
 
 # Remove the config that runs this and run quorum
 sudo rm /etc/supervisor/conf.d/init-quorum-supervisor.conf

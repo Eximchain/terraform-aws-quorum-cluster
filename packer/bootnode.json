@@ -90,12 +90,20 @@
     "source": "configs/constellation.conf",
     "destination": "/tmp/constellation.conf"
   },{
+    "type": "file",
+    "source": "data/regions.txt",
+    "destination": "/tmp/regions.txt"
+  },{
     "type": "shell",
     "inline": [
       "sudo mv /tmp/constellation-supervisor.conf /opt/quorum/private/",
       "sudo mv /tmp/bootnode-supervisor.conf /opt/quorum/private/",
+      "sudo mv /tmp/regions.txt /opt/quorum/info/",
       "sudo mv /tmp/constellation.conf /opt/quorum/constellation/config.conf"
     ]
+  },{
+    "type": "shell",
+    "script": "provisioning-scripts/init-zero-counts.sh"
   }],
   "post-processors": [{
     "type": "manifest",
