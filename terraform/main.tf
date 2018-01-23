@@ -14,13 +14,13 @@ module "quorum_cluster" {
   vault_instance_type       = "${var.vault_instance_type}"
   consul_cluster_size       = "${var.consul_cluster_size}"
   consul_instance_type      = "${var.consul_instance_type}"
-  bootnode_cluster_size     = "${var.bootnode_cluster_size}"
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
-  num_maker_nodes           = "${var.num_maker_nodes}"
-  num_validator_nodes       = "${var.num_validator_nodes}"
-  num_observer_nodes        = "${var.num_observer_nodes}"
   vote_threshold            = "${var.vote_threshold}"
+  bootnode_counts           = "${var.bootnode_counts}"
+  maker_node_counts         = "${var.maker_node_counts}"
+  validator_node_counts     = "${var.validator_node_counts}"
+  observer_node_counts      = "${var.observer_node_counts}"
 
   # AMI variables sourced from amis.auto.tfvars.json
   quorum_amis   = "${var.quorum_amis}"

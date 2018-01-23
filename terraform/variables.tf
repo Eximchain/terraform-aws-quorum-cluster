@@ -99,10 +99,6 @@ variable "consul_instance_type" {
   default = "t2.micro"
 }
 
-variable "bootnode_cluster_size" {
-  default = 1
-}
-
 variable "bootnode_instance_type" {
   default = "t2.small"
 }
@@ -111,18 +107,154 @@ variable "quorum_node_instance_type" {
   default = "t2.small"
 }
 
-variable "num_maker_nodes" {
-  description = "The number of maker nodes in the quorum cluster"
-}
-
-variable "num_validator_nodes" {
-  description = "The number of validator nodes in the quorum cluster"
-}
-
-variable "num_observer_nodes" {
-  description = "The number of observer nodes in the quorum cluster"
-}
-
 variable "vote_threshold" {
   description = "The number of votes needed to confirm a block. This should be more than half of the number of validator nodes."
+}
+
+variable "bootnode_counts" {
+  description = "A mapping from region to the number of bootnodes to launch in that region"
+  type = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Paris
+    eu-west-3      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "maker_node_counts" {
+  description = "A mapping from region to the number of maker nodes to launch in that region"
+  type = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Paris
+    eu-west-3      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "validator_node_counts" {
+  description = "A mapping from region to the number of validator nodes to launch in that region"
+  type = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Paris
+    eu-west-3      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "observer_node_counts" {
+  description = "A mapping from region to the number of observer nodes to launch in that region"
+  type = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Paris
+    eu-west-3      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
 }

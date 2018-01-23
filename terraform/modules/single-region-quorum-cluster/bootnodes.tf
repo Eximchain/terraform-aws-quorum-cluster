@@ -36,7 +36,7 @@ resource "aws_instance" "bootnode" {
   }
 
   instance_type = "${var.bootnode_instance_type}"
-  count         = "${var.bootnode_cluster_size}"
+  count         = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
   ami       = "${lookup(var.bootnode_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_bootnode.rendered}"
@@ -58,8 +58,8 @@ resource "aws_instance" "bootnode" {
       "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
       "sudo mount -a",
       "echo '${count.index}' | sudo tee /opt/quorum/info/index.txt",
-      "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/network-size.txt",
-      "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/bootnode-counts/${var.aws_region}.txt",
+      # TODO: Fill in all regions
+      "echo '${lookup(var.bootnode_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/bootnode-counts/${var.aws_region}.txt",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",

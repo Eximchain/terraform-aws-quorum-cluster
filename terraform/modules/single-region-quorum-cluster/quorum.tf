@@ -38,7 +38,7 @@ resource "aws_instance" "quorum_maker_node" {
   }
 
   instance_type = "${var.quorum_node_instance_type}"
-  count         = "${var.num_maker_nodes}"
+  count         = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
   ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
@@ -61,13 +61,14 @@ resource "aws_instance" "quorum_maker_node" {
       "sudo mount -a",
       "echo '${count.index}' | sudo tee /opt/quorum/info/role-index.txt",
       "echo '${count.index}' | sudo tee /opt/quorum/info/overall-index.txt",
-      "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/node-counts/${var.aws_region}.txt",
-      "echo '${var.num_maker_nodes}' | sudo tee /opt/quorum/info/maker-counts/${var.aws_region}.txt",
-      "echo '${var.num_validator_nodes}' | sudo tee /opt/quorum/info/validator-counts/${var.aws_region}.txt",
-      "echo '${var.num_observer_nodes}' | sudo tee /opt/quorum/info/observer-counts/${var.aws_region}.txt",
+      # TODO: Fill in all regions
+      "echo '${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/node-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.maker_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/maker-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.validator_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/validator-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.observer_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/observer-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.bootnode_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/bootnode-counts/${var.aws_region}.txt",
       "echo 'maker' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
-      "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/bootnode-counts/${var.aws_region}.txt",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
@@ -87,7 +88,7 @@ resource "aws_instance" "quorum_validator_node" {
   }
 
   instance_type = "${var.quorum_node_instance_type}"
-  count         = "${var.num_validator_nodes}"
+  count         = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
 
   ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
@@ -97,7 +98,7 @@ resource "aws_instance" "quorum_validator_node" {
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
   vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
-  subnet_id              = "${element(aws_subnet.quorum_cluster.*.id, count.index + var.num_maker_nodes)}"
+  subnet_id              = "${element(aws_subnet.quorum_cluster.*.id, count.index + lookup(var.maker_node_counts, var.aws_region, 0))}"
 
   tags {
     Name = "quorum-validator-node-${count.index}"
@@ -109,14 +110,15 @@ resource "aws_instance" "quorum_validator_node" {
       "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
       "sudo mount -a",
       "echo '${count.index}' | sudo tee /opt/quorum/info/role-index.txt",
-      "echo '${var.num_maker_nodes + count.index}' | sudo tee /opt/quorum/info/overall-index.txt",
-      "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/node-counts/${var.aws_region}.txt",
-      "echo '${var.num_maker_nodes}' | sudo tee /opt/quorum/info/maker-counts/${var.aws_region}.txt",
-      "echo '${var.num_validator_nodes}' | sudo tee /opt/quorum/info/validator-counts/${var.aws_region}.txt",
-      "echo '${var.num_observer_nodes}' | sudo tee /opt/quorum/info/observer-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.maker_node_counts, var.aws_region, 0) + count.index}' | sudo tee /opt/quorum/info/overall-index.txt",
+      # TODO: Fill in all regions
+      "echo '${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/node-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.maker_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/maker-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.validator_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/validator-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.observer_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/observer-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.bootnode_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/bootnode-counts/${var.aws_region}.txt",
       "echo 'validator' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
-      "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/bootnode-counts/${var.aws_region}.txt",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
@@ -136,7 +138,7 @@ resource "aws_instance" "quorum_observer_node" {
   }
 
   instance_type = "${var.quorum_node_instance_type}"
-  count         = "${var.num_observer_nodes}"
+  count         = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
 
   ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
@@ -146,7 +148,7 @@ resource "aws_instance" "quorum_observer_node" {
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
   vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
-  subnet_id              = "${element(aws_subnet.quorum_cluster.*.id, count.index + var.num_maker_nodes + var.num_validator_nodes)}"
+  subnet_id              = "${element(aws_subnet.quorum_cluster.*.id, count.index + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0))}"
 
   tags {
     Name = "quorum-observer-node-${count.index}"
@@ -158,14 +160,15 @@ resource "aws_instance" "quorum_observer_node" {
       "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
       "sudo mount -a",
       "echo '${count.index}' | sudo tee /opt/quorum/info/role-index.txt",
-      "echo '${var.num_maker_nodes + var.num_validator_nodes + count.index}' | sudo tee /opt/quorum/info/overall-index.txt",
-      "echo '${var.num_maker_nodes + var.num_validator_nodes + var.num_observer_nodes}' | sudo tee /opt/quorum/info/node-counts/${var.aws_region}.txt",
-      "echo '${var.num_maker_nodes}' | sudo tee /opt/quorum/info/maker-counts/${var.aws_region}.txt",
-      "echo '${var.num_validator_nodes}' | sudo tee /opt/quorum/info/validator-counts/${var.aws_region}.txt",
-      "echo '${var.num_observer_nodes}' | sudo tee /opt/quorum/info/observer-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + count.index}' | sudo tee /opt/quorum/info/overall-index.txt",
+      # TODO: Fill in all regions
+      "echo '${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/node-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.maker_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/maker-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.validator_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/validator-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.observer_node_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/observer-counts/${var.aws_region}.txt",
+      "echo '${lookup(var.bootnode_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/bootnode-counts/${var.aws_region}.txt",
       "echo 'observer' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
-      "echo '${var.bootnode_cluster_size}' | sudo tee /opt/quorum/info/bootnode-counts/${var.aws_region}.txt",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
