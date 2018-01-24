@@ -70,11 +70,16 @@
     "source": "instance-scripts/generate-quorum-config.py",
     "destination": "/tmp/generate-quorum-config.py"
   },{
+    "type": "file",
+    "source": "instance-scripts/fill-node-counts.py",
+    "destination": "/tmp/fill-node-counts.py"
+  },{
     "type": "shell",
     "inline": [
       "sudo mv /tmp/init-bootnode.sh /opt/quorum/bin/",
       "sudo mv /tmp/generate-run-init-bootnode /opt/quorum/bin/",
       "sudo mv /tmp/generate-quorum-config.py /opt/quorum/bin/",
+      "sudo mv /tmp/fill-node-counts.py /opt/quorum/bin/",
       "sudo chmod 744 /opt/quorum/bin/*"
     ]
   },{

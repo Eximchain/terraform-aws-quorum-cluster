@@ -58,8 +58,8 @@ resource "aws_instance" "bootnode" {
       "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
       "sudo mount -a",
       "echo '${count.index}' | sudo tee /opt/quorum/info/index.txt",
-      # TODO: Fill in all regions
-      "echo '${lookup(var.bootnode_counts, var.aws_region, 0)}' | sudo tee /opt/quorum/info/bootnode-counts/${var.aws_region}.txt",
+      "echo '${jsonencode(var.bootnode_counts)}' | sudo tee /opt/quorum/info/bootnode-counts.json",
+      "sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info' --bootnode",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
