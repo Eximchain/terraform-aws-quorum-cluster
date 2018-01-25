@@ -182,17 +182,17 @@ data "template_file" "user_data_quorum" {
   template = "${file("${path.module}/user-data/user-data-quorum.sh")}"
 
   vars {
-    vault_dns  = "${aws_lb.quorum_vault.dns_name}"
-    vault_port = 8200
+    vault_dns  = "${module.quorum_vault.vault_dns}"
+    vault_port = "${module.quorum_vault.vault_port}"
 
-    consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
-    consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
+    consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
+    consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-    vault_cert_bucket = "${aws_s3_bucket.vault_certs.bucket}"
+    vault_cert_bucket = "${module.quorum_vault.vault_cert_bucket_name}"
   }
 
-  # user-data needs to download these objects
-  depends_on = ["aws_s3_bucket_object.vault_ca_public_key", "aws_s3_bucket_object.vault_public_key", "aws_s3_bucket_object.vault_private_key"]
+  # user-data needs to download s3 objects created by this module
+  depends_on = ["module.quorum_vault"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 module "quorum_cluster" {
   # Source from github if using in another project
-  source = "modules/single-region-quorum-cluster"
+  source = "modules/quorum-cluster-region"
 
   # Variables sourced from terraform.tfvars
   public_key_path           = "${var.public_key_path}"

@@ -29,6 +29,11 @@ DESCRIPTION
   default = 64813
 }
 
+variable "vault_port" {
+  description = "The port that vault will be accessible on."
+  default     = 8200
+}
+
 variable "force_destroy_s3_buckets" {
   description = "Whether or not to force destroy s3 buckets. Set to true for an easily destroyed test environment. DO NOT set to true for a production environment."
   default     = false

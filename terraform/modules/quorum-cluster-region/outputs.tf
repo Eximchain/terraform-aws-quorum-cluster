@@ -15,5 +15,5 @@ output "bootnode_dns" {
 }
 
 output "vault_server_ips" {
-  value = "${data.aws_instances.vault_servers.public_ips}"
+  value = "${module.quorum_vault.vault_server_public_ips}"
 }

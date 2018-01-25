@@ -39,6 +39,11 @@ variable "force_destroy_s3_buckets" {
   default     = false
 }
 
+variable "vault_port" {
+  description = "The port that vault will be accessible on."
+  default     = 8200
+}
+
 variable "quorum_azs" {
   description = "Mapping from AWS region to AZs to utilize in that region."
   type        = "map"

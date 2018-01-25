@@ -64,15 +64,39 @@ resource "aws_iam_policy" "quorum" {
   },{
     "Effect": "Allow",
     "Action": ["s3:ListBucket"],
-    "Resource": ["${aws_s3_bucket.vault_certs.arn}"]
+    "Resource": ["${module.quorum_vault.vault_cert_bucket_arn}"]
   },{
     "Effect": "Allow",
     "Action": ["s3:GetObject"],
     "Resource": [
-      "${aws_s3_bucket.vault_certs.arn}/ca.crt.pem",
-      "${aws_s3_bucket.vault_certs.arn}/vault.crt.pem"
+      "${module.quorum_vault.vault_cert_bucket_arn}/ca.crt.pem",
+      "${module.quorum_vault.vault_cert_bucket_arn}/vault.crt.pem"
     ]
   }]
 }
 EOF
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# VAULT CLUSTER FOR USE WITH QUORUM
+# ---------------------------------------------------------------------------------------------------------------------
+module "quorum_vault" {
+  source = "../quorum-vault"
+
+  vault_amis      = "${var.vault_amis}"
+  cert_owner      = "${var.cert_owner}"
+  aws_key_pair_id = "${aws_key_pair.auth.id}"
+
+  aws_region    = "${var.aws_region}"
+  aws_azs       = "${var.quorum_azs}"
+  vault_port    = "${var.vault_port}"
+  network_id    = "${var.network_id}"
+  cert_org_name = "${var.cert_org_name}"
+
+  force_destroy_s3_bucket = "${var.force_destroy_s3_buckets}"
+
+  vault_cluster_size   = "${var.vault_cluster_size}"
+  vault_instance_type  = "${var.vault_instance_type}"
+  consul_cluster_size  = "${var.consul_cluster_size}"
+  consul_instance_type = "${var.consul_instance_type}"
 }

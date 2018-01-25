@@ -18,8 +18,8 @@ resource "aws_route" "vault" {
 
 resource "aws_subnet" "vault" {
   vpc_id                  = "${aws_vpc.vault.id}"
-  count                   = "${length(var.quorum_azs[var.aws_region])}"
-  availability_zone       = "${element(var.quorum_azs[var.aws_region], count.index)}"
+  count                   = "${length(var.aws_azs[var.aws_region])}"
+  availability_zone       = "${element(var.aws_azs[var.aws_region], count.index)}"
   cidr_block              = "192.168.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
 }
@@ -43,16 +43,16 @@ resource "aws_lb" "quorum_vault" {
 
 resource "aws_lb_target_group" "quorum_vault" {
   name = "vault-lb-target-net-${var.network_id}"
-  port = 8200
+  port = "${var.vault_port}"
   protocol = "HTTPS"
   vpc_id = "${aws_vpc.vault.id}"
 }
 
 resource "aws_lb_listener" "quorum_vault" {
   load_balancer_arn = "${aws_lb.quorum_vault.arn}"
-  port              = "8200"
+  port              = "${var.vault_port}"
   protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  ssl_policy        = "${var.lb_ssl_policy}"
   certificate_arn   = "${aws_iam_server_certificate.vault_certs.arn}"
 
   default_action {
@@ -68,7 +68,7 @@ resource "aws_lb_listener" "quorum_vault" {
 module "vault_cluster" {
   source = "github.com/hashicorp/terraform-aws-vault.git//modules/vault-cluster?ref=v0.0.8"
 
-  cluster_name  = "quorum-vault"
+  cluster_name  = "quorum-vault-network-${var.network_id}"
   cluster_size  = "${var.vault_cluster_size}"
   instance_type = "${var.vault_instance_type}"
 
@@ -76,7 +76,7 @@ module "vault_cluster" {
   user_data = "${data.template_file.user_data_vault_cluster.rendered}"
 
   s3_bucket_name          = "${aws_s3_bucket.quorum_vault.id}"
-  force_destroy_s3_bucket = "${var.force_destroy_s3_buckets}"
+  force_destroy_s3_bucket = "${var.force_destroy_s3_bucket}"
 
   vpc_id     = "${aws_vpc.vault.id}"
   subnet_ids = "${aws_subnet.vault.*.id}"
@@ -86,7 +86,7 @@ module "vault_cluster" {
   allowed_ssh_cidr_blocks            = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks        = ["0.0.0.0/0"]
   allowed_inbound_security_group_ids = []
-  ssh_key_name                       = "${aws_key_pair.auth.id}"
+  ssh_key_name                       = "${var.aws_key_pair_id}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -177,7 +177,7 @@ module "consul_cluster" {
 
   allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
-  ssh_key_name                = "${aws_key_pair.auth.id}"
+  ssh_key_name                = "${var.aws_key_pair_id}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
