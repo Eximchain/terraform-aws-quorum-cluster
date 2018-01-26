@@ -13,7 +13,3 @@ output "quorum_observer_node_dns" {
 output "bootnode_dns" {
   value = "${aws_instance.bootnode.*.public_dns}"
 }
-
-output "vault_server_ips" {
-  value = "${module.quorum_vault.vault_server_public_ips}"
-}

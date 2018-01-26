@@ -55,6 +55,10 @@ resource "aws_s3_bucket_object" "vault_private_key" {
   depends_on = ["module.cert_tool"]
 }
 
+resource "null_resource" "vault_cert_s3_upload" {
+  depends_on = ["aws_s3_bucket_object.vault_ca_public_key", "aws_s3_bucket_object.vault_public_key", "aws_s3_bucket_object.vault_private_key"]
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # STORE CERTS IN IAM
 # ---------------------------------------------------------------------------------------------------------------------

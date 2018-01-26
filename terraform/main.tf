@@ -1,6 +1,6 @@
 module "quorum_cluster" {
   # Source from github if using in another project
-  source = "modules/quorum-cluster-region"
+  source = "modules/quorum-cluster"
 
   # Variables sourced from terraform.tfvars
   public_key_path           = "${var.public_key_path}"
@@ -9,7 +9,7 @@ module "quorum_cluster" {
   aws_region                = "${var.aws_region}"
   network_id                = "${var.network_id}"
   force_destroy_s3_buckets  = "${var.force_destroy_s3_buckets}"
-  quorum_azs                = "${var.quorum_azs}"
+  aws_azs                   = "${var.aws_azs}"
   vault_cluster_size        = "${var.vault_cluster_size}"
   vault_instance_type       = "${var.vault_instance_type}"
   consul_cluster_size       = "${var.consul_cluster_size}"

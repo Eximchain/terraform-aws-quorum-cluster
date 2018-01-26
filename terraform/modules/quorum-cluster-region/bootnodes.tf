@@ -18,8 +18,8 @@ resource "aws_route" "bootnodes" {
 
 resource "aws_subnet" "bootnodes" {
   vpc_id                  = "${aws_vpc.bootnodes.id}"
-  count                   = "${length(var.quorum_azs[var.aws_region])}"
-  availability_zone       = "${element(var.quorum_azs[var.aws_region], count.index)}"
+  count                   = "${length(var.aws_azs[var.aws_region])}"
+  availability_zone       = "${element(var.aws_azs[var.aws_region], count.index)}"
   cidr_block              = "172.16.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
 }
@@ -41,7 +41,7 @@ resource "aws_instance" "bootnode" {
   ami       = "${lookup(var.bootnode_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_bootnode.rendered}"
 
-  key_name = "${aws_key_pair.auth.id}"
+  key_name = "${var.aws_key_pair_id}"
 
   iam_instance_profile = "${aws_iam_instance_profile.bootnode.name}"
 
@@ -76,17 +76,14 @@ data "template_file" "user_data_bootnode" {
   template = "${file("${path.module}/user-data/user-data-bootnode.sh")}"
 
   vars {
-    vault_dns  = "${module.quorum_vault.vault_dns}"
-    vault_port = "${module.quorum_vault.vault_port}"
+    vault_dns  = "${var.vault_dns}"
+    vault_port = "${var.vault_port}"
 
-    consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
-    consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
+    consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
+    consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
-    vault_cert_bucket = "${module.quorum_vault.vault_cert_bucket_name}"
+    vault_cert_bucket = "${var.vault_cert_bucket_name}"
   }
-
-  # user-data needs to download objects created by this module
-  depends_on = ["module.quorum_vault"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

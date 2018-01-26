@@ -39,7 +39,7 @@ variable "force_destroy_s3_buckets" {
   default     = false
 }
 
-variable "quorum_azs" {
+variable "aws_azs" {
   description = "Mapping from AWS region to AZs to utilize in that region."
   type        = "map"
   default     = {

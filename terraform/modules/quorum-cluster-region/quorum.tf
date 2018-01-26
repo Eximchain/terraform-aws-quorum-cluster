@@ -20,8 +20,8 @@ resource "aws_route" "quorum_cluster" {
 
 resource "aws_subnet" "quorum_cluster" {
   vpc_id                  = "${aws_vpc.quorum_cluster.id}"
-  count                   = "${length(var.quorum_azs[var.aws_region])}"
-  availability_zone       = "${element(var.quorum_azs[var.aws_region], count.index)}"
+  count                   = "${length(var.aws_azs[var.aws_region])}"
+  availability_zone       = "${element(var.aws_azs[var.aws_region], count.index)}"
   cidr_block              = "10.0.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
 }
@@ -43,7 +43,7 @@ resource "aws_instance" "quorum_maker_node" {
   ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
-  key_name = "${aws_key_pair.auth.id}"
+  key_name = "${var.aws_key_pair_id}"
 
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
@@ -92,7 +92,7 @@ resource "aws_instance" "quorum_validator_node" {
   ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
-  key_name = "${aws_key_pair.auth.id}"
+  key_name = "${var.aws_key_pair_id}"
 
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
@@ -141,7 +141,7 @@ resource "aws_instance" "quorum_observer_node" {
   ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
-  key_name = "${aws_key_pair.auth.id}"
+  key_name = "${var.aws_key_pair_id}"
 
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
@@ -182,17 +182,14 @@ data "template_file" "user_data_quorum" {
   template = "${file("${path.module}/user-data/user-data-quorum.sh")}"
 
   vars {
-    vault_dns  = "${module.quorum_vault.vault_dns}"
-    vault_port = "${module.quorum_vault.vault_port}"
+    vault_dns  = "${var.vault_dns}"
+    vault_port = "${var.vault_port}"
 
-    consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
-    consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
+    consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
+    consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
-    vault_cert_bucket = "${module.quorum_vault.vault_cert_bucket_name}"
+    vault_cert_bucket = "${var.vault_cert_bucket_name}"
   }
-
-  # user-data needs to download s3 objects created by this module
-  depends_on = ["module.quorum_vault"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
