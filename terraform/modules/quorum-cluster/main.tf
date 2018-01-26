@@ -8,7 +8,7 @@ terraform {
 provider "aws" {
   version = "~> 1.5"
 
-  region  = "${var.aws_region}"
+  region  = "us-east-1"
 }
 
 provider "template" {
@@ -33,7 +33,7 @@ module "quorum_vault" {
   cert_owner      = "${var.cert_owner}"
   aws_key_pair_id = "${aws_key_pair.auth.id}"
 
-  aws_region    = "${var.aws_region}"
+  aws_region    = "${var.vault_region}"
   aws_azs       = "${var.aws_azs}"
   vault_port    = "${var.vault_port}"
   network_id    = "${var.network_id}"

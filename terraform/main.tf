@@ -6,7 +6,6 @@ module "quorum_cluster" {
   public_key_path           = "${var.public_key_path}"
   private_key_path          = "${var.private_key_path}"
   cert_owner                = "${var.cert_owner}"
-  aws_region                = "${var.aws_region}"
   network_id                = "${var.network_id}"
   force_destroy_s3_buckets  = "${var.force_destroy_s3_buckets}"
   aws_azs                   = "${var.aws_azs}"
