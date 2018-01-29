@@ -2,6 +2,7 @@
   "min_packer_version": "0.12.0",
   "variables": {
     "aws_region": "us-east-1",
+    "extra_regions": "us-west-2",
     "vault_version": "0.9.0",
     "consul_version": "1.0.1",
     "consul_module_version": "v0.1.0",
@@ -15,6 +16,7 @@
     "instance_type": "t2.micro",
     "name": "ubuntu16-quorum-ami",
     "region": "{{user `aws_region`}}",
+    "ami_regions": "{{user `extra_regions`}}",
     "type": "amazon-ebs",
     "source_ami_filter": {
       "filters": {

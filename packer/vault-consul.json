@@ -2,6 +2,7 @@
   "min_packer_version": "0.12.0",
   "variables": {
     "aws_region": "us-east-1",
+    "extra_regions": "",
     "vault_version": "0.9.0",
     "consul_version": "1.0.1",
     "consul_module_version": "v0.1.0",
@@ -16,6 +17,7 @@
     "instance_type": "t2.micro",
     "name": "ubuntu16-ami",
     "region": "{{user `aws_region`}}",
+    "ami_regions": "{{user `extra_regions`}}",
     "type": "amazon-ebs",
     "source_ami_filter": {
       "filters": {
@@ -52,6 +54,17 @@
       "sudo mv /tmp/quorum-node.hcl /opt/vault/config/policies/",
       "sudo chown vault:vault /opt/vault/config/policies/*",
       "sudo chmod 644 /opt/vault/config/policies/*"
+    ]
+  },{
+    "type": "file",
+    "source": "data/regions.txt",
+    "destination": "/tmp/regions.txt"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/regions.txt /opt/vault/data/",
+      "sudo chown vault:vault /opt/vault/data/*",
+      "sudo chmod 644 /opt/vault/data/*"
     ]
   },{
     "type": "file",
