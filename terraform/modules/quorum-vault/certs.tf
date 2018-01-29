@@ -64,9 +64,9 @@ resource "null_resource" "vault_cert_s3_upload" {
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_server_certificate" "vault_certs" {
   name_prefix       = "vault-cert-network-${var.network_id}-"
-  certificate_body  = "${file("${module.cert_tool.public_key_file_path}")}"
-  certificate_chain = "${file("${module.cert_tool.ca_public_key_file_path}")}"
-  private_key       = "${file("${module.cert_tool.private_key_file_path}")}"
+  certificate_body  = "${module.cert_tool.public_key}"
+  certificate_chain = "${module.cert_tool.ca_public_key}"
+  private_key       = "${module.cert_tool.private_key}"
 
   depends_on = ["module.cert_tool"]
 }
