@@ -52,7 +52,6 @@ in the event new regions are added to AWS infrastructure or incompatibilities wi
 * eu-central-1
 * eu-west-1
 * eu-west-2
-* eu-west-3
 * ap-south-1
 * ap-northeast-1
 * ap-northeast-2

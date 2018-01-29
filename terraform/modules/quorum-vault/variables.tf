@@ -91,8 +91,6 @@ variable "aws_azs" {
     eu-west-1      = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
     # London
     eu-west-2      = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
-    # Paris
-    eu-west-3      = ["eu-west-3a", "eu-west-3b", "eu-west-3c"]
     # Mumbai
     ap-south-1     = ["ap-south-1a", "ap-south-1b"]
     # Tokyo
