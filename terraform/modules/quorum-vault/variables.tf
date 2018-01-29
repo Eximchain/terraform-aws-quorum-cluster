@@ -11,8 +11,8 @@ variable "cert_owner" {
   description = "The OS user to be made the owner of the local copy of the vault certificates. Should usually be set to the user operating the tool."
 }
 
-variable "aws_key_pair_id" {
-  description = "The ID of the AWS key pair to SSH into your instances"
+variable "public_key_path" {
+  description = "The path to the public key that will be used to SSH the instances in this region."
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

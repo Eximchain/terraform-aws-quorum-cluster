@@ -12,6 +12,14 @@ provider "tls" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# KEY PAIR FOR ALL INSTANCES
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_key_pair" "auth" {
+  key_name   = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
+  public_key = "${file(var.public_key_path)}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # S3FS BUCKET FOR CONSTELLATION PAYLOADS
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_s3_bucket" "quorum_constellation" {
@@ -23,7 +31,7 @@ resource "aws_s3_bucket" "quorum_constellation" {
 # QUORUM NODE AND BOOTNODE POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_policy" "quorum" {
-  name        = "quorum-policy-network-${var.network_id}"
+  name        = "quorum-policy-${var.aws_region}-network-${var.network_id}"
   description = "A policy for quorum nodes and bootnodes"
 
   policy = <<EOF

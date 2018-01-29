@@ -6,8 +6,8 @@ variable "aws_region" {
   description = "AWS region to launch servers."
 }
 
-variable "aws_key_pair_id" {
-  description = "The ID of the AWS key pair to SSH into your instances"
+variable "public_key_path" {
+  description = "The path to the public key that will be used to SSH the instances in this region."
 }
 
 variable "vote_threshold" {

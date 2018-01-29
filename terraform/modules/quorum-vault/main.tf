@@ -12,6 +12,14 @@ provider "null" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# KEY PAIR FOR ALL INSTANCES
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_key_pair" "auth" {
+  key_name   = "quorum-vault-network-${var.network_id}"
+  public_key = "${file(var.public_key_path)}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # VAULT CLUSTER NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_vpc" "vault" {
@@ -99,7 +107,7 @@ module "vault_cluster" {
   allowed_ssh_cidr_blocks            = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks        = ["0.0.0.0/0"]
   allowed_inbound_security_group_ids = []
-  ssh_key_name                       = "${var.aws_key_pair_id}"
+  ssh_key_name                       = "${aws_key_pair.auth.id}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -190,7 +198,7 @@ module "consul_cluster" {
 
   allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
-  ssh_key_name                = "${var.aws_key_pair_id}"
+  ssh_key_name                = "${aws_key_pair.auth.id}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

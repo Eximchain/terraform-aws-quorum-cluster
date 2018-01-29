@@ -3,6 +3,7 @@ set -eu -o pipefail
 
 OUTPUT_FILE=/opt/vault/bin/setup-vault.sh
 AWS_ACCOUNT_ID=$(curl http://169.254.169.254/latest/meta-data/iam/info | jq .InstanceProfileArn | cut -d: -f5)
+REGIONS=$(cat /opt/vault/data/regions.txt)
 
 NETWORK_ID=$1
 
@@ -36,10 +37,19 @@ vault mount -path=quorum -default-lease-ttl=30 -description="Keys and Addresses 
 QUORUM_NODE_POLICY=/opt/vault/config/policies/quorum-node.hcl
 vault policy-write quorum_node \$QUORUM_NODE_POLICY
 
-# Write policy to the role used by instances
-vault write auth/aws/role/$QUORUM_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$QUORUM_ROLE_NAME
-vault write auth/aws/role/$BOOTNODE_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$BOOTNODE_ROLE_NAME
+# Write policy to the roles used by instances
+EOF
 
+for region in ${REGIONS[@]}
+do
+    # TODO: Separate permissions of quorum nodes and bootnodes
+    QUORUM_ROLE_NAME="quorum-node-$region-network-$NETWORK_ID"
+    BOOTNODE_ROLE_NAME="bootnode-$region-network-$NETWORK_ID"
+    echo "vault write auth/aws/role/$QUORUM_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$QUORUM_ROLE_NAME" >> $OUTPUT_FILE
+    echo "vault write auth/aws/role/$BOOTNODE_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$BOOTNODE_ROLE_NAME" >> $OUTPUT_FILE
+done
+
+cat << EOF >> $OUTPUT_FILE
 # Revoke the root token to reduce security risk
 vault token-revoke \$ROOT_TOKEN
 EOF

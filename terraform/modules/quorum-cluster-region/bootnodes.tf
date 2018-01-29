@@ -41,7 +41,7 @@ resource "aws_instance" "bootnode" {
   ami       = "${lookup(var.bootnode_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_bootnode.rendered}"
 
-  key_name = "${var.aws_key_pair_id}"
+  key_name = "${aws_key_pair.auth.id}"
 
   iam_instance_profile = "${aws_iam_instance_profile.bootnode.name}"
 
@@ -165,7 +165,7 @@ resource "aws_security_group_rule" "bootnode_egress" {
 # BOOTNODE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "bootnode" {
-  name = "bootnode-network-${var.network_id}"
+  name = "bootnode-${var.aws_region}-network-${var.network_id}"
 
   assume_role_policy = <<EOF
 {
@@ -191,7 +191,7 @@ resource "aws_iam_role_policy_attachment" "bootnode" {
 }
 
 resource "aws_iam_instance_profile" "bootnode" {
-  name = "bootnode-network-${var.network_id}"
+  name = "bootnode-${var.aws_region}-network-${var.network_id}"
   role = "${aws_iam_role.bootnode.name}"
 }
 

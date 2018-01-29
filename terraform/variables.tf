@@ -107,7 +107,7 @@ variable "aws_azs" {
     # Ohio
     us-east-2      = ["us-east-2a", "us-east-2b", "us-east-2c"]
     # California
-    us-west-1      = ["us-west-1a", "us-west-1b", "us-west-1c"]
+    us-west-1      = ["us-west-1b", "us-west-1c"]
     # Oregon
     us-west-2      = ["us-west-2a", "us-west-2b", "us-west-2c"]
     # Frankfurt
@@ -119,9 +119,9 @@ variable "aws_azs" {
     # Mumbai
     ap-south-1     = ["ap-south-1a", "ap-south-1b"]
     # Tokyo
-    ap-northeast-1 = ["ap-northeast-1a", "ap-northeast-1b", "ap-northeast-1c"]
+    ap-northeast-1 = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
     # Seoul
-    ap-northeast-2 = ["ap-northeast-1a", "ap-northeast-1b"]
+    ap-northeast-2 = ["ap-northeast-2a", "ap-northeast-2c"]
     # Singapore
     ap-southeast-1 = ["ap-southeast-1a", "ap-southeast-1b"]
     # Sydney
@@ -129,7 +129,7 @@ variable "aws_azs" {
     # Canada
     ca-central-1   = ["ca-central-1a", "ca-central-1b"]
     # South America
-    sa-east-1      = ["sa-east-1a", "sa-east-1b", "sa-east-1c"]
+    sa-east-1      = ["sa-east-1a", "sa-east-1c"]
   }
 }
 

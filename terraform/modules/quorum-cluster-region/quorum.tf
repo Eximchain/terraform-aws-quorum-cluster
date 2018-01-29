@@ -43,7 +43,7 @@ resource "aws_instance" "quorum_maker_node" {
   ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
-  key_name = "${var.aws_key_pair_id}"
+  key_name = "${aws_key_pair.auth.id}"
 
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
@@ -92,7 +92,7 @@ resource "aws_instance" "quorum_validator_node" {
   ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
-  key_name = "${var.aws_key_pair_id}"
+  key_name = "${aws_key_pair.auth.id}"
 
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
@@ -141,7 +141,7 @@ resource "aws_instance" "quorum_observer_node" {
   ami       = "${lookup(var.quorum_amis, var.aws_region)}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
-  key_name = "${var.aws_key_pair_id}"
+  key_name = "${aws_key_pair.auth.id}"
 
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
 
@@ -271,7 +271,7 @@ resource "aws_security_group_rule" "quorum_egress" {
 # QUORUM NODE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "quorum_node" {
-  name = "quorum-node-network-${var.network_id}"
+  name = "quorum-node-${var.aws_region}-network-${var.network_id}"
 
   assume_role_policy = <<EOF
 {
@@ -297,6 +297,6 @@ resource "aws_iam_role_policy_attachment" "quorum_node" {
 }
 
 resource "aws_iam_instance_profile" "quorum_node" {
-  name = "quorum-node-network-${var.network_id}"
+  name = "quorum-node-${var.aws_region}-network-${var.network_id}"
   role = "${aws_iam_role.quorum_node.name}"
 }
