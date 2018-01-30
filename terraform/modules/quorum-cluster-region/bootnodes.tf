@@ -2,23 +2,30 @@
 # BOOTNODE NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_vpc" "bootnodes" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   cidr_block           = "172.16.0.0/16"
   enable_dns_hostnames = true
 }
 
 resource "aws_internet_gateway" "bootnodes" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   vpc_id = "${aws_vpc.bootnodes.id}"
 }
 
 resource "aws_route" "bootnodes" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   route_table_id         = "${aws_vpc.bootnodes.main_route_table_id}"
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = "${aws_internet_gateway.bootnodes.id}"
 }
 
 resource "aws_subnet" "bootnodes" {
+  count                   = "${lookup(var.bootnode_counts, var.aws_region, 0) > 0 ? length(var.aws_azs[var.aws_region]) : 0}"
+
   vpc_id                  = "${aws_vpc.bootnodes.id}"
-  count                   = "${length(var.aws_azs[var.aws_region])}"
   availability_zone       = "${element(var.aws_azs[var.aws_region], count.index)}"
   cidr_block              = "172.16.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
@@ -73,6 +80,8 @@ resource "aws_instance" "bootnode" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "template_file" "user_data_bootnode" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   template = "${file("${path.module}/user-data/user-data-bootnode.sh")}"
 
   vars {
@@ -90,12 +99,16 @@ data "template_file" "user_data_bootnode" {
 # BOOTNODE SECURITY GROUP
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_security_group" "bootnode" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   name        = "bootnodes"
   description = "Used for quorum bootnodes"
   vpc_id      = "${aws_vpc.bootnodes.id}"
 }
 
 resource "aws_security_group_rule" "bootnode_ssh" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.bootnode.id}"
   type              = "ingress"
 
@@ -107,6 +120,8 @@ resource "aws_security_group_rule" "bootnode_ssh" {
 }
 
 resource "aws_security_group_rule" "bootnode_constellation" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.bootnode.id}"
   type              = "ingress"
 
@@ -118,6 +133,8 @@ resource "aws_security_group_rule" "bootnode_constellation" {
 }
 
 resource "aws_security_group_rule" "bootnode_quorum" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.bootnode.id}"
   type              = "ingress"
 
@@ -129,6 +146,8 @@ resource "aws_security_group_rule" "bootnode_quorum" {
 }
 
 resource "aws_security_group_rule" "bootnode_rpc" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.bootnode.id}"
   type              = "ingress"
 
@@ -140,6 +159,8 @@ resource "aws_security_group_rule" "bootnode_rpc" {
 }
 
 resource "aws_security_group_rule" "bootnode_bootnode" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.bootnode.id}"
   type              = "ingress"
 
@@ -151,6 +172,8 @@ resource "aws_security_group_rule" "bootnode_bootnode" {
 }
 
 resource "aws_security_group_rule" "bootnode_egress" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.bootnode.id}"
   type              = "egress"
 
@@ -165,6 +188,8 @@ resource "aws_security_group_rule" "bootnode_egress" {
 # BOOTNODE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "bootnode" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   name = "bootnode-${var.aws_region}-network-${var.network_id}"
 
   assume_role_policy = <<EOF
@@ -186,11 +211,15 @@ EOF
 # BOOTNODE IAM POLICY ATTACHMENT AND INSTANCE PROFILE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy_attachment" "bootnode" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   role       = "${aws_iam_role.bootnode.name}"
   policy_arn = "${aws_iam_policy.quorum.arn}"
 }
 
 resource "aws_iam_instance_profile" "bootnode" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
   name = "bootnode-${var.aws_region}-network-${var.network_id}"
   role = "${aws_iam_role.bootnode.name}"
 }

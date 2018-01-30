@@ -2,25 +2,32 @@
 # QUORUM NODE NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_vpc" "quorum_cluster" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
 }
 
 # Create an internet gateway to give our subnet access to the outside world
 resource "aws_internet_gateway" "quorum_cluster" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   vpc_id = "${aws_vpc.quorum_cluster.id}"
 }
 
 # Grant the VPC internet access on its main route table
 resource "aws_route" "quorum_cluster" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   route_table_id         = "${aws_vpc.quorum_cluster.main_route_table_id}"
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = "${aws_internet_gateway.quorum_cluster.id}"
 }
 
 resource "aws_subnet" "quorum_cluster" {
+  count                   = "${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? length(var.aws_azs[var.aws_region]) : 0}"
+
   vpc_id                  = "${aws_vpc.quorum_cluster.id}"
-  count                   = "${length(var.aws_azs[var.aws_region])}"
   availability_zone       = "${element(var.aws_azs[var.aws_region], count.index)}"
   cidr_block              = "10.0.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
@@ -179,6 +186,8 @@ resource "aws_instance" "quorum_observer_node" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "template_file" "user_data_quorum" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   template = "${file("${path.module}/user-data/user-data-quorum.sh")}"
 
   vars {
@@ -196,12 +205,16 @@ data "template_file" "user_data_quorum" {
 # QUORUM NODE SECURITY GROUP
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_security_group" "quorum" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   name        = "quorum_nodes"
   description = "Used for quorum nodes"
   vpc_id      = "${aws_vpc.quorum_cluster.id}"
 }
 
 resource "aws_security_group_rule" "quorum_ssh" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.quorum.id}"
   type              = "ingress"
 
@@ -213,6 +226,8 @@ resource "aws_security_group_rule" "quorum_ssh" {
 }
 
 resource "aws_security_group_rule" "quorum_constellation" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.quorum.id}"
   type              = "ingress"
 
@@ -224,6 +239,8 @@ resource "aws_security_group_rule" "quorum_constellation" {
 }
 
 resource "aws_security_group_rule" "quorum_quorum" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.quorum.id}"
   type              = "ingress"
 
@@ -235,6 +252,8 @@ resource "aws_security_group_rule" "quorum_quorum" {
 }
 
 resource "aws_security_group_rule" "quorum_rpc" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.quorum.id}"
   type              = "ingress"
 
@@ -246,6 +265,8 @@ resource "aws_security_group_rule" "quorum_rpc" {
 }
 
 resource "aws_security_group_rule" "quorum_bootnode" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.quorum.id}"
   type              = "ingress"
 
@@ -257,6 +278,8 @@ resource "aws_security_group_rule" "quorum_bootnode" {
 }
 
 resource "aws_security_group_rule" "quorum_egress" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   security_group_id = "${aws_security_group.quorum.id}"
   type              = "egress"
 
@@ -271,6 +294,8 @@ resource "aws_security_group_rule" "quorum_egress" {
 # QUORUM NODE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "quorum_node" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   name = "quorum-node-${var.aws_region}-network-${var.network_id}"
 
   assume_role_policy = <<EOF
@@ -292,11 +317,15 @@ EOF
 # QUORUM NODE IAM POLICY ATTACHMENT AND INSTANCE PROFILE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy_attachment" "quorum_node" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   role       = "${aws_iam_role.quorum_node.name}"
   policy_arn = "${aws_iam_policy.quorum.arn}"
 }
 
 resource "aws_iam_instance_profile" "quorum_node" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
   name = "quorum-node-${var.aws_region}-network-${var.network_id}"
   role = "${aws_iam_role.quorum_node.name}"
 }
