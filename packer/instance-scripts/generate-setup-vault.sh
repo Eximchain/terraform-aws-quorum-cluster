@@ -45,8 +45,8 @@ do
     # TODO: Separate permissions of quorum nodes and bootnodes
     QUORUM_ROLE_NAME="quorum-node-$region-network-$NETWORK_ID"
     BOOTNODE_ROLE_NAME="bootnode-$region-network-$NETWORK_ID"
-    echo "vault write auth/aws/role/$QUORUM_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$QUORUM_ROLE_NAME" >> $OUTPUT_FILE
-    echo "vault write auth/aws/role/$BOOTNODE_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$BOOTNODE_ROLE_NAME" >> $OUTPUT_FILE
+    echo "vault write auth/aws/role/$QUORUM_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$QUORUM_ROLE_NAME || true" >> $OUTPUT_FILE
+    echo "vault write auth/aws/role/$BOOTNODE_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$BOOTNODE_ROLE_NAME || true" >> $OUTPUT_FILE
 done
 
 cat << EOF >> $OUTPUT_FILE
