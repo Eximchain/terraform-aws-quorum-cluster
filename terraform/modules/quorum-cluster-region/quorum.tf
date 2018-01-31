@@ -25,10 +25,10 @@ resource "aws_route" "quorum_cluster" {
 }
 
 resource "aws_subnet" "quorum_cluster" {
-  count                   = "${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? length(var.aws_azs[var.aws_region]) : 0}"
+  count                   = "${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? length(data.aws_availability_zones.available.names) : 0}"
 
   vpc_id                  = "${aws_vpc.quorum_cluster.id}"
-  availability_zone       = "${element(var.aws_azs[var.aws_region], count.index)}"
+  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
   cidr_block              = "10.0.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
 }

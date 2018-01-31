@@ -8,7 +8,6 @@ module "quorum_cluster" {
   cert_owner                = "${var.cert_owner}"
   network_id                = "${var.network_id}"
   force_destroy_s3_buckets  = "${var.force_destroy_s3_buckets}"
-  aws_azs                   = "${var.aws_azs}"
   vault_cluster_size        = "${var.vault_cluster_size}"
   vault_instance_type       = "${var.vault_instance_type}"
   consul_cluster_size       = "${var.consul_cluster_size}"

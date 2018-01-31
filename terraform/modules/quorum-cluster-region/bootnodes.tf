@@ -23,10 +23,10 @@ resource "aws_route" "bootnodes" {
 }
 
 resource "aws_subnet" "bootnodes" {
-  count                   = "${lookup(var.bootnode_counts, var.aws_region, 0) > 0 ? length(var.aws_azs[var.aws_region]) : 0}"
+  count                   = "${lookup(var.bootnode_counts, var.aws_region, 0) > 0 ? length(data.aws_availability_zones.available.names) : 0}"
 
   vpc_id                  = "${aws_vpc.bootnodes.id}"
-  availability_zone       = "${element(var.aws_azs[var.aws_region], count.index)}"
+  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
   cidr_block              = "172.16.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
 }

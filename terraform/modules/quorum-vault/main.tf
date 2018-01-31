@@ -22,6 +22,10 @@ resource "aws_key_pair" "auth" {
 # ---------------------------------------------------------------------------------------------------------------------
 # VAULT CLUSTER NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 resource "aws_vpc" "vault" {
   cidr_block           = "192.168.0.0/16"
   enable_dns_hostnames = true
@@ -39,8 +43,8 @@ resource "aws_route" "vault" {
 
 resource "aws_subnet" "vault" {
   vpc_id                  = "${aws_vpc.vault.id}"
-  count                   = "${length(var.aws_azs[var.aws_region])}"
-  availability_zone       = "${element(var.aws_azs[var.aws_region], count.index)}"
+  count                   = "${length(data.aws_availability_zones.available.names)}"
+  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
   cidr_block              = "192.168.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
 }

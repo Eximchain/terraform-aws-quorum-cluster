@@ -20,7 +20,6 @@ module "quorum_vault" {
   public_key_path = "${var.public_key_path}"
 
   aws_region    = "${var.vault_region}"
-  aws_azs       = "${var.aws_azs}"
   vault_port    = "${var.vault_port}"
   network_id    = "${var.network_id}"
   cert_org_name = "${var.cert_org_name}"
@@ -55,8 +54,6 @@ module "quorum_cluster_us_east_1" {
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
-
-  aws_azs = "${var.aws_azs}"
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
@@ -93,8 +90,6 @@ module "quorum_cluster_us_east_2" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  aws_azs = "${var.aws_azs}"
-
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
@@ -129,8 +124,6 @@ module "quorum_cluster_us_west_1" {
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
-
-  aws_azs = "${var.aws_azs}"
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
@@ -167,8 +160,6 @@ module "quorum_cluster_us_west_2" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  aws_azs = "${var.aws_azs}"
-
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
@@ -203,8 +194,6 @@ module "quorum_cluster_eu_central_1" {
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
-
-  aws_azs = "${var.aws_azs}"
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
@@ -241,8 +230,6 @@ module "quorum_cluster_eu_west_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  aws_azs = "${var.aws_azs}"
-
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
@@ -277,8 +264,6 @@ module "quorum_cluster_eu_west_2" {
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
-
-  aws_azs = "${var.aws_azs}"
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
@@ -315,8 +300,6 @@ module "quorum_cluster_ap_south_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  aws_azs = "${var.aws_azs}"
-
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
@@ -351,8 +334,6 @@ module "quorum_cluster_ap_northeast_1" {
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
-
-  aws_azs = "${var.aws_azs}"
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
@@ -389,8 +370,6 @@ module "quorum_cluster_ap_northeast_2" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  aws_azs = "${var.aws_azs}"
-
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
@@ -425,8 +404,6 @@ module "quorum_cluster_ap_southeast_1" {
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
-
-  aws_azs = "${var.aws_azs}"
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
@@ -463,8 +440,6 @@ module "quorum_cluster_ap_southeast_2" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  aws_azs = "${var.aws_azs}"
-
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
@@ -500,8 +475,6 @@ module "quorum_cluster_ca_central_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  aws_azs = "${var.aws_azs}"
-
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
@@ -536,8 +509,6 @@ module "quorum_cluster_sa_east_1" {
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
-
-  aws_azs = "${var.aws_azs}"
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
