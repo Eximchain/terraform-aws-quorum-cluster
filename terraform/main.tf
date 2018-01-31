@@ -15,6 +15,8 @@ module "quorum_cluster" {
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
   vote_threshold            = "${var.vote_threshold}"
+  min_block_time            = "${var.min_block_time}"
+  max_block_time            = "${var.max_block_time}"
   bootnode_counts           = "${var.bootnode_counts}"
   maker_node_counts         = "${var.maker_node_counts}"
   validator_node_counts     = "${var.validator_node_counts}"

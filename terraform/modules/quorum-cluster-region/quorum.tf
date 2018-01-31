@@ -75,6 +75,8 @@ resource "aws_instance" "quorum_maker_node" {
       "sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'",
       "echo 'maker' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
+      "echo '${var.min_block_time}' | sudo tee /opt/quorum/info/min-block-time.txt",
+      "echo '${var.max_block_time}' | sudo tee /opt/quorum/info/max-block-time.txt",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
@@ -124,6 +126,8 @@ resource "aws_instance" "quorum_validator_node" {
       "sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'",
       "echo 'validator' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
+      "echo '${var.min_block_time}' | sudo tee /opt/quorum/info/min-block-time.txt",
+      "echo '${var.max_block_time}' | sudo tee /opt/quorum/info/max-block-time.txt",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
@@ -173,6 +177,8 @@ resource "aws_instance" "quorum_observer_node" {
       "sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'",
       "echo 'observer' | sudo tee /opt/quorum/info/role.txt",
       "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
+      "echo '${var.min_block_time}' | sudo tee /opt/quorum/info/min-block-time.txt",
+      "echo '${var.max_block_time}' | sudo tee /opt/quorum/info/max-block-time.txt",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",

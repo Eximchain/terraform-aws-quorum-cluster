@@ -21,10 +21,10 @@ function generate_quorum_supervisor_config {
 
     local NETID=$(cat /opt/quorum/info/network-id.txt)
     local REGIONS=$(cat /opt/quorum/info/regions.txt)
+    local MIN_BLOCK_TIME=$(cat /opt/quorum/info/min-block-time.txt)
+    local MAX_BLOCK_TIME=$(cat /opt/quorum/info/max-block-time.txt)
 
     local VERBOSITY=3
-    local MIN_BLOCK_TIME=2
-    local MAX_BLOCK_TIME=5
     local PW_FILE="/tmp/geth-pw"
     local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --verbosity $VERBOSITY --jitvm=false --privateconfigpath $CONSTELLATION_CONFIG"
 
