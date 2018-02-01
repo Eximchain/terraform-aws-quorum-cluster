@@ -7,6 +7,7 @@ module "quorum_cluster" {
   private_key_path          = "${var.private_key_path}"
   cert_owner                = "${var.cert_owner}"
   network_id                = "${var.network_id}"
+  gas_limit                 = "${var.gas_limit}"
   force_destroy_s3_buckets  = "${var.force_destroy_s3_buckets}"
   vault_cluster_size        = "${var.vault_cluster_size}"
   vault_instance_type       = "${var.vault_instance_type}"

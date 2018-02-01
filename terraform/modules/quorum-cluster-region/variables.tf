@@ -69,6 +69,11 @@ DESCRIPTION
   default = 64813
 }
 
+variable "gas_limit" {
+  description = "The limit on gas that can be used in a single block"
+  default     = 804247552
+}
+
 variable "vault_port" {
   description = "The port that vault will be accessible on."
   default     = 8200

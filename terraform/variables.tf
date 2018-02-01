@@ -46,6 +46,11 @@ DESCRIPTION
   default = 64813
 }
 
+variable "gas_limit" {
+  description = "The limit on gas that can be used in a single block"
+  default     = 804247552
+}
+
 variable "public_key_path" {
   description = <<DESCRIPTION
 Path to the SSH public key to be used for authentication.

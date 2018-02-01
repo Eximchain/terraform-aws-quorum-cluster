@@ -13,13 +13,14 @@ def parse_args():
     parser.add_argument('--validators', dest='validators', required=True, nargs='*', help="A list of addresses for validator nodes")
     parser.add_argument('--observers', dest='observers', required=True, nargs='*', help="A list of addresses for observer nodes that should be funded")
     parser.add_argument('--vote-threshold', dest='vote_threshold', required=True, type=int, help="The number of votes required to confirm a block")
+    parser.add_argument('--gas-limit', dest='gas_limit', required=True, type=int, help="The maximum gas that can be included in a single block")
     parser.add_argument('--out-file', dest='out_file', default='/opt/quorum/private/quorum-config.json', help="The command line output of 'vault read -format=json quorum/makers'")
     return parser.parse_args()
 
 def main():
     args = parse_args()
 
-    output = {"threshold": args.vote_threshold, "voters": args.validators, "makers": args.makers, "fundedObservers": args.observers}
+    output = {"threshold": args.vote_threshold, "gasLimit": hex(args.gas_limit).upper(), "voters": args.validators, "makers": args.makers, "fundedObservers": args.observers}
 
     with open(args.out_file, 'w') as out_file:
         json.dump(output, out_file, indent=2, separators=(',', ': '))

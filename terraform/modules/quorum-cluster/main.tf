@@ -45,6 +45,7 @@ module "quorum_cluster_us_east_1" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -82,6 +83,7 @@ module "quorum_cluster_us_east_2" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -119,6 +121,7 @@ module "quorum_cluster_us_west_1" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -156,6 +159,7 @@ module "quorum_cluster_us_west_2" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -193,6 +197,7 @@ module "quorum_cluster_eu_central_1" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -230,6 +235,7 @@ module "quorum_cluster_eu_west_1" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -267,6 +273,7 @@ module "quorum_cluster_eu_west_2" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -304,6 +311,7 @@ module "quorum_cluster_ap_south_1" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -341,6 +349,7 @@ module "quorum_cluster_ap_northeast_1" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -378,6 +387,7 @@ module "quorum_cluster_ap_northeast_2" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -415,6 +425,7 @@ module "quorum_cluster_ap_southeast_1" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -452,6 +463,7 @@ module "quorum_cluster_ap_southeast_2" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -489,6 +501,7 @@ module "quorum_cluster_ca_central_1" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
@@ -526,6 +539,7 @@ module "quorum_cluster_sa_east_1" {
   public_key_path = "${var.public_key_path}"
 
   network_id     = "${var.network_id}"
+  gas_limit      = "${var.gas_limit}"
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
