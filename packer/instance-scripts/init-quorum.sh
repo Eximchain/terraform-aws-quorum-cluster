@@ -73,6 +73,34 @@ stopsignal=INT
 user=ubuntu" | sudo tee /etc/supervisor/conf.d/quorum-supervisor.conf
 }
 
+function generate_quorum_crash_listener {  
+    local METRIC_NAME="QuorumNodeCrashes"
+    echo "[eventlistener:crashquorum]
+command=/opt/quorum/bin/crashcloudwatch.py -p quorum -m $METRIC_NAME
+stdout_logfile=/opt/quorum/log/crashquorum-stdout.log
+stderr_logfile=/opt/quorum/log/crashquorum-error.log
+numprocs=1
+autostart=true
+autorestart=unexpected
+stopsignal=QUIT
+user=ubuntu
+events=PROCESS_STATE" | sudo tee /etc/supervisor/conf.d/crashquorum-supervisor.conf
+}
+
+function generate_constellation_crash_listener {  
+    local METRIC_NAME="ConstellationNodeCrashes"
+    echo "[eventlistener:crashconstellation]
+command=/opt/quorum/bin/crashcloudwatch.py -p constellation -m $METRIC_NAME
+stdout_logfile=/opt/quorum/log/crashconstellation-stdout.log
+stderr_logfile=/opt/quorum/log/crashconstellation-error.log
+numprocs=1
+autostart=true
+autorestart=unexpected
+stopsignal=QUIT
+user=ubuntu
+events=PROCESS_STATE" | sudo tee /etc/supervisor/conf.d/crashconstellation-supervisor.conf
+}
+
 function complete_constellation_config {
     local HOSTNAME=$1
     local CONSTELLATION_CONFIG_PATH=$2
@@ -290,6 +318,8 @@ sleep 5
 # Generate supervisor config to run quorum
 NUM_MAKERS=$(cat /opt/quorum/info/num-makers.txt)
 generate_quorum_supervisor_config $ADDRESS $GETH_PW $HOSTNAME $ROLE /opt/quorum/constellation/config.conf
+generate_quorum_crash_listener
+generate_constellation_crash_listener
 
 # Remove the config that runs this and run quorum
 sudo rm /etc/supervisor/conf.d/init-quorum-supervisor.conf

@@ -78,6 +78,10 @@
     "destination": "/tmp/fill-node-counts.py"
   },{
     "type": "file",
+    "source": "instance-scripts/crashcloudwatch.py",
+    "destination": "/tmp/crashcloudwatch.py"
+  },{
+    "type": "file",
     "source": "instance-scripts/private-transaction-test-sender.sh",
     "destination": "/tmp/private-transaction-test-sender.sh"
   },{
@@ -91,6 +95,7 @@
       "sudo mv /tmp/generate-run-init-quorum /opt/quorum/bin/",
       "sudo mv /tmp/generate-quorum-config.py /opt/quorum/bin/",
       "sudo mv /tmp/fill-node-counts.py /opt/quorum/bin/",
+      "sudo mv /tmp/crashcloudwatch.py /opt/quorum/bin/",
       "sudo mv /tmp/private-transaction-test-sender.sh /opt/quorum/bin/",
       "sudo mv /tmp/private-transaction-test-recipient.sh /opt/quorum/bin/",
       "sudo chmod 744 /opt/quorum/bin/*"

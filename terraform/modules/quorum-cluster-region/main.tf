@@ -77,6 +77,10 @@ resource "aws_iam_policy" "quorum" {
       "${var.vault_cert_bucket_arn}/ca.crt.pem",
       "${var.vault_cert_bucket_arn}/vault.crt.pem"
     ]
+  },{
+    "Effect": "Allow",
+    "Action": ["cloudwatch:PutMetricData"],
+    "Resource": "*"
   }]
 }
 EOF
