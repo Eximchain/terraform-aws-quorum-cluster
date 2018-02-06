@@ -333,9 +333,14 @@ sleep 5
 # Generate supervisor config to run quorum
 NUM_MAKERS=$(cat /opt/quorum/info/num-makers.txt)
 generate_quorum_supervisor_config $ADDRESS $GETH_PW $HOSTNAME $ROLE /opt/quorum/constellation/config.conf
-generate_quorum_crash_listener
-generate_constellation_crash_listener
-generate_cloudwatch_txpool_supervisor_config $HOSTNAME 22000
+
+# Start processes that generate CloudWatch metrics
+if [ $(cat /opt/quorum/info/generate-metrics.txt) == "1" ]
+then
+    generate_quorum_crash_listener
+    generate_constellation_crash_listener
+    generate_cloudwatch_txpool_supervisor_config $HOSTNAME 22000
+fi
 
 # Remove the config that runs this and run quorum
 sudo rm /etc/supervisor/conf.d/init-quorum-supervisor.conf

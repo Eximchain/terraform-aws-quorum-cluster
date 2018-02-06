@@ -4,6 +4,7 @@ cert_owner                = "FIXME_USER"
 key_name                  = "quorum-cluster"
 network_id                = 64813
 force_destroy_s3_buckets  = true
+generate_metrics          = true
 vault_cluster_size        = 1
 vault_instance_type       = "t2.small"
 consul_cluster_size       = 1

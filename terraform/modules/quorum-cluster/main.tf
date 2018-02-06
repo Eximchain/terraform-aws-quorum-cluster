@@ -41,6 +41,7 @@ module "quorum_cluster_us_east_1" {
   aws_region = "us-east-1"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -79,6 +80,7 @@ module "quorum_cluster_us_east_2" {
   aws_region = "us-east-2"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -117,6 +119,7 @@ module "quorum_cluster_us_west_1" {
   aws_region = "us-west-1"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -155,6 +158,7 @@ module "quorum_cluster_us_west_2" {
   aws_region = "us-west-2"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -193,6 +197,7 @@ module "quorum_cluster_eu_central_1" {
   aws_region = "eu-central-1"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -231,6 +236,7 @@ module "quorum_cluster_eu_west_1" {
   aws_region = "eu-west-1"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -269,6 +275,7 @@ module "quorum_cluster_eu_west_2" {
   aws_region = "eu-west-2"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -307,6 +314,7 @@ module "quorum_cluster_ap_south_1" {
   aws_region = "ap-south-1"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -345,6 +353,7 @@ module "quorum_cluster_ap_northeast_1" {
   aws_region = "ap-northeast-1"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -383,6 +392,7 @@ module "quorum_cluster_ap_northeast_2" {
   aws_region = "ap-northeast-2"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -421,6 +431,7 @@ module "quorum_cluster_ap_southeast_1" {
   aws_region = "ap-southeast-1"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -459,6 +470,7 @@ module "quorum_cluster_ap_southeast_2" {
   aws_region = "ap-southeast-2"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -497,6 +509,7 @@ module "quorum_cluster_ca_central_1" {
   aws_region = "ca-central-1"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 
@@ -535,6 +548,7 @@ module "quorum_cluster_sa_east_1" {
   aws_region = "sa-east-1"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  generate_metrics         = "${var.generate_metrics}"
 
   public_key_path = "${var.public_key_path}"
 

@@ -84,6 +84,11 @@ variable "force_destroy_s3_buckets" {
   default     = false
 }
 
+variable "generate_metrics" {
+  description = "Whether or not to generate CloudWatch metrics from the cluster. Set to false to disable for cost savings."
+  default     = true
+}
+
 variable "bootnode_instance_type" {
   description = "The EC2 instance type to use for bootnodes"
   default     = "t2.small"

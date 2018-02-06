@@ -81,6 +81,11 @@ variable "force_destroy_s3_buckets" {
   default     = false
 }
 
+variable "generate_metrics" {
+  description = "Whether or not to generate CloudWatch metrics from the cluster. Set to false to disable for cost savings."
+  default     = true
+}
+
 variable "cert_org_name" {
   description = "The organization to associate with the vault certificates."
   default     = "Example Co."
