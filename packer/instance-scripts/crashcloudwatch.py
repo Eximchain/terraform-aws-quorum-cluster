@@ -66,10 +66,15 @@ def usage(exitstatus=255):
     print(doc)
     sys.exit(exitstatus)
 
-def read_region():
-    with open("/opt/quorum/info/aws-region.txt", 'r') as f:
+def read_data_file(filename):
+    with open(filename, 'r') as f:
         return f.readline().strip()
 
+def read_region():
+    return read_data_file("/opt/quorum/info/aws-region.txt")
+
+def read_network_id():
+    return read_data_file("/opt/quorum/info/network-id.txt")
 
 class CrashCloudWatch:
 
@@ -77,6 +82,7 @@ class CrashCloudWatch:
         self.programs = programs
         self.any = any
         self.metric = metric
+        self.network_id = read_network_id()
         self.stdin = sys.stdin
         self.stdout = sys.stdout
         self.stderr = sys.stderr
@@ -121,7 +127,11 @@ class CrashCloudWatch:
         namespace = 'Quorum'
         metric_data = [{
             'MetricName': metric,
-            'Value': 1
+            'Value': 1,
+            'Dimensions': [{
+                'Name': 'NetworkID',
+                'Value': self.network_id
+            }]
         }]
         self.client.put_metric_data(Namespace=namespace, MetricData=metric_data)
 
