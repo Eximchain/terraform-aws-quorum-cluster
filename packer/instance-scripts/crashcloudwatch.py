@@ -31,9 +31,8 @@
 #
 # [eventlistener:crashmail]
 # command =
-#     /usr/bin/crashmail
-#         -o hostname -a -m notify-on-crash@domain.com
-#         -s '/usr/sbin/sendmail -t -i -f crash-notifier@domain.com'
+#     /usr/bin/crashcloudwatch
+#         -a -m MyCustomMetric
 # events=PROCESS_STATE
 
 doc = """\
@@ -73,6 +72,9 @@ def read_data_file(filename):
 def read_region():
     return read_data_file("/opt/quorum/info/aws-region.txt")
 
+def read_primary_region():
+    return read_data_file("/opt/quorum/info/primary-region.txt")
+
 def read_network_id():
     return read_data_file("/opt/quorum/info/network-id.txt")
 
@@ -82,11 +84,12 @@ class CrashCloudWatch:
         self.programs = programs
         self.any = any
         self.metric = metric
+        self.region = read_region()
         self.network_id = read_network_id()
         self.stdin = sys.stdin
         self.stdout = sys.stdout
         self.stderr = sys.stderr
-        self.client = boto3.client('cloudwatch', region_name=read_region())
+        self.client = boto3.client('cloudwatch', region_name=read_primary_region())
 
     def runforever(self, test=False):
         while 1:
