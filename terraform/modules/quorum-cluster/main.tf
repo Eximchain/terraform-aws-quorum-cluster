@@ -19,7 +19,7 @@ module "quorum_vault" {
   cert_owner      = "${var.cert_owner}"
   public_key_path = "${var.public_key_path}"
 
-  aws_region    = "${var.vault_region}"
+  aws_region    = "${var.primary_region}"
   vault_port    = "${var.vault_port}"
   network_id    = "${var.network_id}"
   cert_org_name = "${var.cert_org_name}"

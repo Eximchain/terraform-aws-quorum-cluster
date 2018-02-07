@@ -66,6 +66,11 @@ variable "private_key_path" {
   default     = "~/.ssh/quorum"
 }
 
+variable "primary_region" {
+  description = "The AWS region that single-region resources like the vault and consul clusters will be placed in."
+  default     = "us-east-1"
+}
+
 variable "vault_port" {
   description = "The port that vault will be accessible on."
   default     = 8200
