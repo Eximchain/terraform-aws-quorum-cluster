@@ -79,6 +79,7 @@ resource "aws_instance" "quorum_maker_node" {
       "echo '${var.max_block_time}' | sudo tee /opt/quorum/info/max-block-time.txt",
       "echo '${var.gas_limit}' | sudo tee /opt/quorum/info/gas-limit.txt",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
+      "echo '${var.primary_region}' | sudo tee /opt/quorum/info/primary-region.txt",
       "echo '${var.generate_metrics}' | sudo tee /opt/quorum/info/generate-metrics.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
@@ -132,6 +133,7 @@ resource "aws_instance" "quorum_validator_node" {
       "echo '${var.max_block_time}' | sudo tee /opt/quorum/info/max-block-time.txt",
       "echo '${var.gas_limit}' | sudo tee /opt/quorum/info/gas-limit.txt",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
+      "echo '${var.primary_region}' | sudo tee /opt/quorum/info/primary-region.txt",
       "echo '${var.generate_metrics}' | sudo tee /opt/quorum/info/generate-metrics.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
@@ -185,6 +187,7 @@ resource "aws_instance" "quorum_observer_node" {
       "echo '${var.max_block_time}' | sudo tee /opt/quorum/info/max-block-time.txt",
       "echo '${var.gas_limit}' | sudo tee /opt/quorum/info/gas-limit.txt",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
+      "echo '${var.primary_region}' | sudo tee /opt/quorum/info/primary-region.txt",
       "echo '${var.generate_metrics}' | sudo tee /opt/quorum/info/generate-metrics.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",

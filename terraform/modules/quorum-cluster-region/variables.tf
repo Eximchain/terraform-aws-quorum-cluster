@@ -6,6 +6,10 @@ variable "aws_region" {
   description = "AWS region to launch servers."
 }
 
+variable "primary_region" {
+  description = "The AWS region that single-region resources like the vault and consul clusters will be placed in."
+}
+
 variable "public_key_path" {
   description = "The path to the public key that will be used to SSH the instances in this region."
 }

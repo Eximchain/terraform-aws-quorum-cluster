@@ -40,6 +40,8 @@ module "quorum_cluster_us_east_1" {
 
   aws_region = "us-east-1"
 
+  primary_region = "${var.primary_region}"
+
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
 
@@ -78,6 +80,8 @@ module "quorum_cluster_us_east_2" {
   source = "../quorum-cluster-region"
 
   aws_region = "us-east-2"
+
+  primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
@@ -118,6 +122,8 @@ module "quorum_cluster_us_west_1" {
 
   aws_region = "us-west-1"
 
+  primary_region = "${var.primary_region}"
+
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
 
@@ -156,6 +162,8 @@ module "quorum_cluster_us_west_2" {
   source = "../quorum-cluster-region"
 
   aws_region = "us-west-2"
+
+  primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
@@ -196,6 +204,8 @@ module "quorum_cluster_eu_central_1" {
 
   aws_region = "eu-central-1"
 
+  primary_region = "${var.primary_region}"
+
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
 
@@ -234,6 +244,8 @@ module "quorum_cluster_eu_west_1" {
   source = "../quorum-cluster-region"
 
   aws_region = "eu-west-1"
+
+  primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
@@ -274,6 +286,8 @@ module "quorum_cluster_eu_west_2" {
 
   aws_region = "eu-west-2"
 
+  primary_region = "${var.primary_region}"
+
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
 
@@ -312,6 +326,8 @@ module "quorum_cluster_ap_south_1" {
   source = "../quorum-cluster-region"
 
   aws_region = "ap-south-1"
+
+  primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
@@ -352,6 +368,8 @@ module "quorum_cluster_ap_northeast_1" {
 
   aws_region = "ap-northeast-1"
 
+  primary_region = "${var.primary_region}"
+
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
 
@@ -390,6 +408,8 @@ module "quorum_cluster_ap_northeast_2" {
   source = "../quorum-cluster-region"
 
   aws_region = "ap-northeast-2"
+
+  primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
@@ -430,6 +450,8 @@ module "quorum_cluster_ap_southeast_1" {
 
   aws_region = "ap-southeast-1"
 
+  primary_region = "${var.primary_region}"
+
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
 
@@ -468,6 +490,8 @@ module "quorum_cluster_ap_southeast_2" {
   source = "../quorum-cluster-region"
 
   aws_region = "ap-southeast-2"
+
+  primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
@@ -508,6 +532,8 @@ module "quorum_cluster_ca_central_1" {
 
   aws_region = "ca-central-1"
 
+  primary_region = "${var.primary_region}"
+
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
 
@@ -546,6 +572,8 @@ module "quorum_cluster_sa_east_1" {
   source = "../quorum-cluster-region"
 
   aws_region = "sa-east-1"
+
+  primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"

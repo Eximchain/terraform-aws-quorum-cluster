@@ -68,6 +68,7 @@ resource "aws_instance" "bootnode" {
       "echo '${jsonencode(var.bootnode_counts)}' | sudo tee /opt/quorum/info/bootnode-counts.json",
       "sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info' --bootnode",
       "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
+      "echo '${var.primary_region}' | sudo tee /opt/quorum/info/primary-region.txt",
       # This should be last because init scripts wait for this file to determine terraform is done provisioning
       "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
     ]
