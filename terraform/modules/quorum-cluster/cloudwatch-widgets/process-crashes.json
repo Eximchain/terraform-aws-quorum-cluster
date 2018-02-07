@@ -1,0 +1,34 @@
+{
+  "type": "metric",
+  "x": 12,
+  "y": 1,
+  "width": 12,
+  "height": 6,
+  "properties": {
+    "metrics": [
+      [
+        "Quorum",
+        "QuorumNodeCrashes",
+        "NetworkID",
+        "${network_id}"
+      ],[
+        "Quorum",
+        "ConstellationNodeCrashes",
+        "NetworkID",
+        "${network_id}"
+      ]
+    ],
+    "period": 60,
+    "stat": "Sum",
+    "region": "${primary_region}",
+    "title": "Process Crashes",
+    "yAxis": {
+        "left": {
+            "min": 0
+        },
+        "right": {
+            "min": 0
+        }
+    }
+  }
+}
