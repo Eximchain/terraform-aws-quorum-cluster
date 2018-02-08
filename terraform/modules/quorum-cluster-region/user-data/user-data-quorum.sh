@@ -19,6 +19,11 @@ exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
 # Download vault certs from s3
 aws configure set s3.signature_version s3v4
+while [ -z "$(aws s3 ls s3://${vault_cert_bucket}/ca.crt.pem)" ]
+do
+    echo "S3 objects not found, waiting and retrying"
+    sleep 5
+done
 aws s3 cp s3://${vault_cert_bucket}/ca.crt.pem $VAULT_TLS_CERT_DIR
 aws s3 cp s3://${vault_cert_bucket}/vault.crt.pem $VAULT_TLS_CERT_DIR
 
