@@ -3,6 +3,7 @@
   "variables": {
     "aws_region": "us-east-1",
     "extra_regions": "",
+    "ami_groups": "all",
     "vault_version": "0.9.0",
     "consul_version": "1.0.1",
     "consul_module_version": "v0.1.0",
@@ -18,6 +19,7 @@
     "name": "ubuntu16-ami",
     "region": "{{user `aws_region`}}",
     "ami_regions": "{{user `extra_regions`}}",
+    "ami_groups": "{{user `ami_groups`}}",
     "type": "amazon-ebs",
     "source_ami_filter": {
       "filters": {
