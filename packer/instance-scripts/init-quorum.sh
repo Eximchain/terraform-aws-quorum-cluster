@@ -28,14 +28,11 @@ function generate_quorum_supervisor_config {
     local PW_FILE="/tmp/geth-pw"
     local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --verbosity $VERBOSITY --jitvm=false --privateconfigpath $CONSTELLATION_CONFIG"
 
-    # Assemble list of bootnodes and check number of makers
+    # Assemble list of bootnodes
     local BOOTNODES=""
-    local TOTAL_MAKERS=0
     for region in ${REGIONS[@]}
     do
         local NUM_BOOTNODES=$(cat /opt/quorum/info/bootnode-counts/${region}.txt)
-        local NUM_MAKERS=$(cat /opt/quorum/info/maker-counts/${region}.txt)
-        local TOTAL_MAKERS=$(( NUM_MAKERS + TOTAL_MAKERS ))
         for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
         do
             BOOTNODES="$BOOTNODES,$(vault read -field=enode quorum/bootnodes/addresses/${region}/$index)"
@@ -46,10 +43,6 @@ function generate_quorum_supervisor_config {
     if [ "$ROLE" == "maker" ]
     then
         ARGS="$GLOBAL_ARGS --blockmakeraccount \"$ADDRESS\" --blockmakerpassword \"$PASSWORD\" --minblocktime $MIN_BLOCK_TIME --maxblocktime $MAX_BLOCK_TIME"
-        if [ $TOTAL_MAKERS -eq 1 ]
-        then
-            ARGS="$ARGS --singleblockmaker"
-        fi
     elif [ "$ROLE" == "validator" ]
     then
         ARGS="$GLOBAL_ARGS --voteaccount \"$ADDRESS\" --votepassword \"$PASSWORD\""
