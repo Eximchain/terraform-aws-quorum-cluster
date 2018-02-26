@@ -12,6 +12,7 @@ consul_cluster_size       = 1
 consul_instance_type      = "t2.small"
 bootnode_instance_type    = "t2.small"
 quorum_node_instance_type = "t2.medium"
+node_volume_size          = 20
 vote_threshold            = 1
 min_block_time            = 2
 max_block_time            = 5

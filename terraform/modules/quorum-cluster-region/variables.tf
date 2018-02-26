@@ -103,6 +103,11 @@ variable "quorum_node_instance_type" {
   default     = "t2.small"
 }
 
+variable "node_volume_size" {
+  description = "The size of the EBS volume for a quorum node in GB"
+  default     = 20
+}
+
 variable "bootnode_counts" {
   description = "A mapping from region to the number of bootnodes to launch in that region"
   type        = "map"

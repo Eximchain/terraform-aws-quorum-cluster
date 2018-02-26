@@ -64,6 +64,8 @@ module "quorum_cluster_us_east_1" {
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
+  node_volume_size = "${var.node_volume_size}"
+
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
 
@@ -104,6 +106,8 @@ module "quorum_cluster_us_east_2" {
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
+
+  node_volume_size = "${var.node_volume_size}"
 
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
@@ -146,6 +150,8 @@ module "quorum_cluster_us_west_1" {
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
+  node_volume_size = "${var.node_volume_size}"
+
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
 
@@ -186,6 +192,8 @@ module "quorum_cluster_us_west_2" {
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
+
+  node_volume_size = "${var.node_volume_size}"
 
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
@@ -228,6 +236,8 @@ module "quorum_cluster_eu_central_1" {
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
+  node_volume_size = "${var.node_volume_size}"
+
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
 
@@ -268,6 +278,8 @@ module "quorum_cluster_eu_west_1" {
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
+
+  node_volume_size = "${var.node_volume_size}"
 
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
@@ -310,6 +322,8 @@ module "quorum_cluster_eu_west_2" {
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
+  node_volume_size = "${var.node_volume_size}"
+
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
 
@@ -350,6 +364,8 @@ module "quorum_cluster_ap_south_1" {
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
+
+  node_volume_size = "${var.node_volume_size}"
 
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
@@ -392,6 +408,8 @@ module "quorum_cluster_ap_northeast_1" {
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
+  node_volume_size = "${var.node_volume_size}"
+
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
 
@@ -432,6 +450,8 @@ module "quorum_cluster_ap_northeast_2" {
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
+
+  node_volume_size = "${var.node_volume_size}"
 
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
@@ -474,6 +494,8 @@ module "quorum_cluster_ap_southeast_1" {
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
+  node_volume_size = "${var.node_volume_size}"
+
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
 
@@ -514,6 +536,8 @@ module "quorum_cluster_ap_southeast_2" {
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
+
+  node_volume_size = "${var.node_volume_size}"
 
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
@@ -556,6 +580,8 @@ module "quorum_cluster_ca_central_1" {
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
 
+  node_volume_size = "${var.node_volume_size}"
+
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"
 
@@ -596,6 +622,8 @@ module "quorum_cluster_sa_east_1" {
 
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
+
+  node_volume_size = "${var.node_volume_size}"
 
   quorum_amis   = "${var.quorum_amis}"
   bootnode_amis = "${var.bootnode_amis}"

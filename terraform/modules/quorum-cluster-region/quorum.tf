@@ -61,6 +61,10 @@ resource "aws_instance" "quorum_maker_node" {
     Name = "quorum-maker-node-${count.index}"
   }
 
+  root_block_device {
+    volume_size = "${var.node_volume_size}"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get -y update",

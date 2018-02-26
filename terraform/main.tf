@@ -17,6 +17,7 @@ module "quorum_cluster" {
   consul_instance_type      = "${var.consul_instance_type}"
   bootnode_instance_type    = "${var.bootnode_instance_type}"
   quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  node_volume_size          = "${var.node_volume_size}"
   vote_threshold            = "${var.vote_threshold}"
   min_block_time            = "${var.min_block_time}"
   max_block_time            = "${var.max_block_time}"
