@@ -119,6 +119,10 @@ resource "aws_instance" "quorum_validator_node" {
     Name = "quorum-validator-node-${count.index}"
   }
 
+  root_block_device {
+    volume_size = "${var.node_volume_size}"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get -y update",
@@ -171,6 +175,10 @@ resource "aws_instance" "quorum_observer_node" {
 
   tags {
     Name = "quorum-observer-node-${count.index}"
+  }
+
+  root_block_device {
+    volume_size = "${var.node_volume_size}"
   }
 
   provisioner "remote-exec" {
