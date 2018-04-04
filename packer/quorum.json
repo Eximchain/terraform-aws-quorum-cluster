@@ -61,7 +61,8 @@
       "provisioning-scripts/quorum-setup.sh",
       "provisioning-scripts/porosity.sh",
       "provisioning-scripts/quorum-genesis.sh",
-      "provisioning-scripts/s3fs.sh"
+      "provisioning-scripts/s3fs.sh",
+      "provisioning-scripts/swapfile.sh"
     ]
   },{
     "type": "file",
