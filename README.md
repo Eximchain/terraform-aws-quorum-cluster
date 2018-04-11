@@ -80,6 +80,10 @@ $ ssh-add ~/.ssh/quorum
 
 Use packer to build the AMIs needed to launch instances
 
+You may skip this step. If you do, your AMI will be the most recent one built by the official Eximchain AWS Account. We try to keep this as recent as possible but currently no guarantees are made.
+
+If you want the script to copy the vault_consul AMI, ensure it is only built into the region the vault cluster will be in.
+
 ```sh
 $ cd packer
 $ packer build vault-consul.json
@@ -146,7 +150,7 @@ Initialize the vault. Choose the number of key shards and the unseal threshold b
 ```sh
 $ KEY_SHARES=<Number of key shards>
 $ KEY_THRESHOLD=<Number of keys needed to unseal the vault>
-$ vault init -key-shares=$KEY_SHARES -key-threshold=$KEY_THRESHOLD 
+$ vault init -key-shares=$KEY_SHARES -key-threshold=$KEY_THRESHOLD
 ```
 
 Unseal the vault and initialize it with permissions for the quorum nodes. Once setup-vault.sh is complete, the quorum nodes will be able to finish their boot-up procedure. Note that this example is for a single key initialization, and if the key is sharded with a threshold greater than one, multiple users will need to run the unseal command with their shards.

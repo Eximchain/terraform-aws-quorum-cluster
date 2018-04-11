@@ -15,7 +15,6 @@ provider "template" {
 module "quorum_vault" {
   source = "../quorum-vault"
 
-  vault_amis      = "${var.vault_amis}"
   cert_owner      = "${var.cert_owner}"
   public_key_path = "${var.public_key_path}"
 
@@ -30,6 +29,8 @@ module "quorum_vault" {
   vault_instance_type  = "${var.vault_instance_type}"
   consul_cluster_size  = "${var.consul_cluster_size}"
   consul_instance_type = "${var.consul_instance_type}"
+
+  vault_consul_ami = "${var.vault_consul_ami}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -66,8 +67,8 @@ module "quorum_cluster_us_east_1" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "us-east-1", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "us-east-1", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -109,8 +110,8 @@ module "quorum_cluster_us_east_2" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "us-east-2", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "us-east-2", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -152,8 +153,8 @@ module "quorum_cluster_us_west_1" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "us-west-1", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "us-west-1", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -195,8 +196,8 @@ module "quorum_cluster_us_west_2" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "us-west-2", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "us-west-2", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -238,8 +239,8 @@ module "quorum_cluster_eu_central_1" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "eu-central-1", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "eu-central-1", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -281,8 +282,8 @@ module "quorum_cluster_eu_west_1" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "eu-west-1", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "eu-west-1", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -324,8 +325,8 @@ module "quorum_cluster_eu_west_2" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "eu-west-2", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "eu-west-2", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -367,8 +368,8 @@ module "quorum_cluster_ap_south_1" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "ap-south-1", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "ap-south-1", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -410,8 +411,8 @@ module "quorum_cluster_ap_northeast_1" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "ap-northeast-1", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "ap-northeast-1", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -453,8 +454,8 @@ module "quorum_cluster_ap_northeast_2" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "ap-northeast-2", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "ap-northeast-2", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -496,8 +497,8 @@ module "quorum_cluster_ap_southeast_1" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "ap-southeast-1", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "ap-southeast-1", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -539,8 +540,8 @@ module "quorum_cluster_ap_southeast_2" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "ap-southeast-2", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "ap-southeast-2", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -582,8 +583,8 @@ module "quorum_cluster_ca_central_1" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "ca-central-1", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "ca-central-1", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
@@ -625,8 +626,8 @@ module "quorum_cluster_sa_east_1" {
 
   node_volume_size = "${var.node_volume_size}"
 
-  quorum_amis   = "${var.quorum_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  quorum_ami   = "${lookup(var.quorum_amis, "sa-east-1", "")}"
+  bootnode_ami = "${lookup(var.bootnode_amis, "sa-east-1", "")}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"

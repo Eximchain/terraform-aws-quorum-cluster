@@ -18,21 +18,6 @@ variable "max_block_time" {
   description = "The maximum number of seconds a block maker should wait between proposing blocks."
 }
 
-variable "vault_amis" {
-  description = "Mapping from AWS region to AMI ID to use for vault nodes in that region"
-  type        = "map"
-}
-
-variable "quorum_amis" {
-  description = "Mapping from AWS region to AMI ID to use for quorum nodes in that region"
-  type        = "map"
-}
-
-variable "bootnode_amis" {
-  description = "Mapping from AWS region to AMI ID to use for bootnodes in that region"
-  type        = "map"
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.
@@ -99,6 +84,21 @@ variable "bootnode_instance_type" {
 variable "quorum_node_instance_type" {
   description = "The EC2 instance type to use for quorum nodes"
   default = "t2.small"
+}
+
+variable "quorum_amis" {
+  description = "Mapping from AMI ID to use for quorum nodes. Defaults to getting the most recently built version from Eximchain"
+  default     = {}
+}
+
+variable "bootnode_amis" {
+  description = "Mapping from AMI ID to use for quorum nodes. Defaults to getting the most recently built version from Eximchain"
+  default     = {}
+}
+
+variable "vault_consul_ami" {
+  description = "AMI ID to use for vault and consul servers. Defaults to getting the most recently built version from Eximchain"
+  default     = ""
 }
 
 variable "vault_cluster_size" {

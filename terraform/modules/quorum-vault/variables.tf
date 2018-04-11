@@ -2,11 +2,6 @@
 # REQUIRED PARAMETERS
 # You must provide a value for each of these parameters.
 # ---------------------------------------------------------------------------------------------------------------------
-variable "vault_amis" {
-  description = "A mapping from AWS region to AMI to use for vault in that region."
-  type        = "map"
-}
-
 variable "cert_owner" {
   description = "The OS user to be made the owner of the local copy of the vault certificates. Should usually be set to the user operating the tool."
 }
@@ -32,6 +27,11 @@ variable "vault_port" {
 variable "force_destroy_s3_bucket" {
   description = "Whether or not to force destroy the vault s3 bucket. Set to true for an easily destroyed test environment. DO NOT set to true for a production environment."
   default     = false
+}
+
+variable "vault_consul_ami" {
+  description = "AMI ID to use for vault and consul servers. Defaults to getting the most recently built version from Eximchain"
+  default     = ""
 }
 
 variable "vault_cluster_size" {

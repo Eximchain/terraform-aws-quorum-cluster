@@ -45,7 +45,7 @@ resource "aws_instance" "bootnode" {
   instance_type = "${var.bootnode_instance_type}"
   count         = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
-  ami       = "${lookup(var.bootnode_amis, var.aws_region)}"
+  ami       = "${var.bootnode_ami == "" ? data.aws_ami.bootnode.id : var.bootnode_ami}"
   user_data = "${data.template_file.user_data_bootnode.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
@@ -93,6 +93,16 @@ data "template_file" "user_data_bootnode" {
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
     vault_cert_bucket = "${var.vault_cert_bucket_name}"
+  }
+}
+
+data "aws_ami" "bootnode" {
+  most_recent = true
+  owners      = ["037794263736"]
+
+  filter {
+    name   = "name"
+    values = ["eximchain-network-bootnode-*"]
   }
 }
 
@@ -224,4 +234,3 @@ resource "aws_iam_instance_profile" "bootnode" {
   name = "bootnode-${var.aws_region}-network-${var.network_id}"
   role = "${aws_iam_role.bootnode.name}"
 }
-

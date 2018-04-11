@@ -55,15 +55,22 @@ def parse_manifest_file(filename):
 
 def main():
     args = parse_args()
-    # Back up the current output file if a backup location was specified 
+    # Back up the current output file if a backup location was specified
     if args.tfvar_backup_file and os.path.exists(args.out_file):
         shutil.copyfile(args.out_file, args.tfvar_backup_file)
 
     quorum_amis = parse_manifest_file(QUORUM_IN_FILE)
     bootnode_amis = parse_manifest_file(BOOTNODE_IN_FILE)
-    vault_amis = parse_manifest_file(VAULT_IN_FILE)
+    vault_consul_amis = parse_manifest_file(VAULT_IN_FILE)
 
-    output = {'quorum_amis': quorum_amis, 'vault_amis': vault_amis, 'bootnode_amis': bootnode_amis}
+    output = {'quorum_amis': quorum_amis, 'bootnode_amis': bootnode_amis}
+
+    if len(vault_consul_amis) == 1:
+        output['vault_consul_ami'] = vault_consul_amis.values()[0]
+    elif len(vault_consul_amis) == 0:
+        print "No vault-consul AMIs found. Only copying quorum and bootnode AMIs."
+    else:
+        print "Multiple vault-consul AMIs found. Only copying quorum and bootnode AMIs."
 
     with open(OUT_FILE, 'w') as out_file:
         json.dump(output, out_file, indent=2, separators=(',', ': '))

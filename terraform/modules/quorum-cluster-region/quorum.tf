@@ -47,7 +47,7 @@ resource "aws_instance" "quorum_maker_node" {
   instance_type = "${var.quorum_node_instance_type}"
   count         = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
-  ami       = "${lookup(var.quorum_amis, var.aws_region)}"
+  ami       = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
@@ -105,7 +105,7 @@ resource "aws_instance" "quorum_validator_node" {
   instance_type = "${var.quorum_node_instance_type}"
   count         = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
 
-  ami       = "${lookup(var.quorum_amis, var.aws_region)}"
+  ami       = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
@@ -163,7 +163,7 @@ resource "aws_instance" "quorum_observer_node" {
   instance_type = "${var.quorum_node_instance_type}"
   count         = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
 
-  ami       = "${lookup(var.quorum_amis, var.aws_region)}"
+  ami       = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
   user_data = "${data.template_file.user_data_quorum.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
@@ -225,6 +225,16 @@ data "template_file" "user_data_quorum" {
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
     vault_cert_bucket = "${var.vault_cert_bucket_name}"
+  }
+}
+
+data "aws_ami" "quorum" {
+  most_recent = true
+  owners      = ["037794263736"]
+
+  filter {
+    name   = "name"
+    values = ["eximchain-network-quorum-*"]
   }
 }
 

@@ -18,21 +18,6 @@ variable "max_block_time" {
   description = "The maximum number of seconds a block maker should wait between proposing blocks."
 }
 
-variable "vault_amis" {
-  description = "Mapping from AWS region to AMI ID to use for vault nodes in that region"
-  type        = "map"
-}
-
-variable "quorum_amis" {
-  description = "Mapping from AWS region to AMI ID to use for quorum nodes in that region"
-  type        = "map"
-}
-
-variable "bootnode_amis" {
-  description = "Mapping from AWS region to AMI ID to use for bootnodes in that region"
-  type        = "map"
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 # These parameters have reasonable defaults.
@@ -74,6 +59,21 @@ variable "primary_region" {
 variable "vault_port" {
   description = "The port that vault will be accessible on."
   default     = 8200
+}
+
+variable "vault_consul_ami" {
+  description = "AMI ID to use for vault and consul servers. Defaults to getting the most recently built version from Eximchain"
+  default     = ""
+}
+
+variable "quorum_amis" {
+  description = "Mapping from AMI ID to use for quorum nodes. Defaults to getting the most recently built version from Eximchain"
+  default     = {}
+}
+
+variable "bootnode_amis" {
+  description = "Mapping from AMI ID to use for quorum nodes. Defaults to getting the most recently built version from Eximchain"
+  default     = {}
 }
 
 variable "force_destroy_s3_buckets" {

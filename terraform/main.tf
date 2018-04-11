@@ -26,8 +26,7 @@ module "quorum_cluster" {
   validator_node_counts     = "${var.validator_node_counts}"
   observer_node_counts      = "${var.observer_node_counts}"
 
-  # AMI variables sourced from amis.auto.tfvars.json
-  quorum_amis   = "${var.quorum_amis}"
-  vault_amis    = "${var.vault_amis}"
-  bootnode_amis = "${var.bootnode_amis}"
+  vault_consul_ami = "${var.vault_consul_ami}"
+  quorum_amis      = "${var.quorum_amis}"
+  bootnode_amis    = "${var.bootnode_amis}"
 }
