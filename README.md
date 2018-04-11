@@ -341,11 +341,11 @@ The master list of desired features for this tool. Feel free to contribute featu
 - [x] Isolate different AWS users in the same account
 - [x] New Constellation Configuration Format
 - [x] Terraform Module
-- [ ] Multi Region Network
+- [x] Multi Region Network
+- [x] Network with External Participants
 - [ ] Quorum Node health checking and replacement
 - [ ] Full initial documentation
 - [ ] Secure handling of TLS Certificate
 - [ ] Anti-Fraglie Everything
 - [ ] Fine-grained Permissions for Private Keys in Vault
 - [ ] Tighten security parameters
-- [ ] Network with External Participants
