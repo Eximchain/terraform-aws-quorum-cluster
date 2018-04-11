@@ -13,7 +13,7 @@
     "tls_private_key_path": "certs/cert.pem"
   },
   "builders": [{
-    "ami_name": "vault-consul-ubuntu-{{isotime | clean_ami_name}}",
+    "ami_name": "eximchain-vault-quorum-{{isotime | clean_ami_name}}",
     "ami_description": "An Ubuntu 16.04 AMI that has Vault and Consul installed.",
     "instance_type": "t2.medium",
     "name": "ubuntu16-ami",
