@@ -343,7 +343,7 @@ The master list of desired features for this tool. Feel free to contribute featu
 - [x] Terraform Module
 - [x] Multi Region Network
 - [x] Network with External Participants
-- [ ] Quorum Node health checking and replacement
+- [x] Quorum Node health checking and replacement
 - [ ] Full initial documentation
 - [ ] Secure handling of TLS Certificate
 - [ ] Anti-Fraglie Everything

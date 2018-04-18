@@ -34,200 +34,320 @@ resource "aws_subnet" "quorum_cluster" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# QUORUM MAKER NODES
+# QUORUM NODE ASGs
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_instance" "quorum_maker_node" {
-  connection {
-    # The default username for our AMI
-    user = "ubuntu"
+resource "aws_autoscaling_group" "quorum_maker" {
+  count = "${aws_launch_configuration.quorum_maker.count}"
 
-    # The connection will use the local SSH agent for authentication.
-  }
+  name = "quorum-maker-net-${var.network_id}-node-${count.index}"
 
-  instance_type = "${var.quorum_node_instance_type}"
-  count         = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
+  launch_configuration = "${element(aws_launch_configuration.quorum_maker.*.name, count.index)}"
 
-  ami       = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
-  user_data = "${data.template_file.user_data_quorum.rendered}"
+  min_size         = 1
+  max_size         = 1
+  desired_capacity = 1
 
-  key_name = "${aws_key_pair.auth.id}"
+  health_check_grace_period = 300
+  health_check_type         = "ELB"
 
-  iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
+  vpc_zone_identifier = ["${element(aws_subnet.quorum_cluster.*.id, count.index)}"]
+}
 
-  vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
-  subnet_id              = "${element(aws_subnet.quorum_cluster.*.id, count.index)}"
+resource "aws_autoscaling_group" "quorum_validator" {
+  count = "${aws_launch_configuration.quorum_validator.count}"
 
-  tags {
-    Name = "quorum-maker-node-${count.index}"
-  }
+  name = "quorum-validator-net-${var.network_id}-node-${count.index}"
 
-  root_block_device {
-    volume_size = "${var.node_volume_size}"
-  }
+  launch_configuration = "${element(aws_launch_configuration.quorum_validator.*.name, count.index)}"
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get -y update",
-      "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
-      "sudo mount -a",
-      "echo '${count.index}' | sudo tee /opt/quorum/info/role-index.txt",
-      "echo '${count.index}' | sudo tee /opt/quorum/info/overall-index.txt",
-      "echo '${jsonencode(var.maker_node_counts)}' | sudo tee /opt/quorum/info/maker-counts.json",
-      "echo '${jsonencode(var.validator_node_counts)}' | sudo tee /opt/quorum/info/validator-counts.json",
-      "echo '${jsonencode(var.observer_node_counts)}' | sudo tee /opt/quorum/info/observer-counts.json",
-      "echo '${jsonencode(var.bootnode_counts)}' | sudo tee /opt/quorum/info/bootnode-counts.json",
-      "sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'",
-      "echo 'maker' | sudo tee /opt/quorum/info/role.txt",
-      "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
-      "echo '${var.min_block_time}' | sudo tee /opt/quorum/info/min-block-time.txt",
-      "echo '${var.max_block_time}' | sudo tee /opt/quorum/info/max-block-time.txt",
-      "echo '${var.gas_limit}' | sudo tee /opt/quorum/info/gas-limit.txt",
-      "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
-      "echo '${var.primary_region}' | sudo tee /opt/quorum/info/primary-region.txt",
-      "echo '${var.generate_metrics}' | sudo tee /opt/quorum/info/generate-metrics.txt",
-      # This should be last because init scripts wait for this file to determine terraform is done provisioning
-      "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
-    ]
-  }
+  min_size         = 1
+  max_size         = 1
+  desired_capacity = 1
+
+  health_check_grace_period = 300
+  health_check_type         = "ELB"
+
+  vpc_zone_identifier = ["${element(aws_subnet.quorum_cluster.*.id, count.index)}"]
+}
+
+resource "aws_autoscaling_group" "quorum_observer" {
+  count = "${aws_launch_configuration.quorum_observer.count}"
+
+  name = "quorum-observer-net-${var.network_id}-node-${count.index}"
+
+  launch_configuration = "${element(aws_launch_configuration.quorum_observer.*.name, count.index)}"
+
+  min_size         = 1
+  max_size         = 1
+  desired_capacity = 1
+
+  health_check_grace_period = 300
+  health_check_type         = "ELB"
+
+  vpc_zone_identifier = ["${element(aws_subnet.quorum_cluster.*.id, count.index)}"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# QUORUM VALIDATOR NODES
+# USER DATA SCRIPTS
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_instance" "quorum_validator_node" {
-  connection {
-    # The default username for our AMI
-    user = "ubuntu"
-
-    # The connection will use the local SSH agent for authentication.
-  }
-
-  instance_type = "${var.quorum_node_instance_type}"
-  count         = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
-
-  ami       = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
-  user_data = "${data.template_file.user_data_quorum.rendered}"
-
-  key_name = "${aws_key_pair.auth.id}"
-
-  iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
-
-  vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
-  subnet_id              = "${element(aws_subnet.quorum_cluster.*.id, count.index + lookup(var.maker_node_counts, var.aws_region, 0))}"
-
-  tags {
-    Name = "quorum-validator-node-${count.index}"
-  }
-
-  root_block_device {
-    volume_size = "${var.node_volume_size}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get -y update",
-      "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
-      "sudo mount -a",
-      "echo '${count.index}' | sudo tee /opt/quorum/info/role-index.txt",
-      "echo '${lookup(var.maker_node_counts, var.aws_region, 0) + count.index}' | sudo tee /opt/quorum/info/overall-index.txt",
-      "echo '${jsonencode(var.maker_node_counts)}' | sudo tee /opt/quorum/info/maker-counts.json",
-      "echo '${jsonencode(var.validator_node_counts)}' | sudo tee /opt/quorum/info/validator-counts.json",
-      "echo '${jsonencode(var.observer_node_counts)}' | sudo tee /opt/quorum/info/observer-counts.json",
-      "echo '${jsonencode(var.bootnode_counts)}' | sudo tee /opt/quorum/info/bootnode-counts.json",
-      "sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'",
-      "echo 'validator' | sudo tee /opt/quorum/info/role.txt",
-      "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
-      "echo '${var.min_block_time}' | sudo tee /opt/quorum/info/min-block-time.txt",
-      "echo '${var.max_block_time}' | sudo tee /opt/quorum/info/max-block-time.txt",
-      "echo '${var.gas_limit}' | sudo tee /opt/quorum/info/gas-limit.txt",
-      "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
-      "echo '${var.primary_region}' | sudo tee /opt/quorum/info/primary-region.txt",
-      "echo '${var.generate_metrics}' | sudo tee /opt/quorum/info/generate-metrics.txt",
-      # This should be last because init scripts wait for this file to determine terraform is done provisioning
-      "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
-    ]
-  }
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# QUORUM OBSERVER NODES
-# ---------------------------------------------------------------------------------------------------------------------
-resource "aws_instance" "quorum_observer_node" {
-  connection {
-    # The default username for our AMI
-    user = "ubuntu"
-
-    # The connection will use the local SSH agent for authentication.
-  }
-
-  instance_type = "${var.quorum_node_instance_type}"
-  count         = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
-
-  ami       = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
-  user_data = "${data.template_file.user_data_quorum.rendered}"
-
-  key_name = "${aws_key_pair.auth.id}"
-
-  iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
-
-  vpc_security_group_ids = ["${aws_security_group.quorum.id}"]
-  subnet_id              = "${element(aws_subnet.quorum_cluster.*.id, count.index + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0))}"
-
-  tags {
-    Name = "quorum-observer-node-${count.index}"
-  }
-
-  root_block_device {
-    volume_size = "${var.node_volume_size}"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get -y update",
-      "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
-      "sudo mount -a",
-      "echo '${count.index}' | sudo tee /opt/quorum/info/role-index.txt",
-      "echo '${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + count.index}' | sudo tee /opt/quorum/info/overall-index.txt",
-      "echo '${jsonencode(var.maker_node_counts)}' | sudo tee /opt/quorum/info/maker-counts.json",
-      "echo '${jsonencode(var.validator_node_counts)}' | sudo tee /opt/quorum/info/validator-counts.json",
-      "echo '${jsonencode(var.observer_node_counts)}' | sudo tee /opt/quorum/info/observer-counts.json",
-      "echo '${jsonencode(var.bootnode_counts)}' | sudo tee /opt/quorum/info/bootnode-counts.json",
-      "sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'",
-      "echo 'observer' | sudo tee /opt/quorum/info/role.txt",
-      "echo '${var.vote_threshold}' | sudo tee /opt/quorum/info/vote-threshold.txt",
-      "echo '${var.min_block_time}' | sudo tee /opt/quorum/info/min-block-time.txt",
-      "echo '${var.max_block_time}' | sudo tee /opt/quorum/info/max-block-time.txt",
-      "echo '${var.gas_limit}' | sudo tee /opt/quorum/info/gas-limit.txt",
-      "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
-      "echo '${var.primary_region}' | sudo tee /opt/quorum/info/primary-region.txt",
-      "echo '${var.generate_metrics}' | sudo tee /opt/quorum/info/generate-metrics.txt",
-      # This should be last because init scripts wait for this file to determine terraform is done provisioning
-      "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
-    ]
-  }
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# THE USER DATA SCRIPT THAT WILL RUN ON EACH QUORUM NODE WHEN IT'S BOOTING
-# This script will configure and start the Consul Agent
-# ---------------------------------------------------------------------------------------------------------------------
-
-data "template_file" "user_data_quorum" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+data "template_file" "user_data_quorum_maker" {
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
   template = "${file("${path.module}/user-data/user-data-quorum.sh")}"
 
   vars {
+    index              = "${count.index}"
+    overall_index_base = 0
+
+    role = "maker"
+
+    aws_region     = "${var.aws_region}"
+    primary_region = "${var.primary_region}"
+
+    vote_threshold   = "${var.vote_threshold}"
+    min_block_time   = "${var.min_block_time}"
+    max_block_time   = "${var.max_block_time}"
+    gas_limit        = "${var.gas_limit}"
+    network_id       = "${var.network_id}"
+    generate_metrics = "${var.generate_metrics}"
+
+    maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
+    validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"
+    observer_node_count_json  = "${data.template_file.observer_node_count_json.rendered}"
+    bootnode_count_json       = "${data.template_file.bootnode_count_json.rendered}"
+
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
 
     consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
-    vault_cert_bucket = "${var.vault_cert_bucket_name}"
+    vault_cert_bucket       = "${var.vault_cert_bucket_name}"
+    constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
   }
 }
 
+data "template_file" "user_data_quorum_validator" {
+  count = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
+
+  template = "${file("${path.module}/user-data/user-data-quorum.sh")}"
+
+  vars {
+    index              = "${count.index}"
+    overall_index_base = "${data.template_file.user_data_quorum_maker.count}"
+
+    role = "validator"
+
+    aws_region     = "${var.aws_region}"
+    primary_region = "${var.primary_region}"
+
+    vote_threshold   = "${var.vote_threshold}"
+    min_block_time   = "${var.min_block_time}"
+    max_block_time   = "${var.max_block_time}"
+    gas_limit        = "${var.gas_limit}"
+    network_id       = "${var.network_id}"
+    generate_metrics = "${var.generate_metrics}"
+
+    maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
+    validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"
+    observer_node_count_json  = "${data.template_file.observer_node_count_json.rendered}"
+    bootnode_count_json       = "${data.template_file.bootnode_count_json.rendered}"
+
+    vault_dns  = "${var.vault_dns}"
+    vault_port = "${var.vault_port}"
+
+    consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
+    consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
+
+    vault_cert_bucket       = "${var.vault_cert_bucket_name}"
+    constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
+  }
+}
+
+data "template_file" "user_data_quorum_observer" {
+  count = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
+
+  template = "${file("${path.module}/user-data/user-data-quorum.sh")}"
+
+  vars {
+    index              = "${count.index}"
+    overall_index_base = "${data.template_file.user_data_quorum_maker.count + data.template_file.user_data_quorum_validator.count}"
+
+    role = "observer"
+
+    aws_region     = "${var.aws_region}"
+    primary_region = "${var.primary_region}"
+
+    vote_threshold   = "${var.vote_threshold}"
+    min_block_time   = "${var.min_block_time}"
+    max_block_time   = "${var.max_block_time}"
+    gas_limit        = "${var.gas_limit}"
+    network_id       = "${var.network_id}"
+    generate_metrics = "${var.generate_metrics}"
+
+    maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
+    validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"
+    observer_node_count_json  = "${data.template_file.observer_node_count_json.rendered}"
+    bootnode_count_json       = "${data.template_file.bootnode_count_json.rendered}"
+
+    vault_dns  = "${var.vault_dns}"
+    vault_port = "${var.vault_port}"
+
+    consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
+    consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
+
+    vault_cert_bucket       = "${var.vault_cert_bucket_name}"
+    constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
+  }
+}
+
+data "template_file" "maker_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.maker_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.maker_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.maker_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.maker_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.maker_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.maker_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.maker_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.maker_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.maker_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.maker_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.maker_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.maker_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.maker_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.maker_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "validator_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.validator_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.validator_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.validator_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.validator_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.validator_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.validator_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.validator_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.validator_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.validator_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.validator_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.validator_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.validator_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.validator_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.validator_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "observer_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.observer_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.observer_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.observer_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.observer_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.observer_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.observer_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.observer_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.observer_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.observer_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.observer_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.observer_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.observer_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.observer_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.observer_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "bootnode_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.bootnode_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.bootnode_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.bootnode_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.bootnode_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.bootnode_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.bootnode_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.bootnode_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.bootnode_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.bootnode_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.bootnode_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.bootnode_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.bootnode_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.bootnode_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.bootnode_counts, "us-west-2", 0)}"
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# LAUNCH CONFIGURATIONS
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_launch_configuration" "quorum_maker" {
+  count = "${data.template_file.user_data_quorum_maker.count}"
+
+  name_prefix = "quorum-maker-net-${var.network_id}-node-${count.index}"
+
+  image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
+  instance_type = "${var.quorum_node_instance_type}"
+  user_data     = "${element(data.template_file.user_data_quorum_maker.*.rendered, count.index)}"
+
+  key_name = "${aws_key_pair.auth.id}"
+
+  iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
+  security_groups      = ["${aws_security_group.quorum.id}"]
+
+  root_block_device {
+    volume_size = "${var.node_volume_size}"
+  }
+}
+
+resource "aws_launch_configuration" "quorum_validator" {
+  count = "${data.template_file.user_data_quorum_validator.count}"
+
+  name_prefix = "quorum-validator-net-${var.network_id}-node-${count.index}"
+
+  image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
+  instance_type = "${var.quorum_node_instance_type}"
+  user_data     = "${element(data.template_file.user_data_quorum_validator.*.rendered, count.index)}"
+
+  key_name = "${aws_key_pair.auth.id}"
+
+  iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
+  security_groups      = ["${aws_security_group.quorum.id}"]
+
+  root_block_device {
+    volume_size = "${var.node_volume_size}"
+  }
+}
+
+resource "aws_launch_configuration" "quorum_observer" {
+  count = "${data.template_file.user_data_quorum_observer.count}"
+
+  name_prefix = "quorum-observer-net-${var.network_id}-node-${count.index}"
+
+  image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
+  instance_type = "${var.quorum_node_instance_type}"
+  user_data     = "${element(data.template_file.user_data_quorum_observer.*.rendered, count.index)}"
+
+  key_name = "${aws_key_pair.auth.id}"
+
+  iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
+  security_groups      = ["${aws_security_group.quorum.id}"]
+
+  root_block_device {
+    volume_size = "${var.node_volume_size}"
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# AMI
+# ---------------------------------------------------------------------------------------------------------------------
 data "aws_ami" "quorum" {
   most_recent = true
   owners      = ["037794263736"]
@@ -236,6 +356,42 @@ data "aws_ami" "quorum" {
     name   = "name"
     values = ["eximchain-network-quorum-*"]
   }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# OUTPUT INSTANCES
+# ---------------------------------------------------------------------------------------------------------------------
+data "aws_instance" "quorum_maker_node" {
+  count = "${aws_autoscaling_group.quorum_maker.count}"
+
+  filter {
+    name   = "tag:aws:autoscaling:groupName"
+    values = ["${element(aws_autoscaling_group.quorum_maker.*.name, count.index)}"]
+  }
+
+  depends_on = ["aws_autoscaling_group.quorum_maker"]
+}
+
+data "aws_instance" "quorum_validator_node" {
+  count = "${aws_autoscaling_group.quorum_validator.count}"
+
+  filter {
+    name   = "tag:aws:autoscaling:groupName"
+    values = ["${element(aws_autoscaling_group.quorum_validator.*.name, count.index)}"]
+  }
+
+  depends_on = ["aws_autoscaling_group.quorum_validator"]
+}
+
+data "aws_instance" "quorum_observer_node" {
+  count = "${aws_autoscaling_group.quorum_observer.count}"
+
+  filter {
+    name   = "tag:aws:autoscaling:groupName"
+    values = ["${element(aws_autoscaling_group.quorum_observer.*.name, count.index)}"]
+  }
+
+  depends_on = ["aws_autoscaling_group.quorum_observer"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

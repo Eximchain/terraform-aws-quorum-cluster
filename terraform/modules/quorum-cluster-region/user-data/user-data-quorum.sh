@@ -35,11 +35,40 @@ function download_vault_certs {
   sudo /opt/vault/bin/update-certificate-store --cert-file-path $CA_TLS_CERT_FILE
 }
 
+function setup_s3fs {
+  echo "${constellation_s3_bucket} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0" | sudo tee /etc/fstab
+  sudo mount -a
+}
+
+function populate_data_files {
+  echo "${index}" | sudo tee /opt/quorum/info/role-index.txt
+  echo "${index + overall_index_base}" | sudo tee /opt/quorum/info/overall-index.txt
+  echo "${maker_node_count_json}" | sudo tee /opt/quorum/info/maker-counts.json
+  echo "${validator_node_count_json}" | sudo tee /opt/quorum/info/validator-counts.json
+  echo "${observer_node_count_json}" | sudo tee /opt/quorum/info/observer-counts.json
+  echo "${bootnode_count_json}" | sudo tee /opt/quorum/info/bootnode-counts.json
+  echo "${role}" | sudo tee /opt/quorum/info/role.txt
+  echo "${vote_threshold}" | sudo tee /opt/quorum/info/vote-threshold.txt
+  echo "${min_block_time}" | sudo tee /opt/quorum/info/min-block-time.txt
+  echo "${max_block_time}" | sudo tee /opt/quorum/info/max-block-time.txt
+  echo "${gas_limit}" | sudo tee /opt/quorum/info/gas-limit.txt
+  echo "${aws_region}" | sudo tee /opt/quorum/info/aws-region.txt
+  echo "${primary_region}" | sudo tee /opt/quorum/info/primary-region.txt
+  echo "${generate_metrics}" | sudo tee /opt/quorum/info/generate-metrics.txt
+  echo "${network_id}" | sudo tee /opt/quorum/info/network-id.txt
+
+  sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'
+}
+
 # Send the log output from this script to user-data.log, syslog, and the console
 # From: https://alestic.com/2010/12/ec2-user-data-output/
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
+sudo apt-get -y update
+
 download_vault_certs
+setup_s3fs
+populate_data_files
 
 # These variables are passed in via Terraform template interpolation
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
