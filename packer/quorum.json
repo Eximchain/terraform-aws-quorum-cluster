@@ -74,8 +74,8 @@
     "destination": "/tmp/init-quorum.sh"
   },{
     "type": "file",
-    "source": "instance-scripts/cloudwatch-txpool.sh",
-    "destination": "/tmp/cloudwatch-txpool.sh"
+    "source": "instance-scripts/cloudwatch-metrics.sh",
+    "destination": "/tmp/cloudwatch-metrics.sh"
   },{
     "type": "file",
     "source": "instance-scripts/generate-quorum-config.py",
@@ -100,7 +100,7 @@
     "type": "shell",
     "inline": [
       "sudo mv /tmp/init-quorum.sh /opt/quorum/bin/",
-      "sudo mv /tmp/cloudwatch-txpool.sh /opt/quorum/bin/",
+      "sudo mv /tmp/cloudwatch-metrics.sh /opt/quorum/bin/",
       "sudo mv /tmp/generate-run-init-quorum /opt/quorum/bin/",
       "sudo mv /tmp/generate-quorum-config.py /opt/quorum/bin/",
       "sudo mv /tmp/fill-node-counts.py /opt/quorum/bin/",

@@ -66,7 +66,7 @@ stopsignal=INT
 user=ubuntu" | sudo tee /etc/supervisor/conf.d/quorum-supervisor.conf
 }
 
-function generate_quorum_crash_listener {  
+function generate_quorum_crash_listener {
     local METRIC_NAME="QuorumNodeCrashes"
     echo "[eventlistener:crashquorum]
 command=/opt/quorum/bin/crashcloudwatch.py -p quorum -m $METRIC_NAME
@@ -80,7 +80,7 @@ user=ubuntu
 events=PROCESS_STATE" | sudo tee /etc/supervisor/conf.d/crashquorum-supervisor.conf
 }
 
-function generate_constellation_crash_listener {  
+function generate_constellation_crash_listener {
     local METRIC_NAME="ConstellationNodeCrashes"
     echo "[eventlistener:crashconstellation]
 command=/opt/quorum/bin/crashcloudwatch.py -p constellation -m $METRIC_NAME
@@ -94,19 +94,19 @@ user=ubuntu
 events=PROCESS_STATE" | sudo tee /etc/supervisor/conf.d/crashconstellation-supervisor.conf
 }
 
-function generate_cloudwatch_txpool_supervisor_config {
+function generate_cloudwatch_metrics_supervisor_config {
     local RPC_DNS=$1
     local RPC_PORT=$2
 
-    echo "[program:cloudwatchtxpool]
-command=/opt/quorum/bin/cloudwatch-txpool.sh $RPC_DNS $RPC_PORT
-stdout_logfile=/opt/quorum/log/cloudwatch-txpool-stdout.log
-stderr_logfile=/opt/quorum/log/cloudwatch-txpool-error.log
+    echo "[program:cloudwatchmetrics]
+command=/opt/quorum/bin/cloudwatch-metrics.sh $RPC_DNS $RPC_PORT
+stdout_logfile=/opt/quorum/log/cloudwatch-metrics-stdout.log
+stderr_logfile=/opt/quorum/log/cloudwatch-metrics-error.log
 numprocs=1
 autostart=true
 autorestart=true
 stopsignal=INT
-user=ubuntu" | sudo tee /etc/supervisor/conf.d/cloudwatch-txpool-supervisor.conf
+user=ubuntu" | sudo tee /etc/supervisor/conf.d/cloudwatch-metrics-supervisor.conf
 }
 
 function complete_constellation_config {
@@ -332,7 +332,7 @@ if [ $(cat /opt/quorum/info/generate-metrics.txt) == "1" ]
 then
     generate_quorum_crash_listener
     generate_constellation_crash_listener
-    generate_cloudwatch_txpool_supervisor_config $HOSTNAME 22000
+    generate_cloudwatch_metrics_supervisor_config $HOSTNAME 22000
 fi
 
 # Remove the config that runs this and run quorum
