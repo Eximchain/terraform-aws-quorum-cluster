@@ -12,8 +12,9 @@ readonly RPC_PORT=$2
 
 function emit_pending_transactions_metric {
   local readonly METRIC="PendingQuorumTransactions"
+  local readonly METHOD="txpool_status"
 
-  RESPONSE_JSON=$(curl -X POST --data '{"jsonrpc":"2.0","method":"txpool_status","params":[],"id":1}' $RPC_ADDR:$RPC_PORT)
+  RESPONSE_JSON=$(curl -X POST --data "{\"jsonrpc\":\"2.0\",\"method\":\"$METHOD\",\"params\":[],\"id\":1}" $RPC_ADDR:$RPC_PORT)
   PENDING=$(printf "%d" $(echo $RESPONSE_JSON | jq -r .result.pending))
   aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $METRIC --value $PENDING --dimensions NetworkID=$NETWORK_ID
 }
