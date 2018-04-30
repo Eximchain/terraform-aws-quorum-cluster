@@ -13,20 +13,30 @@ readonly RPC_PORT=$2
 function emit_metric {
   local readonly METRIC=$1
   local readonly METHOD=$2
+  local readonly JQ_EXPR=$3
 
   RESPONSE_JSON=$(curl -X POST --data "{\"jsonrpc\":\"2.0\",\"method\":\"$METHOD\",\"params\":[],\"id\":1}" $RPC_ADDR:$RPC_PORT)
-  PENDING=$(printf "%d" $(echo $RESPONSE_JSON | jq -r .result.pending))
+  PENDING=$(printf "%d" $(echo $RESPONSE_JSON | jq -r $JQ_EXPR))
   aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $METRIC --value $PENDING --dimensions NetworkID=$NETWORK_ID
 }
 
 function emit_pending_transactions_metric {
   local readonly METRIC="PendingQuorumTransactions"
   local readonly METHOD="txpool_status"
-  emit_metric $METRIC $METHOD
+  local readonly JQ_EXPR=".result.pending"
+  emit_metric $METRIC $METHOD $JQ_EXPR
+}
+
+function emit_block_number_metric {
+  local readonly METRIC="BlockNumber"
+  local readonly METHOD="eth_blockNumber"
+  local readonly JQ_EXPR=".result"
+  emit_metric $METRIC $METHOD $JQ_EXPR
 }
 
 while true
 do
     emit_pending_transactions_metric
+    emit_block_number_metric
     sleep $SLEEP_SECONDS
 done
