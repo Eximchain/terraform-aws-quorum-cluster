@@ -10,7 +10,7 @@ readonly NETWORK_ID=$(cat /opt/quorum/info/network-id.txt)
 readonly RPC_ADDR=$1
 readonly RPC_PORT=$2
 
-function emit_metric {
+function emit_rpc_metric {
   local readonly METRIC=$1
   local readonly METHOD=$2
   local readonly JQ_EXPR=$3
@@ -24,19 +24,19 @@ function emit_pending_transactions_metric {
   local readonly METRIC="PendingQuorumTransactions"
   local readonly METHOD="txpool_status"
   local readonly JQ_EXPR=".result.pending"
-  emit_metric $METRIC $METHOD $JQ_EXPR
+  emit_rpc_metric $METRIC $METHOD $JQ_EXPR
 }
 
 function emit_block_number_metric {
   local readonly METRIC="BlockNumber"
   local readonly METHOD="eth_blockNumber"
   local readonly JQ_EXPR=".result"
-  emit_metric $METRIC $METHOD $JQ_EXPR
+  emit_rpc_metric $METRIC $METHOD $JQ_EXPR
 }
 
 while true
 do
     emit_pending_transactions_metric
-    emit_block_number_metric
+    emit_block_number_metrica
     sleep $SLEEP_SECONDS
 done
