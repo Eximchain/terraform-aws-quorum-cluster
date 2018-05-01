@@ -37,6 +37,6 @@ function emit_block_number_metric {
 while true
 do
     emit_pending_transactions_metric
-    emit_block_number_metrica
+    emit_block_number_metric
     sleep $SLEEP_SECONDS
 done
