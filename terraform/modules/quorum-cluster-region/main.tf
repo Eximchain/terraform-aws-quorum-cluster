@@ -79,7 +79,11 @@ resource "aws_iam_policy" "quorum" {
     ]
   },{
     "Effect": "Allow",
-    "Action": ["cloudwatch:PutMetricData"],
+    "Action": [
+      "cloudwatch:PutMetricData",
+      "cloudwatch:GetMetricData",
+      "cloudwatch:GetMetricStatistics"
+    ],
     "Resource": "*"
   }]
 }
