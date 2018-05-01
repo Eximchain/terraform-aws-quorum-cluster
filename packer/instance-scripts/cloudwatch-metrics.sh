@@ -15,9 +15,9 @@ function emit_rpc_metric {
   local readonly METHOD=$2
   local readonly JQ_EXPR=$3
 
-  RESPONSE_JSON=$(curl -X POST --data "{\"jsonrpc\":\"2.0\",\"method\":\"$METHOD\",\"params\":[],\"id\":1}" $RPC_ADDR:$RPC_PORT)
-  PENDING=$(printf "%d" $(echo $RESPONSE_JSON | jq -r $JQ_EXPR))
-  aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $METRIC --value $PENDING --dimensions NetworkID=$NETWORK_ID
+  local RESPONSE_JSON=$(curl -X POST --data "{\"jsonrpc\":\"2.0\",\"method\":\"$METHOD\",\"params\":[],\"id\":1}" $RPC_ADDR:$RPC_PORT)
+  local VALUE=$(printf "%d" $(echo $RESPONSE_JSON | jq -r $JQ_EXPR))
+  aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $METRIC --value $VALUE --dimensions NetworkID=$NETWORK_ID
 }
 
 function emit_pending_transactions_metric {
