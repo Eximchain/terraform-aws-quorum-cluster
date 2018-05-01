@@ -17,7 +17,9 @@ resource "aws_cloudwatch_dashboard" "metrics" {
   "widgets": [
     ${data.template_file.heading_widget.rendered},
     ${data.template_file.pending_transaction_widget.rendered},
-    ${data.template_file.process_crash_widget.rendered}
+    ${data.template_file.process_crash_widget.rendered},
+    ${data.template_file.block_number_widget.rendered},
+    ${data.template_file.large_block_skew_widget.rendered}
   ]
 }
 EOF
@@ -57,6 +59,34 @@ data "template_file" "process_crash_widget" {
   count = "${var.generate_metrics ? 1 : 0}"
 
   template = "${file("${path.module}/cloudwatch-widgets/process-crashes.json")}"
+
+  vars {
+    network_id     = "${var.network_id}"
+    primary_region = "${var.primary_region}"
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# WIDGET FOR BLOCK NUMBER
+# ---------------------------------------------------------------------------------------------------------------------
+data "template_file" "block_number_widget" {
+  count = "${var.generate_metrics ? 1 : 0}"
+
+  template = "${file("${path.module}/cloudwatch-widgets/block-number.json")}"
+
+  vars {
+    network_id     = "${var.network_id}"
+    primary_region = "${var.primary_region}"
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# WIDGET FOR LARGE BLOCK SKEW
+# ---------------------------------------------------------------------------------------------------------------------
+data "template_file" "large_block_skew_widget" {
+  count = "${var.generate_metrics ? 1 : 0}"
+
+  template = "${file("${path.module}/cloudwatch-widgets/large-block-skew.json")}"
 
   vars {
     network_id     = "${var.network_id}"

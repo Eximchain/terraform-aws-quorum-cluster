@@ -1,0 +1,29 @@
+{
+  "type": "metric",
+  "x": 0,
+  "y": 7,
+  "width": 12,
+  "height": 6,
+  "properties": {
+    "metrics": [
+      [
+        "Quorum",
+        "BlockNumber",
+        "NetworkID",
+        "${network_id}"
+      ]
+    ],
+    "period": 60,
+    "stat": "Maximum",
+    "region": "${primary_region}",
+    "title": "Highest Block Number",
+    "yAxis": {
+        "left": {
+            "min": 0
+        },
+        "right": {
+            "min": 0
+        }
+    }
+  }
+}

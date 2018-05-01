@@ -1,0 +1,29 @@
+{
+  "type": "metric",
+  "x": 12,
+  "y": 7,
+  "width": 12,
+  "height": 6,
+  "properties": {
+    "metrics": [
+      [
+        "Quorum",
+        "LargeBlockSkew",
+        "NetworkID",
+        "${network_id}"
+      ]
+    ],
+    "period": 60,
+    "stat": "Sum",
+    "region": "${primary_region}",
+    "title": "Number of nodes at least 100 blocks behind",
+    "yAxis": {
+        "left": {
+            "min": 0
+        },
+        "right": {
+            "min": 0
+        }
+    }
+  }
+}
