@@ -19,7 +19,8 @@ resource "aws_cloudwatch_dashboard" "metrics" {
     ${data.template_file.pending_transaction_widget.rendered},
     ${data.template_file.process_crash_widget.rendered},
     ${data.template_file.block_number_widget.rendered},
-    ${data.template_file.large_block_skew_widget.rendered}
+    ${data.template_file.large_block_skew_widget.rendered},
+    ${data.template_file.gas.rendered}
   ]
 }
 EOF
@@ -87,6 +88,20 @@ data "template_file" "large_block_skew_widget" {
   count = "${var.generate_metrics ? 1 : 0}"
 
   template = "${file("${path.module}/cloudwatch-widgets/large-block-skew.json")}"
+
+  vars {
+    network_id     = "${var.network_id}"
+    primary_region = "${var.primary_region}"
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# WIDGET FOR GAS USED IN A BLOCK
+# ---------------------------------------------------------------------------------------------------------------------
+data "template_file" "gas" {
+  count = "${var.generate_metrics ? 1 : 0}"
+
+  template = "${file("${path.module}/cloudwatch-widgets/gas.json")}"
 
   vars {
     network_id     = "${var.network_id}"

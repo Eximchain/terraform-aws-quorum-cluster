@@ -1,0 +1,34 @@
+{
+  "type": "metric",
+  "x": 0,
+  "y": 13,
+  "width": 12,
+  "height": 6,
+  "properties": {
+    "metrics": [
+      [
+        "Quorum",
+        "LatestBlockGasUsed",
+        "NetworkID",
+        "${network_id}"
+      ],[
+        "Quorum",
+        "LatestBlockGasLimit",
+        "NetworkID",
+        "${network_id}"
+      ]
+    ],
+    "period": 60,
+    "stat": "Maximum",
+    "region": "${primary_region}",
+    "title": "Gas Used vs Gas Limit in Latest Block",
+    "yAxis": {
+        "left": {
+            "min": 0
+        },
+        "right": {
+            "min": 0
+        }
+    }
+  }
+}
