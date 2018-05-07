@@ -53,6 +53,39 @@ function emit_gas_limit_metric {
   emit_rpc_metric "$METRIC" "$METHOD" "$PARAMS" "$JQ_EXPR"
 }
 
+function emit_peer_count_metrics {
+  local RESPONSE_JSON=$(curl -X POST --data '{"jsonrpc":"2.0","method":"net_peerCount","params":[],"id":1}' $RPC_ADDR:$RPC_PORT)
+  local VALUE=$(printf "%d" $(echo $RESPONSE_JSON | jq -r .result))
+
+  local LT_1_PEERS="0"
+  local LT_5_PEERS="0"
+  local LT_10_PEERS="0"
+
+  if [ $VALUE -lt 1 ]
+  then
+    LT_1_PEERS="1"
+    LT_5_PEERS="1"
+    LT_10_PEERS="1"
+  elif [ $VALUE -lt 5 ]
+  then
+    LT_5_PEERS="1"
+    LT_10_PEERS="1"
+  elif [ $VALUE -lt 10 ]
+  then
+    LT_10_PEERS="1"
+  fi
+
+  local readonly COUNT_METRIC="PeerCount"
+  local readonly LT_1_PEERS_METRIC="LessThan1Peer"
+  local readonly LT_5_PEERS_METRIC="LessThan5Peers"
+  local readonly LT_10_PEERS_METRIC="LessThan10Peers"
+
+  aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $COUNT_METRIC --value $VALUE --dimensions NetworkID=$NETWORK_ID
+  aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $LT_1_PEERS_METRIC --value $LT_1_PEERS --dimensions NetworkID=$NETWORK_ID
+  aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $LT_5_PEERS_METRIC --value $LT_5_PEERS --dimensions NetworkID=$NETWORK_ID
+  aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $LT_10_PEERS_METRIC --value $LT_10_PEERS --dimensions NetworkID=$NETWORK_ID
+}
+
 function emit_block_skew_metrics {
   local readonly SKEW_METRIC="BlockSkew"
   local readonly LARGE_SKEW_METRIC="LargeBlockSkew"
@@ -93,5 +126,6 @@ do
     emit_pending_transactions_metric
     emit_block_number_metric
     emit_block_skew_metrics
+    emit_peer_count_metrics
     sleep $SLEEP_SECONDS
 done

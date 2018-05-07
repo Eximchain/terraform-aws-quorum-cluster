@@ -1,0 +1,39 @@
+{
+  "type": "metric",
+  "x": 12,
+  "y": 19,
+  "width": 12,
+  "height": 6,
+  "properties": {
+    "metrics": [
+      [
+        "Quorum",
+        "LessThan1Peers",
+        "NetworkID",
+        "${network_id}"
+      ],[
+        "Quorum",
+        "LessThan5Peers",
+        "NetworkID",
+        "${network_id}"
+      ],[
+        "Quorum",
+        "LessThan10Peers",
+        "NetworkID",
+        "${network_id}"
+      ]
+    ],
+    "period": 60,
+    "stat": "Sum",
+    "region": "${primary_region}",
+    "title": "Nodes with few Peers",
+    "yAxis": {
+        "left": {
+            "min": 0
+        },
+        "right": {
+            "min": 0
+        }
+    }
+  }
+}
