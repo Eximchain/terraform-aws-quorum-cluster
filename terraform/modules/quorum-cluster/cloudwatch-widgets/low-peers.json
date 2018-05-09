@@ -8,7 +8,7 @@
     "metrics": [
       [
         "Quorum",
-        "LessThan1Peers",
+        "NoPeers",
         "NetworkID",
         "${network_id}"
       ],[

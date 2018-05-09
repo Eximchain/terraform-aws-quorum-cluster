@@ -76,12 +76,12 @@ function emit_peer_count_metrics {
   fi
 
   local readonly COUNT_METRIC="PeerCount"
-  local readonly LT_1_PEERS_METRIC="LessThan1Peer"
+  local readonly NO_PEERS_METRIC="NoPeers"
   local readonly LT_5_PEERS_METRIC="LessThan5Peers"
   local readonly LT_10_PEERS_METRIC="LessThan10Peers"
 
   aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $COUNT_METRIC --value $VALUE --dimensions NetworkID=$NETWORK_ID
-  aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $LT_1_PEERS_METRIC --value $LT_1_PEERS --dimensions NetworkID=$NETWORK_ID
+  aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $NO_PEERS_METRIC --value $LT_1_PEERS --dimensions NetworkID=$NETWORK_ID
   aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $LT_5_PEERS_METRIC --value $LT_5_PEERS --dimensions NetworkID=$NETWORK_ID
   aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $LT_10_PEERS_METRIC --value $LT_10_PEERS --dimensions NetworkID=$NETWORK_ID
 }
