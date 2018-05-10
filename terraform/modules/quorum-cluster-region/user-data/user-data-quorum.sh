@@ -13,6 +13,8 @@ readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 echo "export VAULT_ADDR=https://${vault_dns}:${vault_port}" >> $BASH_PROFILE_FILE
 source $BASH_PROFILE_FILE
 
+sleep 60
+
 function download_vault_certs {
   # Download vault certs from s3
   aws configure set s3.signature_version s3v4
