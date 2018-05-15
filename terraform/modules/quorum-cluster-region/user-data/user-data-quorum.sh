@@ -10,7 +10,19 @@ readonly VAULT_TLS_CERT_DIR="/opt/vault/tls"
 readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 
 # This is necessary to retrieve the address for vault
-echo "export VAULT_ADDR=https://${vault_dns}:${vault_port}" >> $BASH_PROFILE_FILE
+echo "export VAULT_ADDR=https://${vault_dns}:${vault_port}
+
+function pause-geth {
+  sudo mv /etc/supervisor/conf.d/quorum-supervisor.conf /opt/quorum/private/
+  sudo supervisorctl reread
+  sudo supervisorctl update
+}
+
+function resume-geth {
+  sudo mv /opt/quorum/private/quorum-supervisor.conf /etc/supervisor/conf.d/
+  sudo supervisorctl reread
+  sudo supervisorctl update
+}" | sudo tee -a $BASH_PROFILE_FILE
 source $BASH_PROFILE_FILE
 
 sleep 60
