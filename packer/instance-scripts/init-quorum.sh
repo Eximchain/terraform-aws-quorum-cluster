@@ -324,7 +324,6 @@ sudo supervisorctl update
 sleep 5
 
 # Generate supervisor config to run quorum
-NUM_MAKERS=$(cat /opt/quorum/info/num-makers.txt)
 generate_quorum_supervisor_config $ADDRESS $GETH_PW $HOSTNAME $ROLE /opt/quorum/constellation/config.conf
 
 # Start processes that generate CloudWatch metrics
