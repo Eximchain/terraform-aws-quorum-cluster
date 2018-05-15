@@ -68,8 +68,18 @@ resource "aws_iam_policy" "quorum" {
     ]
   },{
     "Effect": "Allow",
+    "Action": [
+      "s3:GetObject",
+      "s3:PutObject"
+    ],
+    "Resource": ["${var.data_backup_bucket_arn}/*"]
+  },{
+    "Effect": "Allow",
     "Action": ["s3:ListBucket"],
-    "Resource": ["${var.vault_cert_bucket_arn}"]
+    "Resource": [
+      "${var.vault_cert_bucket_arn}",
+      "${var.data_backup_bucket_arn}"
+    ]
   },{
     "Effect": "Allow",
     "Action": ["s3:GetObject"],

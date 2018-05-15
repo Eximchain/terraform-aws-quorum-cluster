@@ -109,7 +109,9 @@ data "template_file" "user_data_quorum_maker" {
     max_block_time   = "${var.max_block_time}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
-    generate_metrics = "${var.generate_metrics}"
+
+    generate_metrics   = "${var.generate_metrics}"
+    data_backup_bucket = "${var.data_backup_bucket}"
 
     maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
     validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"
@@ -146,7 +148,9 @@ data "template_file" "user_data_quorum_validator" {
     max_block_time   = "${var.max_block_time}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
+
     generate_metrics = "${var.generate_metrics}"
+    data_backup_bucket = "${var.data_backup_bucket}"
 
     maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
     validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"
@@ -183,7 +187,9 @@ data "template_file" "user_data_quorum_observer" {
     max_block_time   = "${var.max_block_time}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
+
     generate_metrics = "${var.generate_metrics}"
+    data_backup_bucket = "${var.data_backup_bucket}"
 
     maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
     validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"

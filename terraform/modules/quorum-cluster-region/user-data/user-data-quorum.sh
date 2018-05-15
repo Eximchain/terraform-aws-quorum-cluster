@@ -69,6 +69,7 @@ function populate_data_files {
   echo "${aws_region}" | sudo tee /opt/quorum/info/aws-region.txt
   echo "${primary_region}" | sudo tee /opt/quorum/info/primary-region.txt
   echo "${generate_metrics}" | sudo tee /opt/quorum/info/generate-metrics.txt
+  echo "${data_backup_bucket}" | sudo tee /opt/quorum/info/data-backup-bucket.txt
   echo "${network_id}" | sudo tee /opt/quorum/info/network-id.txt
 
   sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'

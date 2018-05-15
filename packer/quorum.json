@@ -78,6 +78,10 @@
     "destination": "/tmp/cloudwatch-metrics.sh"
   },{
     "type": "file",
+    "source": "instance-scripts/backup-chain-data.sh",
+    "destination": "/tmp/backup-chain-data.sh"
+  },{
+    "type": "file",
     "source": "instance-scripts/generate-quorum-config.py",
     "destination": "/tmp/generate-quorum-config.py"
   },{
@@ -101,6 +105,7 @@
     "inline": [
       "sudo mv /tmp/init-quorum.sh /opt/quorum/bin/",
       "sudo mv /tmp/cloudwatch-metrics.sh /opt/quorum/bin/",
+      "sudo mv /tmp/backup-chain-data.sh /opt/quorum/bin/",
       "sudo mv /tmp/generate-run-init-quorum /opt/quorum/bin/",
       "sudo mv /tmp/generate-quorum-config.py /opt/quorum/bin/",
       "sudo mv /tmp/fill-node-counts.py /opt/quorum/bin/",
