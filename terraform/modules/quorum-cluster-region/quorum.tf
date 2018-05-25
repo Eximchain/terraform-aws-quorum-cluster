@@ -463,6 +463,19 @@ resource "aws_security_group_rule" "quorum_rpc" {
   cidr_blocks = ["127.0.0.1/32"]
 }
 
+resource "aws_security_group_rule" "supervisor_rpc" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum.id}"
+  type              = "ingress"
+
+  from_port = 9001
+  to_port   = 9001
+  protocol  = "tcp"
+
+  cidr_blocks = ["127.0.0.1/32"]
+}
+
 resource "aws_security_group_rule" "quorum_bootnode" {
   count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
 
