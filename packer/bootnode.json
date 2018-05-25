@@ -104,6 +104,10 @@
     "destination": "/tmp/ntp.conf"
   },{
     "type": "file",
+    "source": "configs/supervisord.conf",
+    "destination": "/tmp/supervisord.conf"
+  },{
+    "type": "file",
     "source": "data/regions.txt",
     "destination": "/tmp/regions.txt"
   },{
@@ -113,7 +117,8 @@
       "sudo mv /tmp/bootnode-supervisor.conf /opt/quorum/private/",
       "sudo mv /tmp/regions.txt /opt/quorum/info/",
       "sudo mv /tmp/constellation.conf /opt/quorum/constellation/config.conf",
-      "sudo mv /tmp/ntp.conf /etc/ntp.conf"
+      "sudo mv /tmp/ntp.conf /etc/ntp.conf",
+      "sudo mv /tmp/supervisord.conf /etc/supervisor/supervisord.conf"
     ]
   },{
     "type": "shell",
