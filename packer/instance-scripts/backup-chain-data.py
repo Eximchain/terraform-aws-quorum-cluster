@@ -32,6 +32,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Back up and restore chain data')
     subparsers = parser.add_subparsers(dest='command', help='Command to execute')
     parser_backup = subparsers.add_parser('backup', help='Back up data from this node')
+    parser_backup.add_argument('--force', action='store_true', default=False)
     parser_restore = subparsers.add_parser('restore', help='Restore data from s3')
     parser_restore.add_argument('--block', required=True, type=int, dest='block_to_restore')
     return parser.parse_args()
@@ -109,15 +110,31 @@ def restore_chain_data(block_number):
     print 'Restoring chain from block %s' % (block_number)
     s3_download(BACKUP_BUCKET, source_dir, CHAIN_DATA_DIR)
 
-args = parse_args()
+def backup_exists(block_number):
+    prefix = 'block-%s/' % (block_number)
+    bucket = s3.Bucket(BACKUP_BUCKET)
+    all_objects = bucket.objects.all()
+    backup_objects = filter(lambda obj: obj.key.startswith(prefix), all_objects)
+    return len(backup_objects) > 0
 
-try:
-    if args.command == 'backup':
-        current_block = eth_client.eth_blockNumber()
-        pause_geth()
-        backup_chain_data(current_block)
-    elif args.command == 'restore':
-        pause_geth()
-        restore_chain_data(args.block_to_restore)
-finally:
-    resume_geth()
+# Executes the command specified in the provided argparse namespace
+def execute_command(args):
+    try:
+        if args.command == 'backup':
+            current_block = eth_client.eth_blockNumber()
+            pause_geth()
+            if backup_exists(current_block):
+                if args.force:
+                    print 'Backup already found for block %s, OVERWRITING due to --force' % (current_block)
+                else:
+                    print 'Backup already found for block %s, ABORTING' % (current_block)
+                    return
+            backup_chain_data(current_block)
+        elif args.command == 'restore':
+            pause_geth()
+            restore_chain_data(args.block_to_restore)
+    finally:
+        resume_geth()
+
+args = parse_args()
+execute_command(args)
