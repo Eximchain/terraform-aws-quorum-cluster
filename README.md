@@ -316,7 +316,9 @@ module "quorum_cluster" {
   consul_instance_type      = "t2.small"
   bootnode_cluster_size     = 1
   bootnode_instance_type    = "t2.small"
-  quorum_node_instance_type = "t2.medium"
+  quorum_maker_instance_type = "t2.medium"
+  quorum_validator_instance_type = "t2.medium"
+  quorum_observer_instance_type = "t2.medium"
   num_maker_nodes           = 1
   num_validator_nodes       = 1
   num_observer_nodes        = 1

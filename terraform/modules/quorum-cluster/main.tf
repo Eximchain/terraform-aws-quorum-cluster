@@ -80,8 +80,10 @@ module "quorum_cluster_us_east_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -125,8 +127,10 @@ module "quorum_cluster_us_east_2" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -170,8 +174,10 @@ module "quorum_cluster_us_west_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -215,8 +221,10 @@ module "quorum_cluster_us_west_2" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -260,8 +268,10 @@ module "quorum_cluster_eu_central_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -305,8 +315,10 @@ module "quorum_cluster_eu_west_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -350,8 +362,10 @@ module "quorum_cluster_eu_west_2" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -395,8 +409,10 @@ module "quorum_cluster_ap_south_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -440,8 +456,10 @@ module "quorum_cluster_ap_northeast_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -485,8 +503,10 @@ module "quorum_cluster_ap_northeast_2" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -530,8 +550,10 @@ module "quorum_cluster_ap_southeast_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -575,8 +597,10 @@ module "quorum_cluster_ap_southeast_2" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -620,8 +644,10 @@ module "quorum_cluster_ca_central_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -665,8 +691,10 @@ module "quorum_cluster_sa_east_1" {
   consul_cluster_tag_key   = "${module.quorum_vault.consul_cluster_tag_key}"
   consul_cluster_tag_value = "${module.quorum_vault.consul_cluster_tag_value}"
 
-  bootnode_instance_type    = "${var.bootnode_instance_type}"
-  quorum_node_instance_type = "${var.quorum_node_instance_type}"
+  bootnode_instance_type         = "${var.bootnode_instance_type}"
+  quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
+  quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
   node_volume_size = "${var.node_volume_size}"
 

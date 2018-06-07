@@ -96,9 +96,19 @@ variable "bootnode_instance_type" {
   default = "t2.small"
 }
 
-variable "quorum_node_instance_type" {
-  description = "The EC2 instance type to use for quorum nodes"
-  default = "t2.small"
+variable "quorum_maker_instance_type" {
+  description = "The EC2 instance type to use for maker nodes"
+  default     = "t2.small"
+}
+
+variable "quorum_validator_instance_type" {
+  description = "The EC2 instance type to use for validator nodes"
+  default     = "t2.small"
+}
+
+variable "quorum_observer_instance_type" {
+  description = "The EC2 instance type to use for observer nodes"
+  default     = "t2.small"
 }
 
 variable "vault_cluster_size" {

@@ -300,7 +300,7 @@ resource "aws_launch_configuration" "quorum_maker" {
   name_prefix = "quorum-maker-net-${var.network_id}-node-${count.index}"
 
   image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
-  instance_type = "${var.quorum_node_instance_type}"
+  instance_type = "${var.quorum_maker_instance_type}"
   user_data     = "${element(data.template_file.user_data_quorum_maker.*.rendered, count.index)}"
 
   key_name = "${aws_key_pair.auth.id}"
@@ -319,7 +319,7 @@ resource "aws_launch_configuration" "quorum_validator" {
   name_prefix = "quorum-validator-net-${var.network_id}-node-${count.index}"
 
   image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
-  instance_type = "${var.quorum_node_instance_type}"
+  instance_type = "${var.quorum_validator_instance_type}"
   user_data     = "${element(data.template_file.user_data_quorum_validator.*.rendered, count.index)}"
 
   key_name = "${aws_key_pair.auth.id}"
@@ -338,7 +338,7 @@ resource "aws_launch_configuration" "quorum_observer" {
   name_prefix = "quorum-observer-net-${var.network_id}-node-${count.index}"
 
   image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
-  instance_type = "${var.quorum_node_instance_type}"
+  instance_type = "${var.quorum_observer_instance_type}"
   user_data     = "${element(data.template_file.user_data_quorum_observer.*.rendered, count.index)}"
 
   key_name = "${aws_key_pair.auth.id}"
