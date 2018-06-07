@@ -14,6 +14,7 @@ resource "aws_cloudwatch_dashboard" "metrics" {
     ${data.template_file.block_number_widget.rendered},
     ${data.template_file.large_block_skew_widget.rendered},
     ${data.template_file.gas.rendered},
+    ${data.template_file.blocks_by_region.rendered},
     ${data.template_file.peer_count.rendered},
     ${data.template_file.low_peers.rendered}
   ]
@@ -97,6 +98,20 @@ data "template_file" "gas" {
   count = "${var.generate_metrics ? 1 : 0}"
 
   template = "${file("${path.module}/cloudwatch-widgets/gas.json")}"
+
+  vars {
+    network_id     = "${var.network_id}"
+    primary_region = "${var.primary_region}"
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# WIDGET FOR NEW BLOCKS IN EACH REGION
+# ---------------------------------------------------------------------------------------------------------------------
+data "template_file" "blocks_by_region" {
+  count = "${var.generate_metrics ? 1 : 0}"
+
+  template = "${file("${path.module}/cloudwatch-widgets/blocks-by-region.json")}"
 
   vars {
     network_id     = "${var.network_id}"

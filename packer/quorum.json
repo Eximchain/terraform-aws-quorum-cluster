@@ -78,6 +78,10 @@
     "destination": "/tmp/cloudwatch-metrics.sh"
   },{
     "type": "file",
+    "source": "instance-scripts/cloudwatch-block-metrics.py",
+    "destination": "/tmp/cloudwatch-block-metrics.py"
+  },{
+    "type": "file",
     "source": "instance-scripts/backup-chain-data.py",
     "destination": "/tmp/backup-chain-data.py"
   },{
@@ -105,6 +109,7 @@
     "inline": [
       "sudo mv /tmp/init-quorum.sh /opt/quorum/bin/",
       "sudo mv /tmp/cloudwatch-metrics.sh /opt/quorum/bin/",
+      "sudo mv /tmp/cloudwatch-block-metrics.py /opt/quorum/bin/",
       "sudo mv /tmp/backup-chain-data.py /opt/quorum/bin/",
       "sudo mv /tmp/generate-run-init-quorum /opt/quorum/bin/",
       "sudo mv /tmp/generate-quorum-config.py /opt/quorum/bin/",

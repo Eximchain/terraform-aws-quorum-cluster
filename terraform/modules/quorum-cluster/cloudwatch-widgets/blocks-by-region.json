@@ -1,0 +1,122 @@
+{
+  "type": "metric",
+  "x": 12,
+  "y": 13,
+  "width": 12,
+  "height": 6,
+  "properties": {
+    "metrics": [
+      [
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "us-east-1"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "us-east-2"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "us-west-1"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "us-west-2"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "eu-central-1"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "eu-west-1"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "eu-west-2"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "ap-south-1"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "ap-northeast-1"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "ap-northeast-2"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "ap-southeast-1"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "ap-southeast-2"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "ca-central-1"
+      ],[
+        "Quorum",
+        "NewBlockCreated",
+        "NetworkID",
+        "${network_id}",
+        "Region",
+        "sa-east-1"
+      ]
+    ],
+    "period": 3600,
+    "stat": "Sum",
+    "region": "${primary_region}",
+    "title": "New Blocks Created Per Region",
+    "yAxis": {
+        "left": {
+            "min": 0
+        },
+        "right": {
+            "min": 0
+        }
+    }
+  }
+}
