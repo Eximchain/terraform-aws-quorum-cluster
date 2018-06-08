@@ -113,15 +113,15 @@ function generate_cloudwatch_block_metrics_supervisor_config {
     local RPC_DNS=$1
     local RPC_PORT=$2
 
-    echo "[program:cloudwatchblockmetrics]
-command=python /opt/quorum/bin/cloudwatch-block-metrics.py --rpc-address $RPC_DNS --rpc-port $RPC_PORT
-stdout_logfile=/opt/quorum/log/cloudwatch-block-metrics-stdout.log
-stderr_logfile=/opt/quorum/log/cloudwatch-block-metrics-error.log
+    echo "[program:blockmetrics]
+command=python /opt/quorum/bin/block-metrics.py --rpc-address $RPC_DNS --rpc-port $RPC_PORT
+stdout_logfile=/opt/quorum/log/block-metrics-stdout.log
+stderr_logfile=/opt/quorum/log/block-metrics-error.log
 numprocs=1
 autostart=true
 autorestart=true
 stopsignal=INT
-user=ubuntu" | sudo tee /etc/supervisor/conf.d/cloudwatch-block-metrics-supervisor.conf
+user=ubuntu" | sudo tee /etc/supervisor/conf.d/block-metrics-supervisor.conf
 }
 
 function complete_constellation_config {
