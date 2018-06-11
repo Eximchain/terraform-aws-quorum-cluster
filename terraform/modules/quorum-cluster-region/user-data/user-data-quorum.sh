@@ -67,6 +67,7 @@ function populate_data_files {
   echo "${generate_metrics}" | sudo tee /opt/quorum/info/generate-metrics.txt
   echo "${data_backup_bucket}" | sudo tee /opt/quorum/info/data-backup-bucket.txt
   echo "${network_id}" | sudo tee /opt/quorum/info/network-id.txt
+  echo "https://${vault_dns}:${vault_port}" | sudo tee /opt/quorum/info/vault-address.txt
 
   sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'
 }
