@@ -91,6 +91,21 @@ variable "generate_metrics" {
   default     = true
 }
 
+variable "use_dedicated_makers" {
+  description = "Whether or not to use dedicated instances for maker nodes."
+  default     = false
+}
+
+variable "use_dedicated_validators" {
+  description = "Whether or not to use dedicated instances for validator nodes."
+  default     = false
+}
+
+variable "use_dedicated_observers" {
+  description = "Whether or not to use dedicated instances for observer nodes."
+  default     = false
+}
+
 variable "bootnode_instance_type" {
   description = "The EC2 instance type to use for bootnodes"
   default     = "t2.small"

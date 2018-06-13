@@ -308,6 +308,8 @@ resource "aws_launch_configuration" "quorum_maker" {
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
   security_groups      = ["${aws_security_group.quorum.id}"]
 
+  placement_tenancy = "${var.use_dedicated_makers ? "dedicated" : "default"}"
+
   root_block_device {
     volume_size = "${var.node_volume_size}"
   }
@@ -327,6 +329,8 @@ resource "aws_launch_configuration" "quorum_validator" {
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
   security_groups      = ["${aws_security_group.quorum.id}"]
 
+  placement_tenancy = "${var.use_dedicated_validators ? "dedicated" : "default"}"
+
   root_block_device {
     volume_size = "${var.node_volume_size}"
   }
@@ -345,6 +349,8 @@ resource "aws_launch_configuration" "quorum_observer" {
 
   iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
   security_groups      = ["${aws_security_group.quorum.id}"]
+
+  placement_tenancy = "${var.use_dedicated_observers ? "dedicated" : "default"}"
 
   root_block_device {
     volume_size = "${var.node_volume_size}"

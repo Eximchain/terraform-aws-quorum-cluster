@@ -71,6 +71,21 @@ variable "generate_metrics" {
   default     = true
 }
 
+variable "use_dedicated_makers" {
+  description = "Whether or not to use dedicated instances for maker nodes."
+  default     = false
+}
+
+variable "use_dedicated_validators" {
+  description = "Whether or not to use dedicated instances for validator nodes."
+  default     = false
+}
+
+variable "use_dedicated_observers" {
+  description = "Whether or not to use dedicated instances for observer nodes."
+  default     = false
+}
+
 variable "cert_org_name" {
   description = "The organization to associate with the vault certificates."
   default     = "Example Co."

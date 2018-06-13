@@ -85,6 +85,10 @@ module "quorum_cluster_us_east_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
+
   node_volume_size = "${var.node_volume_size}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "us-east-1", "")}"
@@ -131,6 +135,10 @@ module "quorum_cluster_us_east_2" {
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -179,6 +187,10 @@ module "quorum_cluster_us_west_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
+
   node_volume_size = "${var.node_volume_size}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "us-west-1", "")}"
@@ -225,6 +237,10 @@ module "quorum_cluster_us_west_2" {
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -273,6 +289,10 @@ module "quorum_cluster_eu_central_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
+
   node_volume_size = "${var.node_volume_size}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "eu-central-1", "")}"
@@ -319,6 +339,10 @@ module "quorum_cluster_eu_west_1" {
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -367,6 +391,10 @@ module "quorum_cluster_eu_west_2" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
+
   node_volume_size = "${var.node_volume_size}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "eu-west-2", "")}"
@@ -413,6 +441,10 @@ module "quorum_cluster_ap_south_1" {
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -461,6 +493,10 @@ module "quorum_cluster_ap_northeast_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
+
   node_volume_size = "${var.node_volume_size}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "ap-northeast-1", "")}"
@@ -507,6 +543,10 @@ module "quorum_cluster_ap_northeast_2" {
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -555,6 +595,10 @@ module "quorum_cluster_ap_southeast_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
+
   node_volume_size = "${var.node_volume_size}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "ap-southeast-1", "")}"
@@ -601,6 +645,10 @@ module "quorum_cluster_ap_southeast_2" {
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -649,6 +697,10 @@ module "quorum_cluster_ca_central_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
+
   node_volume_size = "${var.node_volume_size}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "ca-central-1", "")}"
@@ -695,6 +747,10 @@ module "quorum_cluster_sa_east_1" {
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+
+  use_dedicated_makers     = "${var.use_dedicated_makers}"
+  use_dedicated_validators = "${var.use_dedicated_validators}"
+  use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   node_volume_size = "${var.node_volume_size}"
 
