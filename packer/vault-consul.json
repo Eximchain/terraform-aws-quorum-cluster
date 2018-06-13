@@ -86,6 +86,9 @@
       "/tmp/terraform-aws-consul/modules/install-consul/install-consul --version {{user `consul_version`}}",
       "/tmp/terraform-aws-consul/modules/install-dnsmasq/install-dnsmasq"
     ]
+  },{
+    "type": "shell",
+    "script": "provisioning-scripts/threatstack.sh"
   }],
   "post-processors": [{
     "type": "manifest",

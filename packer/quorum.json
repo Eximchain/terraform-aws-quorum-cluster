@@ -62,7 +62,8 @@
       "provisioning-scripts/porosity.sh",
       "provisioning-scripts/quorum-genesis.sh",
       "provisioning-scripts/s3fs.sh",
-      "provisioning-scripts/swapfile.sh"
+      "provisioning-scripts/swapfile.sh",
+      "provisioning-scripts/threatstack.sh"
     ]
   },{
     "type": "file",

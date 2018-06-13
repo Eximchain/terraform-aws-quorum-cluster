@@ -59,7 +59,8 @@
       "provisioning-scripts/quorum.sh",
       "provisioning-scripts/quorum-setup.sh",
       "provisioning-scripts/porosity.sh",
-      "provisioning-scripts/quorum-genesis.sh"
+      "provisioning-scripts/quorum-genesis.sh",
+      "provisioning-scripts/threatstack.sh"
     ]
   },{
     "type": "file",
