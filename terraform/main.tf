@@ -23,6 +23,7 @@ module "quorum_cluster" {
   use_dedicated_validators       = "${var.use_dedicated_validators}"
   use_dedicated_observers        = "${var.use_dedicated_observers}"
   node_volume_size               = "${var.node_volume_size}"
+  threatstack_deploy_key         = "${var.threatstack_deploy_key}"
   vote_threshold                 = "${var.vote_threshold}"
   min_block_time                 = "${var.min_block_time}"
   max_block_time                 = "${var.max_block_time}"

@@ -93,6 +93,8 @@ data "template_file" "user_data_bootnode" {
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
     vault_cert_bucket = "${var.vault_cert_bucket_name}"
+
+    threatstack_deploy_key = "${var.threatstack_deploy_key}"
   }
 }
 

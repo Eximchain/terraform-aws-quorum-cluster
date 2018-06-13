@@ -10,6 +10,13 @@ set -e
 # From: https://alestic.com/2010/12/ec2-user-data-output/
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
+function run_threatstack_agent_if_key_provided {
+  if [ "${threatstack_deploy_key}" != "" ]
+  then
+    sudo cloudsight setup --deploy-key=${threatstack_deploy_key} --ruleset="Base Rule Set" --agent_type=i
+  fi
+}
+
 readonly VAULT_TLS_CERT_DIR="/opt/vault/tls"
 readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 readonly VAULT_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/vault.crt.pem"
@@ -28,6 +35,8 @@ aws s3 cp s3://${vault_cert_bucket}/vault.key.pem $VAULT_TLS_CERT_DIR
 sudo chown vault:vault $VAULT_TLS_CERT_DIR/*
 sudo chmod 600 $VAULT_TLS_CERT_DIR/*
 sudo /opt/vault/bin/update-certificate-store --cert-file-path $CA_TLS_CERT_FILE
+
+run_threatstack_agent_if_key_provided
 
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
 /opt/vault/bin/run-vault --s3-bucket "${s3_bucket_name}" --s3-bucket-region "${aws_region}" --tls-cert-file "$VAULT_TLS_CERT_FILE"  --tls-key-file "$VAULT_TLS_KEY_FILE"

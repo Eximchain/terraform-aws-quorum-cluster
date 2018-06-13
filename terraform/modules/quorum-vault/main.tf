@@ -183,6 +183,7 @@ data "template_file" "user_data_vault_cluster" {
     consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
     network_id               = "${var.network_id}"
     vault_cert_bucket        = "${aws_s3_bucket.vault_certs.bucket}"
+    threatstack_deploy_key   = "${var.threatstack_deploy_key}"
   }
 
   # user-data needs to download these objects
@@ -229,6 +230,7 @@ data "template_file" "user_data_consul" {
   vars {
     consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
     consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
+    threatstack_deploy_key   = "${var.threatstack_deploy_key}"
   }
 }
 

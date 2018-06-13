@@ -50,6 +50,13 @@ function setup_s3fs {
   sudo mount -a
 }
 
+function run_threatstack_agent_if_key_provided {
+  if [ "${threatstack_deploy_key}" != "" ]
+  then
+    sudo cloudsight setup --deploy-key=${threatstack_deploy_key} --ruleset="Base Rule Set" --agent_type=i
+  fi
+}
+
 function populate_data_files {
   echo "${index}" | sudo tee /opt/quorum/info/role-index.txt
   echo "${index + overall_index_base}" | sudo tee /opt/quorum/info/overall-index.txt
@@ -85,6 +92,8 @@ populate_data_files
 
 # These variables are passed in via Terraform template interpolation
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
+
+run_threatstack_agent_if_key_provided
 
 /opt/quorum/bin/generate-run-init-quorum ${vault_dns} ${vault_port}
 /opt/quorum/bin/run-init-quorum

@@ -126,6 +126,8 @@ data "template_file" "user_data_quorum_maker" {
 
     vault_cert_bucket       = "${var.vault_cert_bucket_name}"
     constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
+
+    threatstack_deploy_key = "${var.threatstack_deploy_key}"
   }
 }
 
@@ -165,6 +167,8 @@ data "template_file" "user_data_quorum_validator" {
 
     vault_cert_bucket       = "${var.vault_cert_bucket_name}"
     constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
+
+    threatstack_deploy_key = "${var.threatstack_deploy_key}"
   }
 }
 
@@ -204,6 +208,8 @@ data "template_file" "user_data_quorum_observer" {
 
     vault_cert_bucket       = "${var.vault_cert_bucket_name}"
     constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
+
+    threatstack_deploy_key = "${var.threatstack_deploy_key}"
   }
 }
 

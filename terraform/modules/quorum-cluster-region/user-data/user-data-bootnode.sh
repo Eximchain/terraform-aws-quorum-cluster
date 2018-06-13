@@ -36,6 +36,13 @@ function download_vault_certs {
   sudo /opt/vault/bin/update-certificate-store --cert-file-path $CA_TLS_CERT_FILE
 }
 
+function run_threatstack_agent_if_key_provided {
+  if [ "${threatstack_deploy_key}" != "" ]
+  then
+    sudo cloudsight setup --deploy-key=${threatstack_deploy_key} --ruleset="Base Rule Set" --agent_type=i
+  fi
+}
+
 # Send the log output from this script to user-data.log, syslog, and the console
 # From: https://alestic.com/2010/12/ec2-user-data-output/
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
@@ -47,6 +54,8 @@ download_vault_certs
 
 # These variables are passed in via Terraform template interpolation
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
+
+run_threatstack_agent_if_key_provided
 
 /opt/quorum/bin/generate-run-init-bootnode ${vault_dns} ${vault_port}
 /opt/quorum/bin/run-init-bootnode

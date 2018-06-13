@@ -9,5 +9,14 @@ set -e
 # From: https://alestic.com/2010/12/ec2-user-data-output/
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
+function run_threatstack_agent_if_key_provided {
+  if [ "${threatstack_deploy_key}" != "" ]
+  then
+    sudo cloudsight setup --deploy-key=${threatstack_deploy_key} --ruleset="Base Rule Set" --agent_type=i
+  fi
+}
+
+run_threatstack_agent_if_key_provided
+
 # These variables are passed in via Terraform template interpolation
 /opt/consul/bin/run-consul --server --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
