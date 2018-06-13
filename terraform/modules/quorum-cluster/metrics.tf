@@ -146,3 +146,20 @@ data "template_file" "low_peers" {
     primary_region = "${var.primary_region}"
   }
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# DynamoDB Table for blocks by region
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_dynamodb_table" "blocks_by_region" {
+  count = "${var.generate_metrics ? 1 : 0}"
+  
+  name           = "quorum-net-${var.network_id}-blocks-by-region"
+  read_capacity  = 10
+  write_capacity = 10
+  hash_key       = "Region"
+
+  attribute {
+    name = "Region"
+    type = "S"
+  }
+}

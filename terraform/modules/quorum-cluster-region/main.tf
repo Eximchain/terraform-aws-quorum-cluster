@@ -95,6 +95,10 @@ resource "aws_iam_policy" "quorum" {
       "cloudwatch:GetMetricStatistics"
     ],
     "Resource": "*"
+  },{
+    "Effect": "Allow",
+    "Action": ["dynamodb:UpdateItem"],
+    "Resource": "*"
   }]
 }
 EOF

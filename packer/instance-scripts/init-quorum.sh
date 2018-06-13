@@ -113,8 +113,10 @@ function generate_cloudwatch_block_metrics_supervisor_config {
     local RPC_DNS=$1
     local RPC_PORT=$2
 
+    local NETWORK_ID=$(cat /opt/quorum/info/network-id.txt)
+
     echo "[program:blockmetrics]
-command=python /opt/quorum/bin/block-metrics.py --rpc-address $RPC_DNS --rpc-port $RPC_PORT
+command=python /opt/quorum/bin/block-metrics.py --network-id $NETWORK_ID --rpc-address $RPC_DNS --rpc-port $RPC_PORT
 stdout_logfile=/opt/quorum/log/block-metrics-stdout.log
 stderr_logfile=/opt/quorum/log/block-metrics-error.log
 numprocs=1

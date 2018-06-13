@@ -1,5 +1,6 @@
 import argparse
 import boto3
+import decimal
 import time
 import urllib2
 
@@ -30,16 +31,48 @@ HOSTNAME = urllib2.urlopen("http://169.254.169.254/latest/meta-data/public-hostn
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Emit cloudwatch metrics on block creation')
+    parser.add_argument('--network-id', required=True, dest='network_id', help='ID of the network geth is currently connected to')
     parser.add_argument('--rpc-address', default=HOSTNAME, dest='rpc_address', help='Address to reach geth RPC at')
     parser.add_argument('--rpc-port', default=DEFAULT_GETH_PORT, dest='rpc_port', help='Port to reach geth RPC at')
     return parser.parse_args()
 
+def emit_block_creation_metric(cloudwatch_metric):
+    data_point = {
+        'MetricName': CLOUDWATCH_METRIC,
+        'Dimensions': [
+            {
+                'Name': 'NetworkID',
+                'Value': NETWORK_ID
+            },
+            {
+                'Name': 'Region',
+                'Value': AWS_REGION
+            }
+        ],
+        'Timestamp': datetime.utcnow(),
+        'Value': 1,
+        'Unit': 'None',
+        'StorageResolution': 60
+    }
+    cloudwatch_metric.put_data(MetricData=[data_point])
+
+def update_dynamodb_block_count(dynamodb_table):
+    response = dynamodb_table.update_item(
+        Key={'Region': AWS_REGION},
+        UpdateExpression="ADD NumBlocks :val",
+        ExpressionAttributeValues={':val': decimal.Decimal(1)},
+        ReturnValues="UPDATED_NEW"
+    )
+
 args = parse_args()
 
 cloudwatch = boto3.resource('cloudwatch', region_name=PRIMARY_REGION)
+dynamodb = boto3.resource('dynamodb', region_name=PRIMARY_REGION)
 eth_client = EthJsonRpc(args.rpc_address, args.rpc_port)
 
 new_block_metric = cloudwatch.Metric(CLOUDWATCH_NAMESPACE, CLOUDWATCH_METRIC)
+block_count_table_name = "quorum-net-%s-blocks-by-region" % (args.network_id)
+block_count_table = dynamodb.Table(block_count_table_name)
 
 while True:
     try:
@@ -56,23 +89,7 @@ while True:
         block = eth_client.eth_getBlockByHash(block_hash)
         miner = block['miner']
         if miner == coinbase:
-            data_point = {
-                'MetricName': CLOUDWATCH_METRIC,
-                'Dimensions': [
-                    {
-                        'Name': 'NetworkID',
-                        'Value': NETWORK_ID
-                    },
-                    {
-                        'Name': 'Region',
-                        'Value': AWS_REGION
-                    }
-                ],
-                'Timestamp': datetime.utcnow(),
-                'Value': 1,
-                'Unit': 'None',
-                'StorageResolution': 60
-            }
-            new_block_metric.put_data(MetricData=[data_point])
+            emit_block_creation_metric(new_block_metric)
+            update_dynamodb_block_count(block_count_table)
 
     time.sleep(SLEEP_SECONDS)
