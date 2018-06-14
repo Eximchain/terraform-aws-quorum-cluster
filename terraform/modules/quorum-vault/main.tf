@@ -119,6 +119,8 @@ module "vault_cluster" {
   vpc_id     = "${aws_vpc.vault.id}"
   subnet_ids = "${aws_subnet.vault.*.id}"
 
+  tenancy = "${var.use_dedicated_vault_servers ? "dedicated" : "default"}"
+
   target_group_arns = ["${aws_lb_target_group.quorum_vault.arn}"]
 
   allowed_ssh_cidr_blocks            = ["0.0.0.0/0"]
@@ -210,6 +212,8 @@ module "consul_cluster" {
 
   vpc_id     = "${aws_vpc.vault.id}"
   subnet_ids = "${aws_subnet.vault.*.id}"
+
+  tenancy = "${var.use_dedicated_consul_servers ? "dedicated" : "default"}"
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.

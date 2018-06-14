@@ -106,6 +106,16 @@ variable "use_dedicated_observers" {
   default     = false
 }
 
+variable "use_dedicated_vault_servers" {
+  description = "Whether or not to use dedicated instances for vault servers."
+  default     = false
+}
+
+variable "use_dedicated_consul_servers" {
+  description = "Whether or not to use dedicated instances for consul servers."
+  default     = false
+}
+
 variable "cert_org_name" {
   description = "The organization to associate with the vault certificates."
   default     = "Example Co."

@@ -46,6 +46,9 @@ module "quorum_vault" {
   consul_cluster_size  = "${var.consul_cluster_size}"
   consul_instance_type = "${var.consul_instance_type}"
 
+  use_dedicated_vault_servers  = "${var.use_dedicated_vault_servers}"
+  use_dedicated_consul_servers = "${var.use_dedicated_consul_servers}"
+
   vault_consul_ami = "${var.vault_consul_ami}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"

@@ -63,6 +63,16 @@ DESCRIPTION
   default = 64813
 }
 
+variable "use_dedicated_vault_servers" {
+  description = "Whether or not to use dedicated instances for vault servers."
+  default     = false
+}
+
+variable "use_dedicated_consul_servers" {
+  description = "Whether or not to use dedicated instances for consul servers."
+  default     = false
+}
+
 variable "lb_ssl_policy" {
   description = "The SSL policy to use for the vault load balancer"
   default     = "ELBSecurityPolicy-2016-08"

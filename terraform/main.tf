@@ -23,6 +23,8 @@ module "quorum_cluster" {
   use_dedicated_makers           = "${var.use_dedicated_makers}"
   use_dedicated_validators       = "${var.use_dedicated_validators}"
   use_dedicated_observers        = "${var.use_dedicated_observers}"
+  use_dedicated_vault_servers    = "${var.use_dedicated_vault_servers}"
+  use_dedicated_consul_servers   = "${var.use_dedicated_consul_servers}"
   node_volume_size               = "${var.node_volume_size}"
   threatstack_deploy_key         = "${var.threatstack_deploy_key}"
   vote_threshold                 = "${var.vote_threshold}"
