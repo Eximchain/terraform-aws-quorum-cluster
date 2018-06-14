@@ -19,6 +19,7 @@ module "quorum_cluster" {
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
+  use_dedicated_bootnodes        = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers           = "${var.use_dedicated_makers}"
   use_dedicated_validators       = "${var.use_dedicated_validators}"
   use_dedicated_observers        = "${var.use_dedicated_observers}"

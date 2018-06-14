@@ -55,6 +55,8 @@ resource "aws_instance" "bootnode" {
   vpc_security_group_ids = ["${aws_security_group.bootnode.id}"]
   subnet_id              = "${element(aws_subnet.bootnodes.*.id, count.index)}"
 
+  tenancy = "${var.use_dedicated_bootnodes ? "dedicated" : "default"}"
+
   tags {
     Name = "bootnode-${count.index}"
   }

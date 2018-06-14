@@ -91,6 +91,11 @@ variable "generate_metrics" {
   default     = true
 }
 
+variable "use_dedicated_bootnodes" {
+  description = "Whether or not to use dedicated instances for bootnodes."
+  default     = false
+}
+
 variable "use_dedicated_makers" {
   description = "Whether or not to use dedicated instances for maker nodes."
   default     = false

@@ -6,6 +6,7 @@ key_name                       = "quorum-cluster"
 network_id                     = 64813
 force_destroy_s3_buckets       = true
 generate_metrics               = true
+use_dedicated_bootnodes        = false
 use_dedicated_makers           = false
 use_dedicated_validators       = false
 use_dedicated_observers        = false
