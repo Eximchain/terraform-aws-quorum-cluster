@@ -46,11 +46,6 @@ DESCRIPTION
   default     = "~/.ssh/quorum.pub"
 }
 
-variable "private_key_path" {
-  description = "Path to SSH private key corresponding to the public key in public_key_path"
-  default     = "~/.ssh/quorum"
-}
-
 variable "primary_region" {
   description = "The AWS region that single-region resources like the vault and consul clusters will be placed in."
   default     = "us-east-1"

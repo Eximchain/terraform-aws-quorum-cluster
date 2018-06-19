@@ -304,7 +304,6 @@ module "quorum_cluster" {
 
   # These values from example.tfvars
   public_key_path           = "~/.ssh/quorum.pub"
-  private_key_path          = "~/.ssh/quorum"
   key_name                  = "quorum-cluster"
   aws_region                = "us-east-1"
   network_id                = 64813
