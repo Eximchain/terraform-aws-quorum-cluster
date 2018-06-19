@@ -83,6 +83,11 @@ variable "cert_org_name" {
   default     = "Example Co."
 }
 
+variable "vault_enterprise_license_key" {
+  description = "The license key to use for vault enterprise. Leave empty if using free version."
+  default     = ""
+}
+
 variable "threatstack_deploy_key" {
   description = "Deploy key to use to activate threatstack agents, if using one"
   default     = ""

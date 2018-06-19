@@ -51,7 +51,8 @@ module "quorum_vault" {
 
   vault_consul_ami = "${var.vault_consul_ami}"
 
-  threatstack_deploy_key = "${var.threatstack_deploy_key}"
+  threatstack_deploy_key       = "${var.threatstack_deploy_key}"
+  vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

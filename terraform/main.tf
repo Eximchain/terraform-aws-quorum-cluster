@@ -27,6 +27,7 @@ module "quorum_cluster" {
   use_dedicated_consul_servers   = "${var.use_dedicated_consul_servers}"
   node_volume_size               = "${var.node_volume_size}"
   threatstack_deploy_key         = "${var.threatstack_deploy_key}"
+  vault_enterprise_license_key   = "${var.vault_enterprise_license_key}"
   vote_threshold                 = "${var.vote_threshold}"
   min_block_time                 = "${var.min_block_time}"
   max_block_time                 = "${var.max_block_time}"

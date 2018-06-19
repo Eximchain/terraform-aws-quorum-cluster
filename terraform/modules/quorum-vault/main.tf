@@ -179,13 +179,14 @@ data "template_file" "user_data_vault_cluster" {
   template = "${file("${path.module}/user-data/user-data-vault.sh")}"
 
   vars {
-    aws_region               = "${var.aws_region}"
-    s3_bucket_name           = "${aws_s3_bucket.quorum_vault.id}"
-    consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
-    consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
-    network_id               = "${var.network_id}"
-    vault_cert_bucket        = "${aws_s3_bucket.vault_certs.bucket}"
-    threatstack_deploy_key   = "${var.threatstack_deploy_key}"
+    aws_region                   = "${var.aws_region}"
+    s3_bucket_name               = "${aws_s3_bucket.quorum_vault.id}"
+    consul_cluster_tag_key       = "${module.consul_cluster.cluster_tag_key}"
+    consul_cluster_tag_value     = "${module.consul_cluster.cluster_tag_value}"
+    network_id                   = "${var.network_id}"
+    vault_cert_bucket            = "${aws_s3_bucket.vault_certs.bucket}"
+    vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
+    threatstack_deploy_key       = "${var.threatstack_deploy_key}"
   }
 
   # user-data needs to download these objects

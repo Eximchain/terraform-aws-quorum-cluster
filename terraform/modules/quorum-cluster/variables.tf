@@ -171,6 +171,11 @@ variable "threatstack_deploy_key" {
   default     = ""
 }
 
+variable "vault_enterprise_license_key" {
+  description = "The license key to use for vault enterprise. Leave empty if using free version."
+  default     = ""
+}
+
 variable "bootnode_counts" {
   description = "A mapping from region to the number of bootnodes to launch in that region"
   type        = "map"
