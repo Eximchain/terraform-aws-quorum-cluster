@@ -6,6 +6,7 @@ import shutil
 QUORUM_IN_FILE = "packer/manifests/quorum.json"
 BOOTNODE_IN_FILE = "packer/manifests/bootnode.json"
 VAULT_IN_FILE = "packer/manifests/vault-consul.json"
+VAULT_ENTERPRISE_IN_FILE = "packer/manifests/vault-enterprise.json"
 OUT_FILE = "terraform/amis.auto.tfvars.json"
 
 def parse_args():
@@ -16,6 +17,7 @@ def parse_args():
         The argparse namespace
     """
     parser = argparse.ArgumentParser(description="Copies packer artifacts from the packer manifest output to terraform input variables.")
+    parser.add_argument('--enterprise', dest='enterprise', action='store_true', default=False, help='Whether to copy the AMI for the enterprise version of vault')
     parser.add_argument('--tfvars-backup-file', dest='tfvar_backup_file', default=None, help="A file at which to back up the current terraform amis variable.")
     return parser.parse_args()
 
@@ -61,7 +63,7 @@ def main():
 
     quorum_amis = parse_manifest_file(QUORUM_IN_FILE)
     bootnode_amis = parse_manifest_file(BOOTNODE_IN_FILE)
-    vault_consul_amis = parse_manifest_file(VAULT_IN_FILE)
+    vault_consul_amis = parse_manifest_file(VAULT_ENTERPRISE_IN_FILE if args.enterprise else VAULT_IN_FILE)
 
     output = {'quorum_amis': quorum_amis, 'bootnode_amis': bootnode_amis}
 

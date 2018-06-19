@@ -6,6 +6,12 @@ AWS_ACCOUNT_ID=$(curl http://169.254.169.254/latest/meta-data/iam/info | jq .Ins
 REGIONS=$(cat /opt/vault/data/regions.txt)
 
 NETWORK_ID=$1
+if [ $# -eq 2 ]
+then
+  VAULT_ENTERPRISE_LICENSE_KEY="$2"
+else
+  VAULT_ENTERPRISE_LICENSE_KEY=""
+fi
 
 # TODO: Separate permissions of quorum nodes and bootnodes
 QUORUM_ROLE_NAME="quorum-node-network-$NETWORK_ID"
@@ -48,6 +54,13 @@ do
     echo "vault write auth/aws/role/$QUORUM_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$QUORUM_ROLE_NAME || true" >> $OUTPUT_FILE
     echo "vault write auth/aws/role/$BOOTNODE_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$BOOTNODE_ROLE_NAME || true" >> $OUTPUT_FILE
 done
+
+# Write the enterprise license key if it was provided
+if [ "$VAULT_ENTERPRISE_LICENSE_KEY" != "" ]
+then
+  echo "# Write vault enterprise license key" >> $OUTPUT_FILE
+  echo "vault write sys/license text=$VAULT_ENTERPRISE_LICENSE_KEY" >> $OUTPUT_FILE
+fi
 
 cat << EOF >> $OUTPUT_FILE
 # Revoke the root token to reduce security risk
