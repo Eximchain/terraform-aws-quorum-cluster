@@ -20,6 +20,29 @@ resource "aws_key_pair" "auth" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# KMS UNSEAL KEY
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_kms_key" "vault_unseal" {
+  # Create only if we're using vault enterprise
+  count = "${var.vault_enterprise_license_key == "" ? 0 : 1}"
+
+  description = "Key to unseal vault for quorum network ${var.network_id}"
+
+  # 7 Days for a network we expect to be ephemeral, otherwise 30 days
+  deletion_window_in_days = "${var.force_destroy_s3_bucket ? 7 : 30}"
+}
+
+resource "aws_kms_grant" "vault_unseal" {
+  # Create only if we're using vault enterprise
+  count = "${var.vault_enterprise_license_key == "" ? 0 : 1}"
+
+  key_id            = "${aws_kms_key.vault_unseal.key_id}"
+  grantee_principal = "${module.vault_cluster.iam_role_arn}"
+
+  operations = [ "Encrypt", "Decrypt", "DescribeKey" ]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # VAULT CLUSTER NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_availability_zones" "available" {
@@ -185,6 +208,7 @@ data "template_file" "user_data_vault_cluster" {
     consul_cluster_tag_value     = "${module.consul_cluster.cluster_tag_value}"
     network_id                   = "${var.network_id}"
     vault_cert_bucket            = "${aws_s3_bucket.vault_certs.bucket}"
+    kms_unseal_key_id            = "${join("", aws_kms_key.vault_unseal.*.key_id)}"
     vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
     threatstack_deploy_key       = "${var.threatstack_deploy_key}"
   }

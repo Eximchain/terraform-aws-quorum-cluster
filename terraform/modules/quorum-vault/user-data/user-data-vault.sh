@@ -39,4 +39,10 @@ sudo /opt/vault/bin/update-certificate-store --cert-file-path $CA_TLS_CERT_FILE
 run_threatstack_agent_if_key_provided
 
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
-/opt/vault/bin/run-vault --enable-s3-backend --s3-bucket "${s3_bucket_name}" --s3-bucket-region "${aws_region}" --tls-cert-file "$VAULT_TLS_CERT_FILE"  --tls-key-file "$VAULT_TLS_KEY_FILE"
+
+if [ "${kms_unseal_key_id}" != "" ]
+then
+  /opt/vault/bin/run-vault --enable-s3-backend --s3-bucket "${s3_bucket_name}" --s3-bucket-region "${aws_region}" --tls-cert-file "$VAULT_TLS_CERT_FILE"  --tls-key-file "$VAULT_TLS_KEY_FILE" --enable-kms-unseal --kms-unseal-key "${kms_unseal_key_id}" --kms-unseal-region "${aws_region}"
+else
+  /opt/vault/bin/run-vault --enable-s3-backend --s3-bucket "${s3_bucket_name}" --s3-bucket-region "${aws_region}" --tls-cert-file "$VAULT_TLS_CERT_FILE"  --tls-key-file "$VAULT_TLS_KEY_FILE"
+fi
