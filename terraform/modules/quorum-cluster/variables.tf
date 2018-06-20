@@ -46,6 +46,14 @@ DESCRIPTION
   default     = "~/.ssh/quorum.pub"
 }
 
+variable "public_key" {
+  description = <<DESCRIPTION
+SSH public key to be used for authentication.
+Will override public_key_path if set.
+DESCRIPTION
+  default     = ""
+}
+
 variable "primary_region" {
   description = "The AWS region that single-region resources like the vault and consul clusters will be placed in."
   default     = "us-east-1"
