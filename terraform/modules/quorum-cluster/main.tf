@@ -13,6 +13,10 @@ provider "template" {
   version = "~> 1.0"
 }
 
+provider "local" {
+  version = "~> 1.1"
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # BACKUP S3 BUCKET
 # ---------------------------------------------------------------------------------------------------------------------
@@ -26,13 +30,22 @@ resource "aws_s3_bucket" "data_backup" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# PUBLIC KEY FILE IF USED
+# ---------------------------------------------------------------------------------------------------------------------
+data "local_file" "public_key" {
+  count = "${var.public_key == "" ? 1 : 0}"
+
+  filename = "${var.public_key_path}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # VAULT CLUSTER FOR USE WITH QUORUM
 # ---------------------------------------------------------------------------------------------------------------------
 module "quorum_vault" {
   source = "../quorum-vault"
 
   cert_owner = "${var.cert_owner}"
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   aws_region    = "${var.primary_region}"
   vault_port    = "${var.vault_port}"
@@ -70,7 +83,7 @@ module "quorum_cluster_us_east_1" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -124,7 +137,7 @@ module "quorum_cluster_us_east_2" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -178,7 +191,7 @@ module "quorum_cluster_us_west_1" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -232,7 +245,7 @@ module "quorum_cluster_us_west_2" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -286,7 +299,7 @@ module "quorum_cluster_eu_central_1" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -340,7 +353,7 @@ module "quorum_cluster_eu_west_1" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -394,7 +407,7 @@ module "quorum_cluster_eu_west_2" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -448,7 +461,7 @@ module "quorum_cluster_ap_south_1" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -502,7 +515,7 @@ module "quorum_cluster_ap_northeast_1" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -556,7 +569,7 @@ module "quorum_cluster_ap_northeast_2" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -610,7 +623,7 @@ module "quorum_cluster_ap_southeast_1" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -664,7 +677,7 @@ module "quorum_cluster_ap_southeast_2" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -718,7 +731,7 @@ module "quorum_cluster_ca_central_1" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -772,7 +785,7 @@ module "quorum_cluster_sa_east_1" {
   data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
   data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
-  public_key = "${var.public_key == "" ? file(var.public_key_path) : var.public_key}"
+  public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
