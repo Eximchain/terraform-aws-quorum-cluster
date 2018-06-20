@@ -10,8 +10,8 @@ variable "primary_region" {
   description = "The AWS region that single-region resources like the vault and consul clusters will be placed in."
 }
 
-variable "public_key_path" {
-  description = "The path to the public key that will be used to SSH the instances in this region."
+variable "public_key" {
+  description = "The public key that will be used to SSH the instances in this region."
 }
 
 variable "vote_threshold" {

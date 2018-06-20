@@ -25,7 +25,7 @@ resource "aws_key_pair" "auth" {
   count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0) + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
 
   key_name   = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-  public_key = "${file(var.public_key_path)}"
+  public_key = "${var.public_key}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
