@@ -160,6 +160,19 @@ resource "aws_security_group_rule" "bootnode_quorum" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "bootnode_quorum_udp" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.bootnode.id}"
+  type              = "ingress"
+
+  from_port = 21000
+  to_port   = 21000
+  protocol  = "udp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
 resource "aws_security_group_rule" "bootnode_rpc" {
   count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
 
