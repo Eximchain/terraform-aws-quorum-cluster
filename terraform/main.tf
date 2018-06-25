@@ -5,6 +5,7 @@ module "quorum_cluster" {
   # Variables sourced from terraform.tfvars
   public_key_path                = "${var.public_key_path}"
   public_key                     = "${var.public_key}"
+  private_key                    = "${var.private_key}"
   primary_region                 = "${var.primary_region}"
   cert_owner                     = "${var.cert_owner}"
   network_id                     = "${var.network_id}"

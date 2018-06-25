@@ -71,6 +71,14 @@ DESCRIPTION
   default = 64813
 }
 
+variable "private_key" {
+  description = <<DESCRIPTION
+SSH private key to be used for authentication.
+Will use the agent if none is provided.
+DESCRIPTION
+  default     = ""
+}
+
 variable "gas_limit" {
   description = "The limit on gas that can be used in a single block"
   default     = 804247552
