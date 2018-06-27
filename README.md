@@ -1,3 +1,4 @@
+
 Table of Contents
 =================
 
@@ -120,7 +121,7 @@ $ cp example.tfvars terraform.tfvars
 Fill in your username as the `cert_owner`:
 
 ```sh
-$ sed -i '' "s/FIXME_USER/$USER/" terraform.tfvars
+$ sed -i "s/FIXME_USER/$USER/" terraform.tfvars
 ```
 
 Check terraform.tfvars and change any values you would like to change. Note that the values given in examples.tfvars is NOT completely AWS free tier eligible, as they include t2.small and t2.medium instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.
@@ -163,6 +164,8 @@ $ /opt/vault/bin/setup-vault.sh $ROOT_TOKEN
 ```
 
 If any of these commands fail, wait a short time and try again. If waiting doesn't fix the issue, you may need to destroy and recreate the infrastructure.
+
+Note: The `setup-vault.sh` command will produce one error for each supported region that does not have a bootnode.  Those are expected and can be ignored.
 
 ### Unseal additional vault servers
 
