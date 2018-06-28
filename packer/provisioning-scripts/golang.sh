@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu -o pipefail
 
-GOREL=go1.7.3.linux-amd64.tar.gz
+GOREL=go1.10.3.linux-amd64.tar.gz
 BASH_PROFILE=/home/ubuntu/.bash_profile
 
 wget -q https://storage.googleapis.com/golang/$GOREL
