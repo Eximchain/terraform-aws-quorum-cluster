@@ -1,4 +1,4 @@
-public_key_path                = "~/.ssh/quorum.pub"
+public_key_path                = "/Users/FIXME_USER/.ssh/quorum.pub"
 primary_region                 = "us-east-1"
 cert_owner                     = "FIXME_USER"
 key_name                       = "quorum-cluster"
