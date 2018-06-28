@@ -125,9 +125,9 @@ $ sed -i "s/FIXME_USER/$USER/" terraform.tfvars
 ```
 
 Check terraform.tfvars and change any values you would like to change:
-- You may need to modify the network ID to one which is not in use.  
-- We assume your home directory is at `/Users/$USER` for locating your keyfiles, you will need to update the `public_key_path` (and `private_key_path`, if present) if that isn't the case.
-- Note that the values given in examples.tfvars are NOT completely AWS free tier eligible, as they include t2.small and t2.medium instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.
+- **SSH Location:** Our default example file is built for OS X, which puts your home directory and its `.ssh` folder (aka `~/.ssh`) at `/Users/$USER/.ssh`.  If your SSH keyfile is not located within that directory, you will need to update the `public_key_path`.
+- **Network ID:** We have a default network value.  If there is already a network running with this ID on your AWS account, you need to change the network ID or there will be a conflict.  
+- **Not Free:** The values given in `example.tfvars` are NOT completely AWS free tier eligible, as they include t2.small and t2.medium instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.
 
 If it is your first time using this package, you will need to run `terraform init` before applying the configuration.
 
