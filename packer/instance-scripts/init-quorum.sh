@@ -49,7 +49,6 @@ function generate_quorum_supervisor_config {
     then
         ARGS="$GLOBAL_ARGS --voteaccount \"$ADDRESS\""
     else # observer node
-        echo "$PASSWORD" > $PW_FILE
         ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\""
     fi
 
@@ -116,7 +115,9 @@ user=ubuntu" | sudo tee /etc/supervisor/conf.d/cloudwatch-metrics-supervisor.con
 function generate_cloudwatch_block_metrics_supervisor_config {
     local RPC_DNS=$1
     local RPC_PORT=$2
+
     local NETWORK_ID=$(cat /opt/quorum/info/network-id.txt)
+
     echo "[program:blockmetrics]
 command=python /opt/quorum/bin/block-metrics.py --network-id $NETWORK_ID --rpc-address $RPC_DNS --rpc-port $RPC_PORT
 stdout_logfile=/opt/quorum/log/block-metrics-stdout.log
