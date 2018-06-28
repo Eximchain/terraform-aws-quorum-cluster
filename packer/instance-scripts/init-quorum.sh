@@ -23,6 +23,8 @@ function generate_quorum_supervisor_config {
     local REGIONS=$(cat /opt/quorum/info/regions.txt)
     local MIN_BLOCK_TIME=$(cat /opt/quorum/info/min-block-time.txt)
     local MAX_BLOCK_TIME=$(cat /opt/quorum/info/max-block-time.txt)
+    local NODE_INDEX=$(cat /opt/quorum/info/overall-index.txt)
+    local THIS_REGION=$(cat /opt/quorum/info/aws-region.txt)
 
     local VERBOSITY=2
     local PW_FILE="/tmp/geth-pw"
@@ -42,14 +44,16 @@ function generate_quorum_supervisor_config {
 
     if [ "$ROLE" == "maker" ]
     then
-        ARGS="$GLOBAL_ARGS --blockmakeraccount \"$ADDRESS\" --blockmakerpassword \"$PASSWORD\" --minblocktime $MIN_BLOCK_TIME --maxblocktime $MAX_BLOCK_TIME"
+        ARGS="$GLOBAL_ARGS --blockmakeraccount \"$ADDRESS\" --minblocktime $MIN_BLOCK_TIME --maxblocktime $MAX_BLOCK_TIME"
     elif [ "$ROLE" == "validator" ]
     then
-        ARGS="$GLOBAL_ARGS --voteaccount \"$ADDRESS\" --votepassword \"$PASSWORD\""
+        ARGS="$GLOBAL_ARGS --voteaccount \"$ADDRESS\""
     else # observer node
         echo "$PASSWORD" > $PW_FILE
-        ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\" --password \"$PW_FILE\""
+        ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\""
     fi
+
+    ARGS="$ARGS --vaultaddr \"$VAULT_ADDR\"  --vaultpasswordpath \"passwords/$THIS_REGION/$NODE_INDEX\""
 
     ARGS="$ARGS --bootnodes $BOOTNODES"
 
@@ -112,9 +116,7 @@ user=ubuntu" | sudo tee /etc/supervisor/conf.d/cloudwatch-metrics-supervisor.con
 function generate_cloudwatch_block_metrics_supervisor_config {
     local RPC_DNS=$1
     local RPC_PORT=$2
-
     local NETWORK_ID=$(cat /opt/quorum/info/network-id.txt)
-
     echo "[program:blockmetrics]
 command=python /opt/quorum/bin/block-metrics.py --network-id $NETWORK_ID --rpc-address $RPC_DNS --rpc-port $RPC_PORT
 stdout_logfile=/opt/quorum/log/block-metrics-stdout.log
@@ -297,7 +299,7 @@ else
     # TODO: Get non-empty passwords to work
     CONSTELLATION_PW=""
     # Store the password first so we don't lose it
-    wait_for_successful_command "vault write quorum/passwords/$AWS_REGION/$CLUSTER_INDEX geth_pw=\"$GETH_PW\" constellation_pw=\"$CONSTELLATION_PW\""
+    wait_for_successful_command "vault write quorum/passwords/$AWS_REGION/$CLUSTER_INDEX geth_pw=$GETH_PW constellation_pw=$CONSTELLATION_PW"
     # Generate the new key pair
     ADDRESS=0x$(echo -ne "$GETH_PW\n$GETH_PW\n" | geth account new | grep Address | awk '{ gsub("{|}", "") ; print $2 }')
     # Generate constellation keys
