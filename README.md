@@ -1,3 +1,4 @@
+
 Table of Contents
 =================
 
@@ -117,13 +118,16 @@ $ cd terraform
 $ cp example.tfvars terraform.tfvars
 ```
 
-Fill in your username as the `cert_owner`:
+Fill in your username as the `cert_owner` via:
 
 ```sh
-$ sed -i '' "s/FIXME_USER/$USER/" terraform.tfvars
+$ sed -i "s/FIXME_USER/$USER/" terraform.tfvars
 ```
 
-Check terraform.tfvars and change any values you would like to change. Note that the values given in examples.tfvars is NOT completely AWS free tier eligible, as they include t2.small and t2.medium instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.
+Check terraform.tfvars and change any values you would like to change:
+- **SSH Location:** Our default example file is built for OS X, which puts your home directory and its `.ssh` folder (aka `~/.ssh`) at `/Users/$USER/.ssh`.  If your SSH keyfile is not located within that directory, you will need to update the `public_key_path`.
+- **Network ID:** We have a default network value.  If there is already a network running with this ID on your AWS account, you need to change the network ID or there will be a conflict.  
+- **Not Free:** The values given in `example.tfvars` are NOT completely AWS free tier eligible, as they include t2.small and t2.medium instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.
 
 If it is your first time using this package, you will need to run `terraform init` before applying the configuration.
 
@@ -163,6 +167,8 @@ $ /opt/vault/bin/setup-vault.sh $ROOT_TOKEN
 ```
 
 If any of these commands fail, wait a short time and try again. If waiting doesn't fix the issue, you may need to destroy and recreate the infrastructure.
+
+Note: The `setup-vault.sh` command will produce one error for each supported region that does not have a bootnode.  Those are expected and can be ignored.
 
 ### Unseal additional vault servers
 
