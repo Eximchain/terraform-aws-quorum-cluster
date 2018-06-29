@@ -60,6 +60,7 @@
       "provisioning-scripts/quorum-setup.sh",
       "provisioning-scripts/porosity.sh",
       "provisioning-scripts/quorum-genesis.sh",
+      "provisioning-scripts/rsync-update.sh",
       "provisioning-scripts/threatstack.sh"
     ]
   },{

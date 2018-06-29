@@ -88,7 +88,10 @@
     ]
   },{
     "type": "shell",
-    "script": "provisioning-scripts/threatstack.sh"
+    "scripts": [
+      "provisioning-scripts/threatstack.sh",
+      "provisioning-scripts/rsync-update.sh"
+    ]
   }],
   "post-processors": [{
     "type": "manifest",
