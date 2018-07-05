@@ -1,3 +1,18 @@
+# Narrowing Vault Policies
+This branch addresses [Issue #21: Vault permissions should be more finely tuned](https://github.com/Eximchain/terraform-aws-quorum-cluster/issues/21).  Right now, every node in the network has the same permission level -- any node can view all the secret data about any other node.  This leaves a large "blast radius" in the case one of our nodes is compromised.  I am updating the Vault policy so that each node has:
+- `read` access to all values in `/addresses`, `/makers`, `/validators`, `/observers`, `/bootnodes/addresses`
+  - `write` access to its own values within those stores (e.g. `/`)
+- `write` access to its own values within `/keys`, `/passwords`, `/bootnodes/keys`, `/bootnodes/passwords`
+
+The solution strategy has a few key elements:
+- The [default `quorum-node.hcl` Vault policy](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/packer/vault-policies/quorum-node.hcl) needs to be restricted to only provide the shared `read` access required by all nodes.
+- Each node needs a unique IAM role so they can have unique Vault policies, although the IAM roles will all share the same AWS policy.  Right now there is only [one IAM role per active region](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/terraform/modules/quorum-cluster-region/quorum.tf#L533).
+- The `generate-setup-vault` code needs to:
+  - [Dynamically generate a policy](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/packer/instance-scripts/generate-setup-vault.sh#L44) for each node which provides `write` access to its own values as specified above
+  - [Assign the appropriate policy](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/packer/instance-scripts/generate-setup-vault.sh#L54) to each node
+
+*- John O'Sullivan*
+
 Table of Contents
 =================
 
