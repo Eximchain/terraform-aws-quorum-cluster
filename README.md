@@ -168,7 +168,7 @@ $ /opt/vault/bin/setup-vault.sh $ROOT_TOKEN
 
 If any of these commands fail, wait a short time and try again. If waiting doesn't fix the issue, you may need to destroy and recreate the infrastructure.
 
-Note: The `setup-vault.sh` command will produce one error for each supported region that does not have a bootnode.  Those are expected and can be ignored.
+> Note: The `setup-vault.sh` command will produce one error for each supported region that does not have a bootnode.  Those are expected and can be ignored.
 
 ### Unseal additional vault servers
 
