@@ -36,10 +36,14 @@ function download_vault_certs {
   sudo /opt/vault/bin/update-certificate-store --cert-file-path $CA_TLS_CERT_FILE
 }
 
-function run_threatstack_agent_if_key_provided {
+function configure_threatstack_agent_if_key_provided {
   if [ "${threatstack_deploy_key}" != "" ]
   then
-    sudo cloudsight setup --deploy-key=${threatstack_deploy_key} --ruleset="Base Rule Set" --agent_type=i
+    echo "{
+      \"deploy-key\": \"${threatstack_deploy_key}\",
+      \"ruleset\": \"Base Rule Set\",
+      \"agent_type\": \"i\"
+}" | sudo tee /opt/threatstack/config.json
   fi
 }
 
@@ -55,7 +59,7 @@ download_vault_certs
 # These variables are passed in via Terraform template interpolation
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
 
-run_threatstack_agent_if_key_provided
+configure_threatstack_agent_if_key_provided
 
 /opt/quorum/bin/generate-run-init-bootnode ${vault_dns} ${vault_port}
 /opt/quorum/bin/run-init-bootnode

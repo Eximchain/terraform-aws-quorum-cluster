@@ -244,6 +244,16 @@ function wait_for_all_bootnodes {
     done
 }
 
+function run_threatstack_agent_if_configured {
+  if [ -e /opt/threatstack/config.json ]
+  then
+    echo "Threatstack agent configuration found. Starting Agent."
+    sudo cloudsight setup --config="/opt/threatstack/config.json"
+  else
+    echo "No Threatstack agent configuration found."
+  fi
+}
+
 function wait_for_terraform_provisioners {
     # Ensure terraform has run all provisioners
     while [ ! -e /opt/quorum/info/network-id.txt ]
@@ -357,3 +367,5 @@ fi
 # Run quorum and metric programs if applicable
 sudo supervisorctl reread
 sudo supervisorctl update
+
+run_threatstack_agent_if_configured

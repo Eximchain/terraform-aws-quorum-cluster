@@ -10,10 +10,24 @@ set -e
 # From: https://alestic.com/2010/12/ec2-user-data-output/
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
-function run_threatstack_agent_if_key_provided {
+function configure_threatstack_agent_if_key_provided {
   if [ "${threatstack_deploy_key}" != "" ]
   then
-    sudo cloudsight setup --deploy-key=${threatstack_deploy_key} --ruleset="Base Rule Set" --agent_type=i
+    echo "{
+      \"deploy-key\": \"${threatstack_deploy_key}\",
+      \"ruleset\": \"Base Rule Set\",
+      \"agent_type\": \"i\"
+}" | sudo tee /opt/threatstack/config.json
+  fi
+}
+
+function run_threatstack_agent_if_configured {
+  if [ -e /opt/threatstack/config.json ]
+  then
+    echo "Threatstack agent configuration found. Starting Agent."
+    sudo cloudsight setup --config="/opt/threatstack/config.json"
+  else
+    echo "No Threatstack agent configuration found."
   fi
 }
 
@@ -36,7 +50,8 @@ sudo chown vault:vault $VAULT_TLS_CERT_DIR/*
 sudo chmod 600 $VAULT_TLS_CERT_DIR/*
 sudo /opt/vault/bin/update-certificate-store --cert-file-path $CA_TLS_CERT_FILE
 
-run_threatstack_agent_if_key_provided
+configure_threatstack_agent_if_key_provided
+run_threatstack_agent_if_configured
 
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
 
