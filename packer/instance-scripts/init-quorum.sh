@@ -354,7 +354,6 @@ then
     generate_cloudwatch_block_metrics_supervisor_config $HOSTNAME 22000
 fi
 
-# Remove the config that runs this and run quorum
-sudo rm /etc/supervisor/conf.d/init-quorum-supervisor.conf
+# Run quorum and metric programs if applicable
 sudo supervisorctl reread
 sudo supervisorctl update
