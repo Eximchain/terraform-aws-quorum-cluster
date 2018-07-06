@@ -89,6 +89,7 @@
   },{
     "type": "shell",
     "scripts": [
+      "provisioning-scripts/binutils-update.sh",
       "provisioning-scripts/threatstack.sh",
       "provisioning-scripts/rsync-update.sh"
     ]
