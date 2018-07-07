@@ -53,7 +53,7 @@ resource "aws_launch_configuration" "bootnodes" {
 # BOOTNODE ASG
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_autoscaling_group" "bootnodes" {
-  count = "${aws_launch_configuration.bootnode.count}"
+  count = "${aws_launch_configuration.bootnodes.count}"
 
   name = "bootnode-net-${var.network_id}-node-${count.index}"
 
@@ -72,8 +72,8 @@ resource "aws_autoscaling_group" "bootnodes" {
 # ---------------------------------------------------------------------------------------------------------------------
 # BOOTNODE LOAD BALANCER
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_lb" "bootnode" {
-  count = "${aws_launch_configuration.bootnode.count}"
+resource "aws_lb" "bootnodes" {
+  count = "${aws_launch_configuration.bootnodes.count}"
 
   internal = false
   load_balancer_type = "network"
@@ -84,8 +84,23 @@ resource "aws_lb" "bootnode" {
   # enable_deletion_protection = true
 }
 
-# TODO: Attach this load balancer to the above autoscaling group.
-# Looks like I need a target_group & a listener?
+resource "aws_lb_listener" "bootnode" {
+  count = "${aws_launch_configuration.bootnodes.count}"
+  load_balancer_arn = "${aws_lb.bootnodes.*.arn}"
+  protocol = "TCP"
+  port = "30301"
+
+  default_action {
+    target_group_arn = "${aws_lb_target_group.bootnodes.*.arn}"
+    type = "forward"
+  }
+}
+
+resource "aws_lb_target_group" "bootnodes" {
+  count = "${aws_launch_configuration.bootnodes.count}"
+  arn = "${aws_autoscaling_group.bootnodes.*.arn}"
+  port = "30301"
+}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # THE USER DATA SCRIPT THAT WILL RUN ON EACH BOOTNODE WHEN IT'S BOOTING
