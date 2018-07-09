@@ -96,6 +96,9 @@ resource "aws_lb_listener" "bootnode" {
   }
 }
 
+# TODO: enodes need to be accessible via both TCP & UDP.
+# Where do I configure the UDP access here?
+
 resource "aws_lb_target_group" "bootnodes" {
   count = "${aws_launch_configuration.bootnodes.count}"
   arn = "${aws_autoscaling_group.bootnodes.*.arn}"
