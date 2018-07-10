@@ -70,7 +70,6 @@
       "provisioning-scripts/s3fs.sh",
       "provisioning-scripts/swapfile.sh",
       "provisioning-scripts/rsync-update.sh",
-      "provisioning-scripts/systemd-update.sh",
       "provisioning-scripts/threatstack.sh"
     ]
   },{

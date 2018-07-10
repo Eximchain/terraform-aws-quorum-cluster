@@ -96,8 +96,7 @@
     "scripts": [
       "provisioning-scripts/binutils-update.sh",
       "provisioning-scripts/threatstack.sh",
-      "provisioning-scripts/rsync-update.sh",
-      "provisioning-scripts/systemd-update.sh"
+      "provisioning-scripts/rsync-update.sh"
     ]
   }],
   "post-processors": [{
