@@ -88,12 +88,11 @@ wait_for_terraform_provisioners
 # Get metadata for this instance
 INDEX=$(cat /opt/quorum/info/index.txt)
 AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
-LB_DNS=$(cat /opt/quorum/info/lb_dns.txt)
+HOSTNAME=$(cat /opt/quorum/info/lb_dns.txt)
+echo "dig +short (next line):"
+PUBLIC_IP=$(dig +short $HOSTNAME)
+echo $PUBLIC_IP
 BOOT_PORT=30301
-
-# Fetching HOSTNAME
-# Old HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
-# New: hostname should be contained in the LB_DNS
 
 # Fetching PUBLIC_IP
 # Old PUBLIC_IP=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-ipv4')
