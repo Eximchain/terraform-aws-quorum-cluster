@@ -54,12 +54,6 @@ function populate_data_files {
   sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info' --bootnode
   echo "${aws_region}" | sudo tee /opt/quorum/info/aws-region.txt
   echo "${primary_region}" | sudo tee /opt/quorum/info/primary-region.txt
-
-  #TODO: Init scripts used to use this file to determine when provisioning is done.
-  # How do things need to change now that we don't control provisioning?
-  echo "${network_id}" | sudo tee /opt/quorum/info/network-id.txt
-  
-  # Planning to have node use this for resolving public IP.
   echo "${lb_dns}" | sudo tee /opt/quorum/info/lb_dns.txt
 }
 
