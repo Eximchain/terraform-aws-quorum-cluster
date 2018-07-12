@@ -72,11 +72,14 @@ function wait_for_terraform_provisioners {
     done
 }
 
+echo ">> Before Vault init/status check"
+
 # Wait for operator to initialize and unseal vault
 wait_for_successful_command 'vault init -check'
 wait_for_successful_command 'vault status'
 
 # Wait for vault to be fully configured by the root user
+echo ">> Before Vault auth"
 wait_for_successful_command 'vault auth -method=aws'
 
 wait_for_terraform_provisioners
@@ -86,12 +89,15 @@ INDEX=$(cat /opt/quorum/info/index.txt)
 AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
 PUBLIC_IP=$(cat /opt/quorum/info/public_ip.txt)
 EIP_ID=$(cat /opt/quorum/info/eip_id.txt)
+echo ">> Before AWS magic URL calls"
 INSTANCE_ID=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/instance-id')
 HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
 BOOT_PORT=30301
 
 # Associate the EIP with this instance
-aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP_ID --allow-reassociation
+echo ">> Before AWS EC2 CLI call"
+wait_for_successful_command 'aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP_ID --allow-reassociation'
+echo ">> After AWS EC2 CLI call"
 
 # Generate bootnode key and construct bootnode address
 BOOT_KEY_FILE=/opt/quorum/private/boot.key
@@ -142,7 +148,7 @@ CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key
 # Write bootnode address to vault
 wait_for_successful_command "vault write quorum/bootnodes/keys/$AWS_REGION/$INDEX bootnode_key=\"$BOOT_KEY\" constellation_priv_key=\"$CONSTELLATION_PRIV_KEY\""
 wait_for_successful_command "vault write quorum/bootnodes/addresses/$AWS_REGION/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB hostname=$HOSTNAME constellation_pub_key=$CONSTELLATION_PUB_KEY"
-
+echo "All Vault commands complete"
 # Wait for all bootnodes to write their address to vault
 wait_for_all_bootnodes
 

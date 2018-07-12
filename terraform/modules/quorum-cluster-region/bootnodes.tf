@@ -70,7 +70,7 @@ resource "aws_autoscaling_group" "bootnodes" {
 }
 
 resource "aws_eip" "bootnodes" {
-  count = "${aws_launch_configuration.bootnodes.count}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
   vpc = true
 }
 

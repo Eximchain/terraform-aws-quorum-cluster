@@ -54,7 +54,7 @@ function setup_s3fs {
 
 function populate_data_files {
   echo "${index}" | sudo tee /opt/quorum/info/index.txt
-  echo "${bootnode-count-json}" | sudo tee /opt/quorum/info/bootnode-counts.json
+  echo "${bootnode_count_json}" | sudo tee /opt/quorum/info/bootnode-counts.json
   sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info' --bootnode
   echo "${aws_region}" | sudo tee /opt/quorum/info/aws-region.txt
   echo "${primary_region}" | sudo tee /opt/quorum/info/primary-region.txt
@@ -70,7 +70,7 @@ sudo apt-get -y update
 sudo ntpd
 
 download_vault_certs
-setup_s3fs
+# setup_s3fs
 populate_data_files
 
 # These variables are passed in via Terraform template interpolation
