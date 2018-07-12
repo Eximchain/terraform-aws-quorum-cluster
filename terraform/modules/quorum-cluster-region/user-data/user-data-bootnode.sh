@@ -58,7 +58,8 @@ function populate_data_files {
   sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info' --bootnode
   echo "${aws_region}" | sudo tee /opt/quorum/info/aws-region.txt
   echo "${primary_region}" | sudo tee /opt/quorum/info/primary-region.txt
-  echo "${lb_dns}" | sudo tee /opt/quorum/info/lb_dns.txt
+  echo "${public_ip}" | sudo tee /opt/quorum/info/public_ip.txt
+  echo "${eip_id}" | sudo tee /opt/quorum/info/eip_id.txt
 }
 
 # Send the log output from this script to user-data.log, syslog, and the console
