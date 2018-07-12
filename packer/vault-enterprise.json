@@ -98,7 +98,8 @@
       "provisioning-scripts/threatstack.sh",
       "provisioning-scripts/rsync-update.sh",
       "provisioning-scripts/git-update.sh",
-      "provisioning-scripts/systemd-update.sh"
+      "provisioning-scripts/systemd-update.sh",
+      "provisioning-scripts/cleanup.sh"
     ]
   }],
   "post-processors": [{

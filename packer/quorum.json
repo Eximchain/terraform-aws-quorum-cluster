@@ -160,7 +160,10 @@
     ]
   },{
     "type": "shell",
-    "script": "provisioning-scripts/init-zero-counts.sh"
+    "scripts": [
+      "provisioning-scripts/init-zero-counts.sh",
+      "provisioning-scripts/cleanup.sh"
+    ]
   }],
   "post-processors": [{
     "type": "manifest",
