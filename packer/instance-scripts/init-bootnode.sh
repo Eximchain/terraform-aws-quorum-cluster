@@ -84,9 +84,14 @@ wait_for_terraform_provisioners
 # Get metadata for this instance
 INDEX=$(cat /opt/quorum/info/index.txt)
 AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
-PUBLIC_IP=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-ipv4')
+PUBLIC_IP=$(cat /opt/quorum/info/public_ip.txt)
+EIP_ID=$(cat /opt/quorum/info/eip_id.txt)
+INSTANCE_ID=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/instance-id')
 HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
 BOOT_PORT=30301
+
+# Associate the EIP with this instance
+aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP_ID --allow-reassociation
 
 # Generate bootnode key and construct bootnode address
 BOOT_KEY_FILE=/opt/quorum/private/boot.key

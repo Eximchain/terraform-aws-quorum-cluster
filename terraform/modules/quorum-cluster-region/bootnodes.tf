@@ -32,50 +32,57 @@ resource "aws_subnet" "bootnodes" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# BOOTNODES
+# BOOTNODE LAUNCH CONFIGURATION
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_instance" "bootnode" {
-  connection {
-    # The default username for our AMI
-    user = "ubuntu"
+resource "aws_launch_configuration" "bootnodes" {
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
-    # The connection will use the local SSH agent for authentication if this is empty.
-    private_key = "${var.private_key}"
-  }
-
+  image_id   = "${var.bootnode_ami == "" ? data.aws_ami.bootnode.id : var.bootnode_ami}"
   instance_type = "${var.bootnode_instance_type}"
-  count         = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
-
-  ami       = "${var.bootnode_ami == "" ? data.aws_ami.bootnode.id : var.bootnode_ami}"
   user_data = "${data.template_file.user_data_bootnode.rendered}"
 
   key_name = "${aws_key_pair.auth.id}"
 
   iam_instance_profile = "${aws_iam_instance_profile.bootnode.name}"
+  security_groups = ["${aws_security_group.bootnode.id}"]
 
-  vpc_security_group_ids = ["${aws_security_group.bootnode.id}"]
-  subnet_id              = "${element(aws_subnet.bootnodes.*.id, count.index)}"
+  placement_tenancy = "${var.use_dedicated_bootnodes ? "dedicated" : "default"}"
+}
 
-  tenancy = "${var.use_dedicated_bootnodes ? "dedicated" : "default"}"
+# ---------------------------------------------------------------------------------------------------------------------
+# BOOTNODE ASG & ELASTIC IPs
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_autoscaling_group" "bootnodes" {
+  count = "${aws_launch_configuration.bootnodes.count}"
 
-  tags {
-    Name = "bootnode-${count.index}"
+  name = "bootnode-net-${var.network_id}-node-${count.index}"
+
+  launch_configuration = "${element(aws_launch_configuration.bootnodes.*.name, count.index)}"
+
+  min_size = 1
+  max_size = 1
+  desired_capacity = 1
+
+  health_check_grace_period = 300
+  health_check_type = "ELB"
+
+  vpc_zone_identifier = ["${element(aws_subnet.bootnodes.*.id, count.index)}"]
+}
+
+resource "aws_eip" "bootnodes" {
+  count = "${aws_launch_configuration.bootnodes.count}"
+  vpc = true
+}
+
+data "aws_instance" "bootnode" {
+  count = "${aws_autoscaling_group.bootnodes.count}"
+
+  filter {
+    name = "tag:aws:autoscaling:groupName"
+    values = ["${element(aws_autoscaling_group.bootnodes.*.name, count.index)}"]
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get -y update",
-      "echo '${aws_s3_bucket.quorum_constellation.id} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0' | sudo tee /etc/fstab",
-      "sudo mount -a",
-      "echo '${count.index}' | sudo tee /opt/quorum/info/index.txt",
-      "echo '${jsonencode(var.bootnode_counts)}' | sudo tee /opt/quorum/info/bootnode-counts.json",
-      "sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info' --bootnode",
-      "echo '${var.aws_region}' | sudo tee /opt/quorum/info/aws-region.txt",
-      "echo '${var.primary_region}' | sudo tee /opt/quorum/info/primary-region.txt",
-      # This should be last because init scripts wait for this file to determine terraform is done provisioning
-      "echo '${var.network_id}' | sudo tee /opt/quorum/info/network-id.txt",
-    ]
-  }
+  depends_on = ["aws_autoscaling_group.bootnodes"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -84,14 +91,24 @@ resource "aws_instance" "bootnode" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 data "template_file" "user_data_bootnode" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
   template = "${file("${path.module}/user-data/user-data-bootnode.sh")}"
 
   vars {
+    constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
+    index = "${count.index}"
+    bootnode_count_json = "${data.template_file.bootnode_count_json.rendered}"
+    aws_region = "${var.aws_region}"
+    primary_region = "${var.primary_region}"
+    network_id = "${var.network_id}"
+    public_ip = "${element(aws_eip.bootnodes.*.public_ip, count.index)}"
+    eip_id = "${element(aws_eip.bootnodes.*.id, count.index)}"
+
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
-
+    
     consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
