@@ -35,7 +35,7 @@ resource "aws_subnet" "bootnodes" {
 # BOOTNODE LAUNCH CONFIGURATION
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_launch_configuration" "bootnodes" {
-  count = "${data.template_file.user_data_bootnode.count}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
   image_id   = "${var.bootnode_ami == "" ? data.aws_ami.bootnode.id : var.bootnode_ami}"
   instance_type = "${var.bootnode_instance_type}"
@@ -50,14 +50,14 @@ resource "aws_launch_configuration" "bootnodes" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# BOOTNODE ASG
+# BOOTNODE ASG & ELASTIC IPs
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_autoscaling_group" "bootnodes" {
   count = "${aws_launch_configuration.bootnodes.count}"
 
   name = "bootnode-net-${var.network_id}-node-${count.index}"
 
-  launch_configuration = "${element(aws_launch_configuration.bootnode.*.name, count.index)}"
+  launch_configuration = "${element(aws_launch_configuration.bootnodes.*.name, count.index)}"
 
   min_size = 1
   max_size = 1
@@ -69,40 +69,20 @@ resource "aws_autoscaling_group" "bootnodes" {
   vpc_zone_identifier = ["${element(aws_subnet.bootnodes.*.id, count.index)}"]
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# BOOTNODE LOAD BALANCER
-# ---------------------------------------------------------------------------------------------------------------------
-resource "aws_lb" "bootnodes" {
+resource "aws_eip" "bootnodes" {
   count = "${aws_launch_configuration.bootnodes.count}"
-
-  internal = false
-  load_balancer_type = "network"
-  subnets = ["${aws_subnet.bootnodes.*.id}"]
-
-  # Q?: Apparently load balancers can't be modified without deleting them(?)
-  # Examples set this to true even though default is false, not sure why 
-  # enable_deletion_protection = true
+  vpc = true
 }
 
-resource "aws_lb_listener" "bootnode" {
-  count = "${aws_launch_configuration.bootnodes.count}"
-  load_balancer_arn = "${aws_lb.bootnodes.*.arn}"
-  protocol = "TCP"
-  port = "30301"
+data "aws_instance" "bootnode" {
+  count = "${aws_autoscaling_group.bootnodes.count}"
 
-  default_action {
-    target_group_arn = "${aws_lb_target_group.bootnodes.*.arn}"
-    type = "forward"
+  filter {
+    name = "tag:aws:autoscaling:groupName"
+    values = ["${element(aws_autoscaling_group.bootnodes.*.name, count.index)}"]
   }
-}
 
-# TODO: enodes need to be accessible via both TCP & UDP.
-# Where do I configure the UDP access here?
-
-resource "aws_lb_target_group" "bootnodes" {
-  count = "${aws_launch_configuration.bootnodes.count}"
-  arn = "${aws_autoscaling_group.bootnodes.*.arn}"
-  port = "30301"
+  depends_on = ["aws_autoscaling_group.bootnodes"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -112,8 +92,7 @@ resource "aws_lb_target_group" "bootnodes" {
 
 data "template_file" "user_data_bootnode" {
 
-  # Q?: This looks like it assumes only one bootnode per region, is that true?
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
   template = "${file("${path.module}/user-data/user-data-bootnode.sh")}"
 
@@ -124,7 +103,8 @@ data "template_file" "user_data_bootnode" {
     aws_region = "${var.aws_region}"
     primary_region = "${var.primary_region}"
     network_id = "${var.network_id}"
-    lb_dns = "${aws_lb.bootnodes.*.dns_name}"
+    public_ip = "${element(aws_eip.bootnodes.*.public_ip, count.index)}"
+    eip_id = "${element(aws_eip.bootnodes.*.id, count.index)}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"

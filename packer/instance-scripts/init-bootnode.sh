@@ -62,10 +62,6 @@ function wait_for_terraform_provisioners {
     done
 }
 
-function resolve_public_dns_to_ip {
-
-}
-
 # Wait for operator to initialize and unseal vault
 wait_for_successful_command 'vault init -check'
 wait_for_successful_command 'vault status'
@@ -78,16 +74,14 @@ wait_for_terraform_provisioners
 # Get metadata for this instance
 INDEX=$(cat /opt/quorum/info/index.txt)
 AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
-HOSTNAME=$(cat /opt/quorum/info/lb_dns.txt)
-echo "dig +short (next line):"
-PUBLIC_IP=$(dig +short $HOSTNAME)
-echo $PUBLIC_IP
+PUBLIC_IP=$(cat /opt/quorum/info/public_ip.txt)
+EIP_ID=$(cat /opt/quorum/info/eip_id.txt)
+INSTANCE_ID=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/instance-id')
+HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
 BOOT_PORT=30301
 
-# Fetching PUBLIC_IP
-# Old PUBLIC_IP=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-ipv4')
-# Naive: PUBLIC_IP=$(dig +short $LB_DNS)
-# Issue: Searching from within same VPC might return private IP instead of public
+# Associate the EIP with this instance
+aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP_ID --allow-reassociation
 
 # Generate bootnode key and construct bootnode address
 BOOT_KEY_FILE=/opt/quorum/private/boot.key

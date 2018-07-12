@@ -11,5 +11,5 @@ output "quorum_observer_node_dns" {
 }
 
 output "bootnode_dns" {
-  value = "${aws_instance.bootnode.*.public_dns}"
+  value = "${data.aws_instance.bootnode.*.public_dns}"
 }
