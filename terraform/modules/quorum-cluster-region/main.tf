@@ -99,6 +99,10 @@ resource "aws_iam_policy" "quorum" {
     "Effect": "Allow",
     "Action": ["dynamodb:UpdateItem"],
     "Resource": "*"
+  },{
+    "Effect": "Allow",
+    "Action": ["ec2:AssociateAddress"],
+    "Resource": "*"
   }]
 }
 EOF
