@@ -47,11 +47,6 @@ function configure_threatstack_agent_if_key_provided {
   fi
 }
 
-function setup_s3fs {
-  echo "${constellation_s3_bucket} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0" | sudo tee /etc/fstab
-  sudo mount -a
-}
-
 function populate_data_files {
   echo "${index}" | sudo tee /opt/quorum/info/index.txt
   echo "${bootnode_count_json}" | sudo tee /opt/quorum/info/bootnode-counts.json
@@ -70,7 +65,6 @@ sudo apt-get -y update
 sudo ntpd
 
 download_vault_certs
-# setup_s3fs
 populate_data_files
 
 # These variables are passed in via Terraform template interpolation

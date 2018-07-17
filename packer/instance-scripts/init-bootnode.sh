@@ -64,7 +64,6 @@ function run_threatstack_agent_if_configured {
   fi
 }
 
-echo ">> Before Vault init/status check"
 
 # Wait for operator to initialize and unseal vault
 wait_for_successful_command 'vault init -check'
