@@ -1,10 +1,3 @@
-# Replacing Bootnodes
-This branch will resolve [Issue #5: Bootnodes should be replaceable](https://github.com/Eximchain/terraform-aws-quorum-cluster/issues/5).  I am refactoring the bootnodes' terraform configuration so that we can support long-term static IP addresses even as we replace the underlying machines.  Right now, bootnodes are regular AWS instances which will eventually fall over -- their replacements will have different IPs.  This is incompatible with the [`enode` address spec](https://github.com/ethereum/wiki/wiki/enode-url-format), which requires a static IP.
-
-The solution strategy is to simulate a static IP by giving each bootnode an elastic IP and an autoscaling group.  The elastic IP will be stable for the long-term and can be reassociated with replacement nodes, while the autoscaling group will ensure that nodes will get automagically replaced when they go down.  [This commit](https://github.com/Eximchain/terraform-aws-quorum-cluster/commit/839b4c70c18164efa2c32af0e8b9026f55a26ff2) from Louis shows how he refactored other nodes to use autoscaling groups, that's the baseline pattern I'll be using for my implementation.
-
-*- John O'Sullivan*
-
 Table of Contents
 =================
 
