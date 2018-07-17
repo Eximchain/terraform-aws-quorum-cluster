@@ -106,8 +106,12 @@ data "template_file" "user_data_bootnode" {
     primary_region = "${var.primary_region}"
     network_id = "${var.network_id}"
     use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
-    public_ip = "${var.use_elastic_bootnode_ips ? element(aws_eip.bootnodes.*.public_ip, count.index) : "nil"}"
-    eip_id = "${var.use_elastic_bootnode_ips ? element(aws_eip.bootnodes.*.id, count.index) : "nil"}"
+
+    # concat() is called to ensure there is always at least one element in the list,
+    # as element() cannot be called on empty list.  Solution is hacky, but also the
+    # only one available per Terraform issue: https://github.com/hashicorp/terraform/issues/11210
+    public_ip = "${var.use_elastic_bootnode_ips ? element(concat(aws_eip.bootnodes.*.public_ip, list("")), count.index) : "nil"}"
+    eip_id = "${var.use_elastic_bootnode_ips ? element(concat(aws_eip.bootnodes.*.id, list("")), count.index) : "nil"}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
