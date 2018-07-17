@@ -10,6 +10,6 @@ output "quorum_observer_node_dns" {
   value = "${data.aws_instance.quorum_observer_node.*.public_dns}"
 }
 
-output "bootnode_dns" {
+output "bootnode_ips" {
   value = "${aws_eip.bootnodes.*.public_ip}"
 }

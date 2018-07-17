@@ -10,8 +10,8 @@ output "quorum_observer_node_dns" {
   value = "${module.quorum_cluster.quorum_observer_node_dns}"
 }
 
-output "bootnode_dns" {
-  value = "${module.quorum_cluster.bootnode_dns}"
+output "bootnode_ips" {
+  value = "${module.quorum_cluster.bootnode_ips}"
 }
 
 output "vault_server_ips" {

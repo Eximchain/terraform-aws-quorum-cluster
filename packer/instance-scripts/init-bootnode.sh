@@ -75,8 +75,8 @@ wait_for_successful_command 'vault auth -method=aws'
 # Get metadata for this instance
 INDEX=$(cat /opt/quorum/info/index.txt)
 AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
-PUBLIC_IP=$(cat /opt/quorum/info/public_ip.txt)
-EIP_ID=$(cat /opt/quorum/info/eip_id.txt)
+PUBLIC_IP=$(cat /opt/quorum/info/public-ip.txt)
+EIP_ID=$(cat /opt/quorum/info/eip-id.txt)
 INSTANCE_ID=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/instance-id')
 HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
 BOOT_PORT=30301
