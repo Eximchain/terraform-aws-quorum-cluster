@@ -79,22 +79,22 @@ PUBLIC_IP=$(cat /opt/quorum/info/public-ip.txt)
 USING_EIP=$(cat /opt/quorum/info/using-eip.txt)
 EIP_ID=$(cat /opt/quorum/info/eip-id.txt)
 INSTANCE_ID=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/instance-id')
-HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
 BOOT_PORT=30301
 
 # Associate the EIP with this instance
-echo ">> Value of USING_EIP follows on next line:"
-echo ">> $USING_EIP"
-echo ">> (value printed)"
 if [ "$USING_EIP" == "1" ]
 then
-    echo ">> Found USING_EIP == 1, running aws ec2 associate-address"
     wait_for_successful_command "aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP_ID --region $AWS_REGION --allow-reassociation"
-else
-    echo ">> Found USING_EIP != 0, reading PUBLIC_IP from AWS"
-    echo ">> For good measure, value of USING_EIP was : $USING_EIP"
+elif [ "$USING_EIP"  == "0" ]
+then
     PUBLIC_IP=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/public-ipv4')
+else 
+    echo ">> FATAL ERROR: USING_EIP needs to be boolean with value 0 or 1, instead has value $USING_EIP.  Erroring out."
+    exit 1
 fi
+
+# Fetch hostname after EIP association, as that changes hostname value.
+HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
 
 # Generate bootnode key and construct bootnode address
 BOOT_KEY_FILE=/opt/quorum/private/boot.key

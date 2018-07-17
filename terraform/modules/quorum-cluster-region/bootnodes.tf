@@ -37,7 +37,7 @@ resource "aws_subnet" "bootnodes" {
 resource "aws_launch_configuration" "bootnodes" {
   count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
-  name_prefix = "quorum-bootnode-net-${var.network_id}-node-${count.index}"
+  name_prefix = "quorum-bootnode-net-${var.network_id}-node-${count.index}-"
 
   image_id   = "${var.bootnode_ami == "" ? data.aws_ami.bootnode.id : var.bootnode_ami}"
   instance_type = "${var.bootnode_instance_type}"
@@ -106,8 +106,8 @@ data "template_file" "user_data_bootnode" {
     primary_region = "${var.primary_region}"
     network_id = "${var.network_id}"
     use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
-    public_ip = "${var.use_elastic_bootnode_ips ? element(aws_eip.bootnodes.*.public_ip, count.index) : false}"
-    eip_id = "${var.use_elastic_bootnode_ips ? element(aws_eip.bootnodes.*.id, count.index) : false}"
+    public_ip = "${var.use_elastic_bootnode_ips ? element(aws_eip.bootnodes.*.public_ip, count.index) : "nil"}"
+    eip_id = "${var.use_elastic_bootnode_ips ? element(aws_eip.bootnodes.*.id, count.index) : "nil"}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
