@@ -37,9 +37,11 @@ resource "aws_subnet" "bootnodes" {
 resource "aws_launch_configuration" "bootnodes" {
   count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
+  name_prefix = "quorum-bootnode-net-${var.network_id}-node-${count.index}"
+
   image_id   = "${var.bootnode_ami == "" ? data.aws_ami.bootnode.id : var.bootnode_ami}"
   instance_type = "${var.bootnode_instance_type}"
-  user_data = "${data.template_file.user_data_bootnode.rendered}"
+  user_data = "${element(data.template_file.user_data_bootnode.*.rendered, count.index)}"
 
   key_name = "${aws_key_pair.auth.id}"
 
