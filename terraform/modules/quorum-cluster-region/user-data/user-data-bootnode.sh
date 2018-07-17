@@ -53,6 +53,7 @@ function populate_data_files {
   sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info' --bootnode
   echo "${aws_region}" | sudo tee /opt/quorum/info/aws-region.txt
   echo "${primary_region}" | sudo tee /opt/quorum/info/primary-region.txt
+  echo "${use_elastic_bootnode_ips}" | sudo tee /opt/quorum/info/using-eip.txt
   echo "${public_ip}" | sudo tee /opt/quorum/info/public-ip.txt
   echo "${eip_id}" | sudo tee /opt/quorum/info/eip-id.txt
 }

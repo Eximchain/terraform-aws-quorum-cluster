@@ -112,6 +112,11 @@ variable "use_dedicated_consul_servers" {
   default     = false
 }
 
+variable "use_elastic_bootnode_ips" {
+  description = "Whether or not to give bootnodes elastic IPs, maintaining one static IP forever. Disabled by default because clusters with more than 5 bootnodes in one region will require personally requesting more EIPs from AWS."
+  default     = false
+}
+
 variable "cert_org_name" {
   description = "The organization to associate with the vault certificates."
   default     = "Example Co."

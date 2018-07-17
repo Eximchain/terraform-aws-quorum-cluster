@@ -72,11 +72,11 @@ resource "aws_autoscaling_group" "bootnodes" {
 }
 
 resource "aws_eip" "bootnodes" {
-  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
+  count = "${var.use_elastic_bootnode_ips ? lookup(var.bootnode_counts, var.aws_region, 0) : 0}"
   vpc = true
 }
 
-data "aws_instance" "bootnode" {
+data "aws_instance" "bootnodes" {
   count = "${aws_autoscaling_group.bootnodes.count}"
 
   filter {
@@ -105,8 +105,9 @@ data "template_file" "user_data_bootnode" {
     aws_region = "${var.aws_region}"
     primary_region = "${var.primary_region}"
     network_id = "${var.network_id}"
-    public_ip = "${element(aws_eip.bootnodes.*.public_ip, count.index)}"
-    eip_id = "${element(aws_eip.bootnodes.*.id, count.index)}"
+    use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+    public_ip = "${var.use_elastic_bootnode_ips ? element(aws_eip.bootnodes.*.public_ip, count.index) : false}"
+    eip_id = "${var.use_elastic_bootnode_ips ? element(aws_eip.bootnodes.*.id, count.index) : false}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"

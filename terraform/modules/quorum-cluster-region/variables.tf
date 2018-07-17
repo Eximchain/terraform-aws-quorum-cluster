@@ -119,6 +119,11 @@ variable "use_dedicated_observers" {
   default     = false
 }
 
+variable "use_elastic_bootnode_ips" {
+  description = "Whether or not to give bootnodes elastic IPs, maintaining one static IP forever. Disabled by default because regions with more than 5 bootnodes will require personally requesting more EIPs from AWS."
+  default     = false
+}
+
 variable "bootnode_instance_type" {
   description = "The EC2 instance type to use for bootnodes"
   default     = "t2.small"

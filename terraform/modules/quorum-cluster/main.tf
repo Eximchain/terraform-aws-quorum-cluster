@@ -110,6 +110,8 @@ module "quorum_cluster_us_east_1" {
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -164,6 +166,8 @@ module "quorum_cluster_us_east_2" {
   use_dedicated_makers     = "${var.use_dedicated_makers}"
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
+
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -220,6 +224,8 @@ module "quorum_cluster_us_west_1" {
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -274,6 +280,8 @@ module "quorum_cluster_us_west_2" {
   use_dedicated_makers     = "${var.use_dedicated_makers}"
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
+
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -330,6 +338,8 @@ module "quorum_cluster_eu_central_1" {
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -384,6 +394,8 @@ module "quorum_cluster_eu_west_1" {
   use_dedicated_makers     = "${var.use_dedicated_makers}"
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
+
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -440,6 +452,8 @@ module "quorum_cluster_eu_west_2" {
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -494,6 +508,8 @@ module "quorum_cluster_ap_south_1" {
   use_dedicated_makers     = "${var.use_dedicated_makers}"
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
+
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -550,6 +566,8 @@ module "quorum_cluster_ap_northeast_1" {
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -604,6 +622,8 @@ module "quorum_cluster_ap_northeast_2" {
   use_dedicated_makers     = "${var.use_dedicated_makers}"
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
+
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -660,6 +680,8 @@ module "quorum_cluster_ap_southeast_1" {
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -714,6 +736,8 @@ module "quorum_cluster_ap_southeast_2" {
   use_dedicated_makers     = "${var.use_dedicated_makers}"
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
+
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -770,6 +794,8 @@ module "quorum_cluster_ca_central_1" {
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -824,6 +850,8 @@ module "quorum_cluster_sa_east_1" {
   use_dedicated_makers     = "${var.use_dedicated_makers}"
   use_dedicated_validators = "${var.use_dedicated_validators}"
   use_dedicated_observers  = "${var.use_dedicated_observers}"
+
+  use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
