@@ -5,11 +5,14 @@ This branch addresses [Issue #21: Vault permissions should be more finely tuned]
 - `write` access to its own values within `/keys`, `/passwords`, `/bootnodes/keys`, `/bootnodes/passwords`
 
 The solution strategy has a few key elements:
-- The [default `quorum-node.hcl` Vault policy](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/packer/vault-policies/quorum-node.hcl) needs to be restricted to only provide the shared `read` access required by all nodes.
-- Each node needs a unique IAM role so they can have unique Vault policies, although the IAM roles will all share the same AWS policy.  Right now there is only [one IAM role per active region](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/terraform/modules/quorum-cluster-region/quorum.tf#L533).
+- [X] The [default `quorum-node.hcl` Vault policy](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/packer/vault-policies/quorum-node.hcl) needs to be restricted to only provide the shared `read` access required by all nodes.
+- [X] Each node needs a unique IAM role so they can have unique Vault policies, although the IAM roles will all share the same AWS policy.  Right now there is only [one IAM role per active region](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/terraform/modules/quorum-cluster-region/quorum.tf#L533).
+  - [X] All quorum nodes need a role
+  - [X] All bootnodes need a role
 - The `generate-setup-vault` code needs to:
-  - [Dynamically generate a policy](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/packer/instance-scripts/generate-setup-vault.sh#L44) for each node which provides `write` access to its own values as specified above
-  - [Assign the appropriate policy](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/packer/instance-scripts/generate-setup-vault.sh#L54) to each node
+  - [ ] Determine or find the role name for each node
+  - [ ] [Dynamically generate a policy](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/packer/instance-scripts/generate-setup-vault.sh#L44) for each node which provides `write` access to its own values as specified above
+  - [ ] [Assign the appropriate policy](https://github.com/Eximchain/terraform-aws-quorum-cluster/blob/master/packer/instance-scripts/generate-setup-vault.sh#L54) to each node
 
 *- John O'Sullivan*
 

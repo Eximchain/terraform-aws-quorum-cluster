@@ -311,7 +311,7 @@ resource "aws_launch_configuration" "quorum_maker" {
 
   key_name = "${aws_key_pair.auth.id}"
 
-  iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
+  iam_instance_profile = "${element(aws_iam_instance_profile.quorum_maker.*.name, count.index)}"
   security_groups      = ["${aws_security_group.quorum.id}"]
 
   placement_tenancy = "${var.use_dedicated_makers ? "dedicated" : "default"}"
@@ -332,7 +332,7 @@ resource "aws_launch_configuration" "quorum_validator" {
 
   key_name = "${aws_key_pair.auth.id}"
 
-  iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
+  iam_instance_profile = "${element(aws_iam_instance_profile.quorum_validator.*.name, count.index)}"
   security_groups      = ["${aws_security_group.quorum.id}"]
 
   placement_tenancy = "${var.use_dedicated_validators ? "dedicated" : "default"}"
@@ -353,7 +353,7 @@ resource "aws_launch_configuration" "quorum_observer" {
 
   key_name = "${aws_key_pair.auth.id}"
 
-  iam_instance_profile = "${aws_iam_instance_profile.quorum_node.name}"
+  iam_instance_profile = "${element(aws_iam_instance_profile.quorum_observer.*.name, count.index)}"
   security_groups      = ["${aws_security_group.quorum.id}"]
 
   placement_tenancy = "${var.use_dedicated_observers ? "dedicated" : "default"}"
@@ -530,10 +530,50 @@ resource "aws_security_group_rule" "quorum_egress" {
 # ---------------------------------------------------------------------------------------------------------------------
 # QUORUM NODE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_iam_role" "quorum_node" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+resource "aws_iam_role" "quorum_maker" {
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
-  name = "quorum-node-${var.aws_region}-network-${var.network_id}"
+  name = "quorum-${var.aws_region}-network-${var.network_id}-maker-${count.index}"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Action": "sts:AssumeRole",
+    "Principal": {
+      "Service": "ec2.amazonaws.com"
+    },
+    "Effect": "Allow",
+    "Sid": ""
+  }]
+}
+EOF
+}
+
+resource "aws_iam_role" "quorum_validator" {
+  count = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
+
+  name = "quorum-${var.aws_region}-network-${var.network_id}-validator-${count.index}"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Action": "sts:AssumeRole",
+    "Principal": {
+      "Service": "ec2.amazonaws.com"
+    },
+    "Effect": "Allow",
+    "Sid": ""
+  }]
+}
+EOF
+}
+
+resource "aws_iam_role" "quorum_observer" {
+  count = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
+
+  name = "quorum-${var.aws_region}-network-${var.network_id}-observer-${count.index}"
 
   assume_role_policy = <<EOF
 {
@@ -553,16 +593,44 @@ EOF
 # ---------------------------------------------------------------------------------------------------------------------
 # QUORUM NODE IAM POLICY ATTACHMENT AND INSTANCE PROFILE
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_iam_role_policy_attachment" "quorum_node" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+resource "aws_iam_role_policy_attachment" "quorum_maker" {
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
-  role       = "${aws_iam_role.quorum_node.name}"
+  role       = "${element(aws_iam_role.quorum_maker.*.name, count.index)}"
   policy_arn = "${aws_iam_policy.quorum.arn}"
 }
 
-resource "aws_iam_instance_profile" "quorum_node" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+resource "aws_iam_instance_profile" "quorum_maker" {
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
-  name = "quorum-node-${var.aws_region}-network-${var.network_id}"
-  role = "${aws_iam_role.quorum_node.name}"
+  name = "quorum-${var.aws_region}-network-${var.network_id}-node-${count.index}"
+  role = "${element(aws_iam_role.quorum_maker.*.name, count.index)}"
+}
+
+resource "aws_iam_role_policy_attachment" "quorum_validator" {
+  count = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
+
+  role       = "${element(aws_iam_role.quorum_validator.*.name, count.index)}"
+  policy_arn = "${aws_iam_policy.quorum.arn}"
+}
+
+resource "aws_iam_instance_profile" "quorum_validator" {
+  count = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
+
+  name = "quorum-${var.aws_region}-network-${var.network_id}-node-${count.index}"
+  role = "${element(aws_iam_role.quorum_validator.*.name, count.index)}"
+}
+
+resource "aws_iam_role_policy_attachment" "quorum_observer" {
+  count = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
+
+  role       = "${element(aws_iam_role.quorum_observer.*.name, count.index)}"
+  policy_arn = "${aws_iam_policy.quorum.arn}"
+}
+
+resource "aws_iam_instance_profile" "quorum_observer" {
+  count = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
+
+  name = "quorum-${var.aws_region}-network-${var.network_id}-node-${count.index}"
+  role = "${element(aws_iam_role.quorum_observer.*.name, count.index)}"
 }

@@ -45,7 +45,7 @@ resource "aws_launch_configuration" "bootnodes" {
 
   key_name = "${aws_key_pair.auth.id}"
 
-  iam_instance_profile = "${aws_iam_instance_profile.bootnode.name}"
+  iam_instance_profile = "${element(aws_iam_instance_profile.bootnode.*.name, count.index)}"
   security_groups = ["${aws_security_group.bootnode.id}"]
 
   placement_tenancy = "${var.use_dedicated_bootnodes ? "dedicated" : "default"}"
@@ -242,9 +242,9 @@ resource "aws_security_group_rule" "bootnode_egress" {
 # BOOTNODE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "bootnode" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
-  name = "bootnode-${var.aws_region}-network-${var.network_id}"
+  name = "bootnode-${var.aws_region}-network-${var.network_id}-node-${count.index}"
 
   assume_role_policy = <<EOF
 {
@@ -265,15 +265,15 @@ EOF
 # BOOTNODE IAM POLICY ATTACHMENT AND INSTANCE PROFILE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy_attachment" "bootnode" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
-  role       = "${aws_iam_role.bootnode.name}"
+  role       = "${element(aws_iam_role.bootnode.*.name, count.index)}"
   policy_arn = "${aws_iam_policy.quorum.arn}"
 }
 
 resource "aws_iam_instance_profile" "bootnode" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
-  name = "bootnode-${var.aws_region}-network-${var.network_id}"
-  role = "${aws_iam_role.bootnode.name}"
+  name = "bootnode-${var.aws_region}-network-${var.network_id}-node-${count.index}"
+  role = "${element(aws_iam_role.bootnode.*.name, count.index)}"
 }
