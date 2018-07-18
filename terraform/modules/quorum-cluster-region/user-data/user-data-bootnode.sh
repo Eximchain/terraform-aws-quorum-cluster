@@ -47,6 +47,17 @@ function configure_threatstack_agent_if_key_provided {
   fi
 }
 
+function populate_data_files {
+  echo "${index}" | sudo tee /opt/quorum/info/index.txt
+  echo "${bootnode_count_json}" | sudo tee /opt/quorum/info/bootnode-counts.json
+  sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info' --bootnode
+  echo "${aws_region}" | sudo tee /opt/quorum/info/aws-region.txt
+  echo "${primary_region}" | sudo tee /opt/quorum/info/primary-region.txt
+  echo "${use_elastic_bootnode_ips}" | sudo tee /opt/quorum/info/using-eip.txt
+  echo "${public_ip}" | sudo tee /opt/quorum/info/public-ip.txt
+  echo "${eip_id}" | sudo tee /opt/quorum/info/eip-id.txt
+}
+
 # Send the log output from this script to user-data.log, syslog, and the console
 # From: https://alestic.com/2010/12/ec2-user-data-output/
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
@@ -55,6 +66,7 @@ sudo apt-get -y update
 sudo ntpd
 
 download_vault_certs
+populate_data_files
 
 # These variables are passed in via Terraform template interpolation
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"

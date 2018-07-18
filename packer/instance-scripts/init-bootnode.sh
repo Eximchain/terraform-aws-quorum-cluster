@@ -64,13 +64,6 @@ function run_threatstack_agent_if_configured {
   fi
 }
 
-function wait_for_terraform_provisioners {
-    # Ensure terraform has run all provisioners
-    while [ ! -e /opt/quorum/info/network-id.txt ]
-    do
-        sleep 5
-    done
-}
 
 # Wait for operator to initialize and unseal vault
 wait_for_successful_command 'vault init -check'
@@ -79,14 +72,29 @@ wait_for_successful_command 'vault status'
 # Wait for vault to be fully configured by the root user
 wait_for_successful_command 'vault auth -method=aws'
 
-wait_for_terraform_provisioners
-
 # Get metadata for this instance
 INDEX=$(cat /opt/quorum/info/index.txt)
 AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
-PUBLIC_IP=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-ipv4')
-HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
+PUBLIC_IP=$(cat /opt/quorum/info/public-ip.txt)
+USING_EIP=$(cat /opt/quorum/info/using-eip.txt)
+EIP_ID=$(cat /opt/quorum/info/eip-id.txt)
+INSTANCE_ID=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/instance-id')
 BOOT_PORT=30301
+
+# Associate the EIP with this instance
+if [ "$USING_EIP" == "1" ]
+then
+    wait_for_successful_command "aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP_ID --region $AWS_REGION --allow-reassociation"
+elif [ "$USING_EIP"  == "0" ]
+then
+    PUBLIC_IP=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/public-ipv4')
+else 
+    echo ">> FATAL ERROR: USING_EIP needs to be boolean with value 0 or 1, instead has value $USING_EIP.  Erroring out."
+    exit 1
+fi
+
+# Fetch hostname after EIP association, as that changes hostname value.
+HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
 
 # Generate bootnode key and construct bootnode address
 BOOT_KEY_FILE=/opt/quorum/private/boot.key
@@ -136,8 +144,7 @@ CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key
 
 # Write bootnode address to vault
 wait_for_successful_command "vault write quorum/bootnodes/keys/$AWS_REGION/$INDEX bootnode_key=\"$BOOT_KEY\" constellation_priv_key=\"$CONSTELLATION_PRIV_KEY\""
-wait_for_successful_command "vault write quorum/bootnodes/addresses/$AWS_REGION/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB hostname=$HOSTNAME constellation_pub_key=$CONSTELLATION_PUB_KEY"
-
+wait_for_successful_command "vault write quorum/bootnodes/addresses/$AWS_REGION/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB hostname=$PUBLIC_IP constellation_pub_key=$CONSTELLATION_PUB_KEY"
 # Wait for all bootnodes to write their address to vault
 wait_for_all_bootnodes
 

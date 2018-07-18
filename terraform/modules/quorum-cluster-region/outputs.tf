@@ -10,6 +10,6 @@ output "quorum_observer_node_dns" {
   value = "${data.aws_instance.quorum_observer_node.*.public_dns}"
 }
 
-output "bootnode_dns" {
-  value = "${aws_instance.bootnode.*.public_dns}"
+output "bootnode_ips" {
+  value = "${coalescelist(aws_eip.bootnodes.*.public_ip, data.aws_instance.bootnodes.*.public_ip)}"
 }
