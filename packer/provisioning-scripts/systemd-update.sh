@@ -16,3 +16,4 @@ sudo make install
 #ninja -C build
 #sudo ninja -C build install
 popd >/dev/null
+rm -rf systemd

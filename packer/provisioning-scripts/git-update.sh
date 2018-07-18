@@ -9,3 +9,4 @@ git checkout $RELEASE
 make
 sudo make install
 popd >/dev/null
+rm -rf git

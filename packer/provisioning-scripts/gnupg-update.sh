@@ -30,6 +30,7 @@ function install_libgpg_error {
   make
   sudo make install
   cd ..
+  rm -rf $LIBGPG $LIBGPG.tar.bz2
 }
 
 function install_libgcrypt {
@@ -40,6 +41,7 @@ function install_libgcrypt {
   make
   sudo make install
   cd ..
+  rm -rf $LIBGCRYPT $LIBGCRYPT.tar.gz
 }
 
 function install_libassuan {
@@ -50,6 +52,7 @@ function install_libassuan {
   make
   sudo make install
   cd ..
+  rm -rf $LIBASSUAN $LIBASSUAN.tar.bz2
 }
 
 function install_libksba {
@@ -60,6 +63,7 @@ function install_libksba {
   make
   sudo make install
   cd ..
+  rm -rf $LIBKSBA $LIBKSBA.tar.bz2
 }
 
 function install_npth {
@@ -70,6 +74,7 @@ function install_npth {
   make
   sudo make install
   cd ..
+  rm -rf $NPTH $NPTH.tar.bz2
 }
 
 function install_ncurses {
@@ -80,6 +85,7 @@ function install_ncurses {
   make
   sudo make install
   cd ..
+  rm -rf $NCURSES $NCURSES.tar.gz
 }
 
 function install_pinentry {
@@ -90,6 +96,7 @@ function install_pinentry {
   make
   sudo make install
   cd ..
+  rm -rf $PINENTRY $PINENTRY.tar.bz2
 }
 
 function install_ntbtls {
@@ -100,6 +107,7 @@ function install_ntbtls {
   make
   sudo make install
   cd ..
+  rm -rf $NTBTLS $NTBTLS.tar.bz2
 }
 
 function install_gnupg {
@@ -110,6 +118,7 @@ function install_gnupg {
   make
   sudo make install
   cd ..
+  rm -rf $GNUPG $GNUPG.tar.bz2
 }
 
 # Dependencies

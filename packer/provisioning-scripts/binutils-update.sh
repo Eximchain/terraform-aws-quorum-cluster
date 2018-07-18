@@ -10,4 +10,5 @@ cd $DIR_NAME
 ./configure
 make
 sudo make install
-cd .. && rm -rf $DIR_NAME.tar.gz $DIR_NAME
+cd ..
+rm -rf $DIR_NAME.tar.gz $DIR_NAME
