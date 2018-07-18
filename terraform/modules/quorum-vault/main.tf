@@ -211,10 +211,101 @@ data "template_file" "user_data_vault_cluster" {
     kms_unseal_key_id            = "${join("", aws_kms_key.vault_unseal.*.key_id)}"
     vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
     threatstack_deploy_key       = "${var.threatstack_deploy_key}"
+    maker_node_count_json        = "${data.template_file.maker_node_count_json.rendered}"
+    validator_node_count_json    = "${data.template_file.validator_node_count_json.rendered}"
+    observer_node_count_json     = "${data.template_file.observer_node_count_json.rendered}"
+    bootnode_count_json          = "${data.template_file.bootnode_count_json.rendered}"
   }
 
   # user-data needs to download these objects
   depends_on = ["aws_s3_bucket_object.vault_ca_public_key", "aws_s3_bucket_object.vault_public_key", "aws_s3_bucket_object.vault_private_key"]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# NODE COUNT JSONS REQUIRED TO CREATE VAULT POLICIES
+# ---------------------------------------------------------------------------------------------------------------------
+data "template_file" "maker_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.maker_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.maker_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.maker_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.maker_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.maker_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.maker_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.maker_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.maker_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.maker_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.maker_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.maker_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.maker_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.maker_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.maker_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "validator_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.validator_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.validator_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.validator_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.validator_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.validator_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.validator_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.validator_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.validator_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.validator_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.validator_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.validator_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.validator_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.validator_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.validator_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "observer_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.observer_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.observer_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.observer_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.observer_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.observer_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.observer_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.observer_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.observer_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.observer_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.observer_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.observer_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.observer_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.observer_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.observer_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "bootnode_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.bootnode_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.bootnode_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.bootnode_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.bootnode_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.bootnode_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.bootnode_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.bootnode_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.bootnode_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.bootnode_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.bootnode_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.bootnode_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.bootnode_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.bootnode_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.bootnode_counts, "us-west-2", 0)}"
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

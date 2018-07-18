@@ -92,3 +92,143 @@ variable "threatstack_deploy_key" {
   description = "Deploy key to use to activate threatstack agents, if using one"
   default     = ""
 }
+
+variable "bootnode_counts" {
+  description = "A mapping from region to the number of bootnodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "maker_node_counts" {
+  description = "A mapping from region to the number of maker nodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "validator_node_counts" {
+  description = "A mapping from region to the number of validator nodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "observer_node_counts" {
+  description = "A mapping from region to the number of observer nodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}

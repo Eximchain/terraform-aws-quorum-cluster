@@ -36,6 +36,12 @@ readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 readonly VAULT_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/vault.crt.pem"
 readonly VAULT_TLS_KEY_FILE="$VAULT_TLS_CERT_DIR/vault.key.pem"
 
+# Save node counts to files for use by generate-setup-vault.sh
+echo "${maker_node_count_json}" | sudo tee /opt/vault/data/maker-counts.json
+echo "${validator_node_count_json}" | sudo tee /opt/vault/data/validator-counts.json
+echo "${observer_node_count_json}" | sudo tee /opt/vault/data/observer-counts.json
+echo "${bootnode_count_json}" | sudo tee /opt/vault/data/bootnode-counts.json
+
 # The variables below are filled in via Terraform interpolation
 /opt/vault/bin/generate-setup-vault.sh ${network_id} "${vault_enterprise_license_key}"
 

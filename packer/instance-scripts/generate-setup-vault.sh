@@ -1,9 +1,16 @@
 #!/bin/bash
 set -eu -o pipefail
 
+BIN_DIR=/opt/vault/bin
+POLICY_DIR=/opt/vault/config/policies
 OUTPUT_FILE=/opt/vault/bin/setup-vault.sh
+POLICY_OUTPUT_FILE=/opt/vault/bin/setup-policies.sh
 AWS_ACCOUNT_ID=$(curl http://169.254.169.254/latest/meta-data/iam/info | jq .InstanceProfileArn | cut -d: -f5)
 REGIONS=$(cat /opt/vault/data/regions.txt)
+BOOTNODE_COUNTS=$(cat /opt/vault/data/bootnode-counts.json)
+MAKER_COUNTS=$(cat /opt/vault/data/maker-counts.json)
+VALIDATOR_COUNTS=$(cat /opt/vault/data/validator-counts.json)
+OBSERVER_COUNTS=$(cat /opt/vault/data/observer-counts.json)
 
 NETWORK_ID=$1
 if [ $# -eq 2 ]
@@ -39,8 +46,8 @@ vault audit-enable file file_path=\$AUDIT_LOG
 # Mount the quorum path
 vault mount -path=quorum -default-lease-ttl=30 -description="Keys and Addresses for Quorum Nodes" kv
 
-# Create policies
-QUORUM_NODE_POLICY=/opt/vault/config/policies/quorum-node.hcl
+# Create base policy
+QUORUM_NODE_POLICY=/opt/vault/config/policies/quorum-node-base.hcl
 vault policy-write quorum_node \$QUORUM_NODE_POLICY
 
 # Write policy to the roles used by instances
@@ -48,12 +55,20 @@ EOF
 
 for region in ${REGIONS[@]}
 do
-    # TODO: Separate permissions of quorum nodes and bootnodes
+    # # Create all policy files
+    # python write_region_policies.py $region $BOOTNODE_COUNTS $MAKER_COUNTS $VALIDATOR_COUNTS $OBSERVER_COUNTS $POLICY_OUTPUT_FILE $NETWORK_ID $AWS_ACCOUNT_ID
+
+    # Old Implementation w/ one role for all quorum & bootnodes
     QUORUM_ROLE_NAME="quorum-node-$region-network-$NETWORK_ID"
     BOOTNODE_ROLE_NAME="bootnode-$region-network-$NETWORK_ID"
     echo "vault write auth/aws/role/$QUORUM_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$QUORUM_ROLE_NAME || true" >> $OUTPUT_FILE
     echo "vault write auth/aws/role/$BOOTNODE_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$BOOTNODE_ROLE_NAME || true" >> $OUTPUT_FILE
 done
+
+# # Add code to execute policy assignment file as written by Python script
+# echo "sudo chown ubuntu $POLICY_OUTPUT_FILE"
+# echo "sudo chmod 744 $POLICY_OUTPUT_FILE"
+# echo ".$POLICY_OUTPUT_FILE"
 
 # Write the enterprise license key if it was provided
 if [ "$VAULT_ENTERPRISE_LICENSE_KEY" != "" ]

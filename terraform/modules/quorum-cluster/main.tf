@@ -64,6 +64,11 @@ module "quorum_vault" {
 
   vault_consul_ami = "${var.vault_consul_ami}"
 
+  bootnode_counts       = "${var.bootnode_counts}"
+  maker_node_counts     = "${var.maker_node_counts}"
+  validator_node_counts = "${var.validator_node_counts}"
+  observer_node_counts  = "${var.observer_node_counts}"
+
   threatstack_deploy_key       = "${var.threatstack_deploy_key}"
   vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
 }
