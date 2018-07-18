@@ -111,18 +111,18 @@ data "template_file" "user_data_bootnode" {
     # as element() cannot be called on empty list.  Solution is hacky, but lazy
     # ternary evaluation will drop in Terraform 0.12: https://www.hashicorp.com/blog/terraform-0-1-2-preview
     # If you're reading this and it has already released, try dropping the concat hack.
-    public_ip                = "${var.use_elastic_bootnode_ips ? element(concat(aws_eip.bootnodes.*.public_ip, list("")), count.index) : "nil"}"
-    eip_id                   = "${var.use_elastic_bootnode_ips ? element(concat(aws_eip.bootnodes.*.id, list("")), count.index) : "nil"}"
+    public_ip = "${var.use_elastic_bootnode_ips ? element(concat(aws_eip.bootnodes.*.public_ip, list("")), count.index) : "nil"}"
+    eip_id    = "${var.use_elastic_bootnode_ips ? element(concat(aws_eip.bootnodes.*.id, list("")), count.index) : "nil"}"
 
-    vault_dns                = "${var.vault_dns}"
-    vault_port               = "${var.vault_port}"
+    vault_dns  = "${var.vault_dns}"
+    vault_port = "${var.vault_port}"
 
     consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
-    vault_cert_bucket        = "${var.vault_cert_bucket_name}"
+    vault_cert_bucket = "${var.vault_cert_bucket_name}"
 
-    threatstack_deploy_key   = "${var.threatstack_deploy_key}"
+    threatstack_deploy_key = "${var.threatstack_deploy_key}"
   }
 }
 
