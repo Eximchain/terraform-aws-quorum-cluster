@@ -9,5 +9,6 @@ tar -xzf $DIR_NAME.tar.gz
 cd $DIR_NAME
 ./configure
 make
-sudo cp ./rsync /usr/bin/
-cd .. && rm -rf $DIR_NAME.tar.gz $DIR_NAME
+sudo make install
+cd ..
+rm -rf $DIR_NAME.tar.gz $DIR_NAME
