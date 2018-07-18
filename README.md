@@ -127,6 +127,7 @@ Check terraform.tfvars and change any values you would like to change:
 - **SSH Location:** Our default example file is built for OS X, which puts your home directory and its `.ssh` folder (aka `~/.ssh`) at `/Users/$USER/.ssh`.  If your SSH keyfile is not located within that directory, you will need to update the `public_key_path`.
 - **Network ID:** We have a default network value.  If there is already a network running with this ID on your AWS account, you need to change the network ID or there will be a conflict.  
 - **Not Free:** The values given in `example.tfvars` are NOT completely AWS free tier eligible, as they include t2.small and t2.medium instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.
+- **Bootnode Elastic IPs:** Elastic IP addresses for bootnodes are disabled by default because AWS requires you to manually request more EIPs if you configure a network with more than 5 bootnodes per region.  Enabling this feature (`use_elastic_bootnode_ips`) will maintain one static IP address for each bootnode for the lifetime of the network, keeping you from having to update stored enode addresses when bootnodes fail over.
 
 If it is your first time using this package, you will need to run `terraform init` before applying the configuration.
 
