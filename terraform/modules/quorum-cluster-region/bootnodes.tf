@@ -99,29 +99,30 @@ data "template_file" "user_data_bootnode" {
   template = "${file("${path.module}/user-data/user-data-bootnode.sh")}"
 
   vars {
-    constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
-    index = "${count.index}"
-    bootnode_count_json = "${data.template_file.bootnode_count_json.rendered}"
-    aws_region = "${var.aws_region}"
-    primary_region = "${var.primary_region}"
-    network_id = "${var.network_id}"
+    constellation_s3_bucket  = "${aws_s3_bucket.quorum_constellation.id}"
+    index                    = "${count.index}"
+    bootnode_count_json      = "${data.template_file.bootnode_count_json.rendered}"
+    aws_region               = "${var.aws_region}"
+    primary_region           = "${var.primary_region}"
+    network_id               = "${var.network_id}"
     use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
     # concat() is called to ensure there is always at least one element in the list,
-    # as element() cannot be called on empty list.  Solution is hacky, but also the
-    # only one available per Terraform issue: https://github.com/hashicorp/terraform/issues/11210
-    public_ip = "${var.use_elastic_bootnode_ips ? element(concat(aws_eip.bootnodes.*.public_ip, list("")), count.index) : "nil"}"
-    eip_id = "${var.use_elastic_bootnode_ips ? element(concat(aws_eip.bootnodes.*.id, list("")), count.index) : "nil"}"
+    # as element() cannot be called on empty list.  Solution is hacky, but lazy
+    # ternary evaluation will drop in Terraform 0.12: https://www.hashicorp.com/blog/terraform-0-1-2-preview
+    # If you're reading this and it has already released, try dropping the concat hack.
+    public_ip                = "${var.use_elastic_bootnode_ips ? element(concat(aws_eip.bootnodes.*.public_ip, list("")), count.index) : "nil"}"
+    eip_id                   = "${var.use_elastic_bootnode_ips ? element(concat(aws_eip.bootnodes.*.id, list("")), count.index) : "nil"}"
 
-    vault_dns  = "${var.vault_dns}"
-    vault_port = "${var.vault_port}"
+    vault_dns                = "${var.vault_dns}"
+    vault_port               = "${var.vault_port}"
 
     consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
-    vault_cert_bucket = "${var.vault_cert_bucket_name}"
+    vault_cert_bucket        = "${var.vault_cert_bucket_name}"
 
-    threatstack_deploy_key = "${var.threatstack_deploy_key}"
+    threatstack_deploy_key   = "${var.threatstack_deploy_key}"
   }
 }
 
