@@ -11,3 +11,4 @@ git checkout tags/$RELEASE
 make
 sudo make install
 popd >/dev/null
+rm -rf s3fs-fuse
