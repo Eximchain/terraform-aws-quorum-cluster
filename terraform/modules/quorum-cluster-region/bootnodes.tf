@@ -244,7 +244,7 @@ resource "aws_security_group_rule" "bootnode_egress" {
 resource "aws_iam_role" "bootnode" {
   count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
-  name = "bootnode-${var.aws_region}-network-${var.network_id}-node-${count.index}"
+  name = "quorum-${var.aws_region}-network-${var.network_id}-bootnodes-${count.index}"
 
   assume_role_policy = <<EOF
 {

@@ -533,7 +533,7 @@ resource "aws_security_group_rule" "quorum_egress" {
 resource "aws_iam_role" "quorum_maker" {
   count = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
-  name = "quorum-${var.aws_region}-network-${var.network_id}-maker-${count.index}"
+  name = "quorum-${var.aws_region}-network-${var.network_id}-makers-${count.index}"
 
   assume_role_policy = <<EOF
 {
@@ -553,7 +553,7 @@ EOF
 resource "aws_iam_role" "quorum_validator" {
   count = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
 
-  name = "quorum-${var.aws_region}-network-${var.network_id}-validator-${count.index}"
+  name = "quorum-${var.aws_region}-network-${var.network_id}-validators-${count.index}"
 
   assume_role_policy = <<EOF
 {
@@ -573,7 +573,7 @@ EOF
 resource "aws_iam_role" "quorum_observer" {
   count = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
 
-  name = "quorum-${var.aws_region}-network-${var.network_id}-observer-${count.index}"
+  name = "quorum-${var.aws_region}-network-${var.network_id}-observers-${count.index}"
 
   assume_role_policy = <<EOF
 {
