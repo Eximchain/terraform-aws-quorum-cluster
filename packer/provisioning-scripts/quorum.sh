@@ -11,3 +11,4 @@ make all
 sudo cp build/bin/geth /usr/local/bin
 sudo cp build/bin/bootnode /usr/local/bin
 popd >/dev/null
+rm -rf quorum
