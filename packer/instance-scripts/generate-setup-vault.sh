@@ -2,9 +2,8 @@
 set -eu -o pipefail
 
 DATA_DIR=/opt/vault/data
-POLICY_DIR=/opt/vault/config/policies
+POLICY_DIR=/opt/vault/config/policies/
 OUTPUT_FILE=/opt/vault/bin/setup-vault.sh
-POLICY_OUTPUT_FILE=/opt/vault/bin/setup-policies.sh
 AWS_ACCOUNT_ID=$(curl http://169.254.169.254/latest/meta-data/iam/info | jq .InstanceProfileArn | cut -d: -f5)
 
 NETWORK_ID=$1
@@ -39,15 +38,13 @@ vault mount -path=quorum -default-lease-ttl=30 -description="Keys and Addresses 
 
 # Create base policy
 QUORUM_NODE_POLICY=/opt/vault/config/policies/quorum-node-base.hcl
-vault policy-write base_read \$QUORUM_NODE_POLICY
+vault policy-write base-read \$QUORUM_NODE_POLICY
 
 # Write policy to the roles used by instances
-POLICY_DIR=/opt/vault/config/policies
+POLICY_DIR=/opt/vault/config/policies/
 EOF
-echo "python write_node_policies.py $DATA_DIR/regions.txt $DATA_DIR/bootnode_counts.json $DATA_DIR/maker_counts.json $DATA_DIR/validator_counts.json $DATA_DIR/observer_counts.json $POLICY_OUTPUT_FILE $NETWORK_ID $AWS_ACCOUNT_ID $POLICY_DIR" >> $OUTPUT_FILE
-echo "sudo chown ubuntu $POLICY_OUTPUT_FILE" >> $OUTPUT_FILE
-echo "sudo chmod 744 $POLICY_OUTPUT_FILE" >> $OUTPUT_FILE
-echo ".$POLICY_OUTPUT_FILE" >> $OUTPUT_FILE
+echo "python /opt/vault/bin/write-node-policies.py $DATA_DIR/regions.txt $DATA_DIR/bootnode-counts.json $DATA_DIR/maker-counts.json $DATA_DIR/validator-counts.json $DATA_DIR/observer-counts.json /opt/vault/bin/setup-policies.sh $NETWORK_ID $AWS_ACCOUNT_ID $POLICY_DIR" >> $OUTPUT_FILE
+echo "./opt/vault/bin/setup-policies.sh" >> $OUTPUT_FILE
 
 # Old Implementation w/ one role for all quorum & bootnodes
 #

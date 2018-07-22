@@ -92,12 +92,23 @@
   },
   {
     "type": "file",
-    "source": "vault-policies/write_node_policies.py",
-    "destination": "/tmp/write_node_policies.py"
+    "source": "vault-policies/write-node-policies.py",
+    "destination": "/tmp/write-node-policies.py"
   },{
     "type": "shell",
     "inline": [
-      "sudo mv /tmp/write_node_policies.py /opt/vault/bin/"
+      "sudo mv /tmp/write-node-policies.py /opt/vault/bin/"
+    ]
+  },{
+    "type": "file",
+    "source": "vault-policies/setup-policies.sh",
+    "destination": "/tmp/setup-policies.sh"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/setup-policies.sh /opt/vault/bin/",
+      "sudo chown ubuntu /opt/vault/bin/setup-policies.sh",
+      "sudo chmod 744 /opt/vault/bin/setup-policies.sh"
     ]
   },{
     "type": "shell",

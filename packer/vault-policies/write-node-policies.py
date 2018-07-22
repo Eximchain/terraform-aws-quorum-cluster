@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import json
+import sys
 
 NETWORK_ID = ''
 AWS_ACCOUNT_ID = ''
@@ -9,47 +10,48 @@ OUTPUT_DIR = ''
 POLICY_DIR = '/opt/vault/config/policies/'
 
 def policy_string(region, role, role_index, cluster_index):
-    if role === "bootnodes":
+    if role == "bootnodes":
         return """\
-path "quorum/bootnodes/passwords/{0}/{1}" {{
-    capabilities = ["create", "update"]
+path \\"quorum/bootnodes/passwords/{0}/{1}\\" {{
+    capabilities = [\\"create\\", \\"update\\"]
 }}
 
-path "quorum/bootnodes/keys/{0}/{1}" {{
-    capabilities = ["create", "update"]
+path \\"quorum/bootnodes/keys/{0}/{1}\\" {{
+    capabilities = [\\"create\\", \\"update\\"]
 }}
 
-path "quorum/bootnodes/addresses/{0}/{1}" {{
-    capabilities = ["create", "update"]
+path \\"quorum/bootnodes/addresses/{0}/{1}\\" {{
+    capabilities = [\\"create\\", \\"update\\"]
 }}
 """.format(region, role_index)
     else:
         return """\
-path "quorum/passwords/{0}/{1} {{
-    capabilities = ["create", "update"]
+path \\"quorum/passwords/{0}/{1}\\" {{
+    capabilities = [\\"create\\", \\"update\\"]
 }}
 
-path "quorum/keys/{0}/{1} {{
-    capabilities = ["create", "update"]
+path \\"quorum/keys/{0}/{1}\\" {{
+    capabilities = [\\"create\\", \\"update\\"]
 }}
 
-path "quorum/addresses/{0}/{1} {{
-    capabilities = ["create", "update"]
+path \\"quorum/addresses/{0}/{1}\\" {{
+    capabilities = [\\"create\\", \\"update\\"]
 }}
 
-path "quorum/{2}/{0}/{3} {{
-    capabilities = ["create", "update"]
+path \\"quorum/{2}/{0}/{3}\\" {{
+    capabilities = [\\"create\\", \\"update\\"]
 }}
 """.format(region, cluster_index, role, role_index)
 
 def write_all_role_nodes(region, role, node_count, start_index):
     for (role_index, cluster_index) in zip(range(node_count),range(start_index, start_index+node_count)):
         node_rolename = "quorum-{0}-network-{1}-{2}-{3}".format(region, NETWORK_ID, role, role_index)
-        with open(POLICY_DIR+node_rolename+'.hcl', 'w+') as f:
-            f.write(policy_string(region, role, role_index, cluster_index))
+        # with open(POLICY_DIR+node_rolename+'.hcl', 'w+') as f:
+        #     f.write(policy_string(region, role, role_index, cluster_index))
         with open(SETUP_FILE, "a") as f:
-            f.write("\nvault policy-write {0} \${1}{0} \n".format(node_rolename, POLICY_DIR))
-            f.write("vault write auth/aws/role/{0} auth_type=iam policies=base_read,{0} bound_iam_principal_arn=arn:aws:iam::{1}:role/{0} || true \n".format(node_rolename, AWS_ACCOUNT_ID))
+            policy_text = policy_string(region, role, role_index, cluster_index)
+            f.write("\necho \"{1}\" | vault policy-write {0} - \n".format(node_rolename, policy_text))
+            f.write("vault write auth/aws/role/{0} auth_type=iam policies=\"base-read,{0}\" bound_iam_principal_arn=arn:aws:iam::{1}:role/{0} || true \n".format(node_rolename, AWS_ACCOUNT_ID))
 
 if __name__ == "__main__":
     (
@@ -74,8 +76,6 @@ if __name__ == "__main__":
         OBSERVER_COUNTS = json.load(f)
     with open(regions_txt, 'r') as f:
         REGIONS = [line.rstrip('\n') for line in f]
-    with open(SETUP_FILE, 'w+') as f:
-        f.write("#!/bin/bash\n")
 
     for REGION in REGIONS:
         NUM_BOOTNODES = int(BOOTNODE_COUNTS[REGION])

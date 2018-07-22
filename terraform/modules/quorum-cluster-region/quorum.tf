@@ -603,7 +603,7 @@ resource "aws_iam_role_policy_attachment" "quorum_maker" {
 resource "aws_iam_instance_profile" "quorum_maker" {
   count = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
-  name = "quorum-${var.aws_region}-network-${var.network_id}-node-${count.index}"
+  name = "quorum-${var.aws_region}-network-${var.network_id}-maker-${count.index}"
   role = "${element(aws_iam_role.quorum_maker.*.name, count.index)}"
 }
 
@@ -617,7 +617,7 @@ resource "aws_iam_role_policy_attachment" "quorum_validator" {
 resource "aws_iam_instance_profile" "quorum_validator" {
   count = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
 
-  name = "quorum-${var.aws_region}-network-${var.network_id}-node-${count.index}"
+  name = "quorum-${var.aws_region}-network-${var.network_id}-validator-${count.index}"
   role = "${element(aws_iam_role.quorum_validator.*.name, count.index)}"
 }
 
@@ -631,6 +631,6 @@ resource "aws_iam_role_policy_attachment" "quorum_observer" {
 resource "aws_iam_instance_profile" "quorum_observer" {
   count = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
 
-  name = "quorum-${var.aws_region}-network-${var.network_id}-node-${count.index}"
+  name = "quorum-${var.aws_region}-network-${var.network_id}-observer-${count.index}"
   role = "${element(aws_iam_role.quorum_observer.*.name, count.index)}"
 }
