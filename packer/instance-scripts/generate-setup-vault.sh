@@ -43,19 +43,10 @@ vault policy-write base-read \$QUORUM_NODE_POLICY
 # Write policy to the roles used by instances
 POLICY_DIR=/opt/vault/config/policies/
 EOF
+
+# Use script to fill out policies file, add command to run it
 echo "python /opt/vault/bin/write-node-policies.py $DATA_DIR/regions.txt $DATA_DIR/bootnode-counts.json $DATA_DIR/maker-counts.json $DATA_DIR/validator-counts.json $DATA_DIR/observer-counts.json /opt/vault/bin/setup-policies.sh $NETWORK_ID $AWS_ACCOUNT_ID $POLICY_DIR" >> $OUTPUT_FILE
-echo "./opt/vault/bin/setup-policies.sh" >> $OUTPUT_FILE
-
-# Old Implementation w/ one role for all quorum & bootnodes
-#
-# for region in ${REGIONS[@]}
-# do
-#     QUORUM_ROLE_NAME="quorum-node-$region-network-$NETWORK_ID"
-#     BOOTNODE_ROLE_NAME="bootnode-$region-network-$NETWORK_ID"
-#     echo "vault write auth/aws/role/$QUORUM_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$QUORUM_ROLE_NAME || true" >> $OUTPUT_FILE
-#     echo "vault write auth/aws/role/$BOOTNODE_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$BOOTNODE_ROLE_NAME || true" >> $OUTPUT_FILE
-# done
-
+echo "/opt/vault/bin/setup-policies.sh" >> $OUTPUT_FILE
 
 # Write the enterprise license key if it was provided
 if [ "$VAULT_ENTERPRISE_LICENSE_KEY" != "" ]
