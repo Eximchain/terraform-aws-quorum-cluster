@@ -13,41 +13,39 @@ def policy_string(region, role, role_index, cluster_index):
     if role == "bootnodes":
         return """\
 path \\"quorum/bootnodes/passwords/{0}/{1}\\" {{
-    capabilities = [\\"create\\", \\"update\\"]
+    capabilities = [\\"create\\", \\"update\\", \\"read\\"]
 }}
 
 path \\"quorum/bootnodes/keys/{0}/{1}\\" {{
-    capabilities = [\\"create\\", \\"update\\"]
+    capabilities = [\\"create\\", \\"update\\", \\"read\\"]
 }}
 
 path \\"quorum/bootnodes/addresses/{0}/{1}\\" {{
-    capabilities = [\\"create\\", \\"update\\"]
+    capabilities = [\\"create\\", \\"update\\", \\"read\\"]
 }}
 """.format(region, role_index)
     else:
         return """\
 path \\"quorum/passwords/{0}/{1}\\" {{
-    capabilities = [\\"create\\", \\"update\\"]
+    capabilities = [\\"create\\", \\"update\\", \\"read\\"]
 }}
 
 path \\"quorum/keys/{0}/{1}\\" {{
-    capabilities = [\\"create\\", \\"update\\"]
+    capabilities = [\\"create\\", \\"update\\", \\"read\\"]
 }}
 
 path \\"quorum/addresses/{0}/{1}\\" {{
-    capabilities = [\\"create\\", \\"update\\"]
+    capabilities = [\\"create\\", \\"update\\", \\"read\\"]
 }}
 
 path \\"quorum/{2}/{0}/{3}\\" {{
-    capabilities = [\\"create\\", \\"update\\"]
+    capabilities = [\\"create\\", \\"update\\", \\"read\\"]
 }}
 """.format(region, cluster_index, role, role_index)
 
 def write_all_role_nodes(region, role, node_count, start_index):
     for (role_index, cluster_index) in zip(range(node_count),range(start_index, start_index+node_count)):
         node_rolename = "quorum-{0}-network-{1}-{2}-{3}".format(region, NETWORK_ID, role, role_index)
-        # with open(POLICY_DIR+node_rolename+'.hcl', 'w+') as f:
-        #     f.write(policy_string(region, role, role_index, cluster_index))
         with open(SETUP_FILE, "a") as f:
             policy_text = policy_string(region, role, role_index, cluster_index)
             f.write("\necho \"{1}\" | vault policy-write {0} - \n".format(node_rolename, policy_text))
