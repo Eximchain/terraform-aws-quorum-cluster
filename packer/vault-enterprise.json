@@ -52,18 +52,13 @@
     ]
   },{
     "type": "file",
-    "source": "vault-policies/quorum-node.hcl",
-    "destination": "/tmp/quorum-node.hcl"
-  },{
-    "type": "file",
-    "source": "vault-policies/quorum-node-base.hcl",
-    "destination": "/tmp/quorum-node-base.hcl"
+    "source": "vault-policies/base-read.hcl",
+    "destination": "/tmp/base-read.hcl"
   },{
     "type": "shell",
     "inline": [
       "sudo mkdir /opt/vault/config/policies",
-      "sudo mv /tmp/quorum-node.hcl /opt/vault/config/policies/",
-      "sudo mv /tmp/quorum-node-base.hcl /opt/vault/config/policies/",
+      "sudo mv /tmp/base-read.hcl /opt/vault/config/policies/",
       "sudo chown vault:vault /opt/vault/config/policies/*",
       "sudo chmod 644 /opt/vault/config/policies/*"
     ]

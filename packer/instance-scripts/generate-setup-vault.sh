@@ -4,6 +4,7 @@ set -eu -o pipefail
 DATA_DIR=/opt/vault/data
 POLICY_DIR=/opt/vault/config/policies/
 OUTPUT_FILE=/opt/vault/bin/setup-vault.sh
+POLICY_FILE=/opt/vault/bin/setup-policies.sh
 AWS_ACCOUNT_ID=$(curl http://169.254.169.254/latest/meta-data/iam/info | jq .InstanceProfileArn | cut -d: -f5)
 
 NETWORK_ID=$1
@@ -37,7 +38,7 @@ vault audit-enable file file_path=\$AUDIT_LOG
 vault mount -path=quorum -default-lease-ttl=30 -description="Keys and Addresses for Quorum Nodes" kv
 
 # Create base policy
-QUORUM_NODE_POLICY=/opt/vault/config/policies/quorum-node-base.hcl
+QUORUM_NODE_POLICY=/opt/vault/config/policies/base-read.hcl
 vault policy-write base-read \$QUORUM_NODE_POLICY
 
 # Write policy to the roles used by instances
@@ -45,8 +46,8 @@ POLICY_DIR=/opt/vault/config/policies/
 EOF
 
 # Use script to fill out policies file, add command to run it
-echo "python /opt/vault/bin/write-node-policies.py $DATA_DIR/regions.txt $DATA_DIR/bootnode-counts.json $DATA_DIR/maker-counts.json $DATA_DIR/validator-counts.json $DATA_DIR/observer-counts.json /opt/vault/bin/setup-policies.sh $NETWORK_ID $AWS_ACCOUNT_ID $POLICY_DIR" >> $OUTPUT_FILE
-echo "/opt/vault/bin/setup-policies.sh" >> $OUTPUT_FILE
+echo "python /opt/vault/bin/write-node-policies.py $DATA_DIR/regions.txt $DATA_DIR/bootnode-counts.json $DATA_DIR/maker-counts.json $DATA_DIR/validator-counts.json $DATA_DIR/observer-counts.json $POLICY_FILE $NETWORK_ID $AWS_ACCOUNT_ID $POLICY_DIR" >> $OUTPUT_FILE
+echo "$POLICY_FILE" >> $OUTPUT_FILE
 
 # Write the enterprise license key if it was provided
 if [ "$VAULT_ENTERPRISE_LICENSE_KEY" != "" ]
@@ -63,3 +64,13 @@ EOF
 # Give permission to run the script
 sudo chown ubuntu $OUTPUT_FILE
 sudo chmod 744 $OUTPUT_FILE
+
+# Ensure $POLICY_FILE exists, make it runnable
+cat << EOF > $POLICY_FILE
+#!/bin/bash
+set -eu -o pipefail
+
+# Will be dynamically populated by write-node-policies.py script
+EOF
+sudo chown ubuntu $POLICY_FILE
+sudo chmod 744 $POLICY_FILE
