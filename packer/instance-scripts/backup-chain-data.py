@@ -33,8 +33,10 @@ def parse_args():
     subparsers = parser.add_subparsers(dest='command', help='Command to execute')
     parser_backup = subparsers.add_parser('backup', help='Back up data from this node')
     parser_backup.add_argument('--force', action='store_true', default=False)
+    parser_backup.add_argument('--bucket', dest='bucket_id', help='Specify an alternate AWS S3 bucket ID to backup to')
     parser_restore = subparsers.add_parser('restore', help='Restore data from s3')
     parser_restore.add_argument('--block', required=True, type=int, dest='block_to_restore')
+    parser_restore.add_argument('--bucket', dest='bucket_id', help='Specify an alternate AWS S3 bucket ID to restore from')
     return parser.parse_args()
 
 def pause_geth():
@@ -120,6 +122,8 @@ def backup_exists(block_number):
 # Executes the command specified in the provided argparse namespace
 def execute_command(args):
     try:
+        if args.bucket_id:
+            BACKUP_BUCKET = args.bucket_id
         if args.command == 'backup':
             current_block = eth_client.eth_blockNumber()
             pause_geth()
