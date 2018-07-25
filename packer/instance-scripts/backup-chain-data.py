@@ -1,5 +1,6 @@
 import argparse
 import boto3
+from botocore.exceptions import ClientError
 import os.path
 import sys
 import urllib2
@@ -103,12 +104,23 @@ def s3_download(bucket_name, source_dir, dest_dir):
 def backup_chain_data(backup_bucket, block_number):
     dest_dir = 'block-%s/' % (block_number)
     print 'Backing up chain at block %s' % (block_number)
-    s3_upload(backup_bucket, CHAIN_DATA_DIR, dest_dir)
+    try:
+        s3_upload(backup_bucket, CHAIN_DATA_DIR, dest_dir)
+    except ClientError as e:
+        if e.response.get('Error', {}).get('Code') == 'UnauthorizedOperation':
+            print("\n>> Permissions Error: It looks like the IAM role attached to this instance does not have permission to upload to your specified S3 bucket.  Please update the role's policy and try again.\n")
+        raise
+
 
 def restore_chain_data(backup_bucket, block_number):
     source_dir = 'block-%s/' % (block_number)
     print 'Restoring chain from block %s' % (block_number)
-    s3_download(backup_bucket, source_dir, CHAIN_DATA_DIR)
+    try:
+        s3_download(backup_bucket, source_dir, CHAIN_DATA_DIR)
+    except ClientError as e:
+        if e.response.get('Error', {}).get('Code') == 'UnauthorizedOperation':
+            print("\n>> Permissions Error: It looks like the IAM role attached to this instance does not have permission to fetch data from the specified S3 bucket.  Please update the role's policy and try again.\n")
+        raise
 
 def backup_exists(backup_bucket, block_number):
     prefix = 'block-%s/' % (block_number)
