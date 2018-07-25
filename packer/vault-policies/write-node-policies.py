@@ -7,7 +7,6 @@ NETWORK_ID = ''
 AWS_ACCOUNT_ID = ''
 SETUP_FILE = ''
 OUTPUT_DIR = ''
-POLICY_DIR = '/opt/vault/config/policies/'
 
 def policy_string(region, role, role_index, cluster_index):
     if role == "bootnodes":
@@ -60,8 +59,7 @@ if __name__ == "__main__":
         observer_counts_json,
         SETUP_FILE,
         NETWORK_ID,
-        AWS_ACCOUNT_ID,
-        POLICY_DIR
+        AWS_ACCOUNT_ID
     ) = sys.argv[1:]
 
     with open(bootnode_counts_json, 'r') as f:
