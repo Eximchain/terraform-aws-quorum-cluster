@@ -39,6 +39,16 @@ resource "aws_s3_bucket" "quorum_constellation" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# S3FS BUCKET FOR REGIONAL BACKUPS
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_s3_bucket" "quorum_backup" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0) + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  bucket_prefix = "quorum-backup-network-${var.network_id}-"
+  force_destroy = "${var.force_destroy_s3_buckets}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # QUORUM NODE AND BOOTNODE POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_policy" "quorum" {
@@ -72,13 +82,13 @@ resource "aws_iam_policy" "quorum" {
       "s3:GetObject",
       "s3:PutObject"
     ],
-    "Resource": ["${var.data_backup_bucket_arn}/*"]
+    "Resource": ["${aws_s3_bucket.quorum_backup.arn}/*"]
   },{
     "Effect": "Allow",
     "Action": ["s3:ListBucket"],
     "Resource": [
       "${var.vault_cert_bucket_arn}",
-      "${var.data_backup_bucket_arn}"
+      "${aws_s3_bucket.quorum_backup.arn}"
     ]
   },{
     "Effect": "Allow",
