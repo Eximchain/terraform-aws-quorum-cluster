@@ -273,6 +273,7 @@ resource "aws_iam_role_policy_attachment" "bootnode" {
 
 resource "aws_iam_instance_profile" "bootnode" {
   count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
+  
   name = "${element(aws_iam_role.bootnode.*.name, count.index)}"
   role = "${element(aws_iam_role.bootnode.*.name, count.index)}"
 }
