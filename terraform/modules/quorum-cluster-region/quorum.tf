@@ -51,6 +51,26 @@ resource "aws_autoscaling_group" "quorum_maker" {
   health_check_type         = "ELB"
 
   vpc_zone_identifier = ["${element(aws_subnet.quorum_cluster.*.id, count.index)}"]
+
+  tags = [
+    {
+      key                 = "Role"
+      value               = "Maker"
+      propagate_at_launch = true
+    },{
+      key                 = "RoleIndex"
+      value               = "${count.index}"
+      propagate_at_launch = true
+    },{
+      key                 = "NetworkId"
+      value               = "${var.network_id}"
+      propagate_at_launch = true
+    },{
+      key                 = "Region"
+      value               = "${var.aws_region}"
+      propagate_at_launch = true
+    },
+  ]
 }
 
 resource "aws_autoscaling_group" "quorum_validator" {
@@ -68,6 +88,26 @@ resource "aws_autoscaling_group" "quorum_validator" {
   health_check_type         = "ELB"
 
   vpc_zone_identifier = ["${element(aws_subnet.quorum_cluster.*.id, count.index)}"]
+
+  tags = [
+    {
+      key                 = "Role"
+      value               = "Validator"
+      propagate_at_launch = true
+    },{
+      key                 = "RoleIndex"
+      value               = "${count.index}"
+      propagate_at_launch = true
+    },{
+      key                 = "NetworkId"
+      value               = "${var.network_id}"
+      propagate_at_launch = true
+    },{
+      key                 = "Region"
+      value               = "${var.aws_region}"
+      propagate_at_launch = true
+    },
+  ]
 }
 
 resource "aws_autoscaling_group" "quorum_observer" {
@@ -85,6 +125,26 @@ resource "aws_autoscaling_group" "quorum_observer" {
   health_check_type         = "ELB"
 
   vpc_zone_identifier = ["${element(aws_subnet.quorum_cluster.*.id, count.index)}"]
+
+  tags = [
+    {
+      key                 = "Role"
+      value               = "Observer"
+      propagate_at_launch = true
+    },{
+      key                 = "RoleIndex"
+      value               = "${count.index}"
+      propagate_at_launch = true
+    },{
+      key                 = "NetworkId"
+      value               = "${var.network_id}"
+      propagate_at_launch = true
+    },{
+      key                 = "Region"
+      value               = "${var.aws_region}"
+      propagate_at_launch = true
+    },
+  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
