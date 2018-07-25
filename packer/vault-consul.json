@@ -55,10 +55,6 @@
     "source": "vault-policies/base-read.hcl",
     "destination": "/tmp/base-read.hcl"
   },{
-    "type": "file",
-    "source": "vault-policies/quorum-node-base.hcl",
-    "destination": "/tmp/quorum-node-base.hcl"
-  },{
     "type": "shell",
     "inline": [
       "sudo mkdir /opt/vault/config/policies",
