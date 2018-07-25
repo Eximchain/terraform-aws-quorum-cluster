@@ -150,6 +150,22 @@ module "vault_cluster" {
   allowed_inbound_cidr_blocks        = ["0.0.0.0/0"]
   allowed_inbound_security_group_ids = []
   ssh_key_name                       = "${aws_key_pair.auth.id}"
+
+  cluster_extra_tags = [
+    {
+      key                 = "Role"
+      value               = "Vault"
+      propagate_at_launch = true
+    },{
+      key                 = "NetworkId"
+      value               = "${var.network_id}"
+      propagate_at_launch = true
+    },{
+      key                 = "Region"
+      value               = "${var.aws_region}"
+      propagate_at_launch = true
+    },
+  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -222,7 +238,7 @@ data "template_file" "user_data_vault_cluster" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 module "consul_cluster" {
-  source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-cluster?ref=v0.1.0"
+  source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-cluster?ref=v0.1.2"
 
   cluster_name  = "quorum-consul"
   cluster_size  = "${var.consul_cluster_size}"
@@ -246,6 +262,22 @@ module "consul_cluster" {
   allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = "${aws_key_pair.auth.id}"
+
+  tags = [
+    {
+      key                 = "Role"
+      value               = "Consul"
+      propagate_at_launch = true
+    },{
+      key                 = "NetworkId"
+      value               = "${var.network_id}"
+      propagate_at_launch = true
+    },{
+      key                 = "Region"
+      value               = "${var.aws_region}"
+      propagate_at_launch = true
+    },
+  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
