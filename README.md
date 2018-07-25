@@ -168,8 +168,6 @@ $ /opt/vault/bin/setup-vault.sh $ROOT_TOKEN
 
 If any of these commands fail, wait a short time and try again. If waiting doesn't fix the issue, you may need to destroy and recreate the infrastructure.
 
-> Note: The `setup-vault.sh` command will produce one error for each supported region that does not have a bootnode.  Those are expected and can be ignored.
-
 ### Unseal additional vault servers
 
 You can proceed with initial setup with only one unsealed server, but if all unsealed servers crash, the vault will become inaccessable even though the severs will be replaced. If you have multiple vault servers, you may unseal all of them now and if the server serving requests crashes, the other servers will be on standby to take over.
