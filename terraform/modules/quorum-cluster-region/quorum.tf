@@ -111,7 +111,7 @@ data "template_file" "user_data_quorum_maker" {
     network_id       = "${var.network_id}"
 
     generate_metrics   = "${var.generate_metrics}"
-    data_backup_bucket = "${var.data_backup_bucket}"
+    data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
 
     maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
     validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"
@@ -152,7 +152,7 @@ data "template_file" "user_data_quorum_validator" {
     network_id       = "${var.network_id}"
 
     generate_metrics = "${var.generate_metrics}"
-    data_backup_bucket = "${var.data_backup_bucket}"
+    data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
 
     maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
     validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"
@@ -193,7 +193,7 @@ data "template_file" "user_data_quorum_observer" {
     network_id       = "${var.network_id}"
 
     generate_metrics = "${var.generate_metrics}"
-    data_backup_bucket = "${var.data_backup_bucket}"
+    data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
 
     maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
     validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"
