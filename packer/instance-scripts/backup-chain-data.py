@@ -1,5 +1,6 @@
 import argparse
 import boto3
+from botocore.exceptions import ClientError
 import os.path
 import sys
 import urllib2
@@ -19,8 +20,6 @@ GETH_SUPERVISOR_PROCESS = 'quorum'
 GETH_PORT = 22000
 
 BACKUP_BUCKET_FILE = '/opt/quorum/info/data-backup-bucket.txt'
-with open(BACKUP_BUCKET_FILE, 'r') as f:
-    BACKUP_BUCKET = f.read().strip()
 
 hostname = urllib2.urlopen("http://169.254.169.254/latest/meta-data/public-hostname").read()
 
@@ -33,8 +32,10 @@ def parse_args():
     subparsers = parser.add_subparsers(dest='command', help='Command to execute')
     parser_backup = subparsers.add_parser('backup', help='Back up data from this node')
     parser_backup.add_argument('--force', action='store_true', default=False)
+    parser_backup.add_argument('--bucket', dest='bucket_id', help='Specify an alternate AWS S3 bucket ID to backup to')
     parser_restore = subparsers.add_parser('restore', help='Restore data from s3')
     parser_restore.add_argument('--block', required=True, type=int, dest='block_to_restore')
+    parser_restore.add_argument('--bucket', dest='bucket_id', help='Specify an alternate AWS S3 bucket ID to restore from')
     return parser.parse_args()
 
 def pause_geth():
@@ -100,39 +101,55 @@ def s3_download(bucket_name, source_dir, dest_dir):
         print 'Downloading %s from Amazon S3 bucket %s' % (destpath, bucket_name)
         object.download_file(destpath)
 
-def backup_chain_data(block_number):
+def backup_chain_data(backup_bucket, block_number):
     dest_dir = 'block-%s/' % (block_number)
     print 'Backing up chain at block %s' % (block_number)
-    s3_upload(BACKUP_BUCKET, CHAIN_DATA_DIR, dest_dir)
+    try:
+        s3_upload(backup_bucket, CHAIN_DATA_DIR, dest_dir)
+    except ClientError as e:
+        if e.response.get('Error', {}).get('Code') == 'UnauthorizedOperation':
+            print("\n>> Permissions Error: It looks like the IAM role attached to this instance does not have permission to upload to your specified S3 bucket.  Please update the role's policy and try again.\n")
+        raise
 
-def restore_chain_data(block_number):
+
+def restore_chain_data(backup_bucket, block_number):
     source_dir = 'block-%s/' % (block_number)
     print 'Restoring chain from block %s' % (block_number)
-    s3_download(BACKUP_BUCKET, source_dir, CHAIN_DATA_DIR)
+    try:
+        s3_download(backup_bucket, source_dir, CHAIN_DATA_DIR)
+    except ClientError as e:
+        if e.response.get('Error', {}).get('Code') == 'UnauthorizedOperation':
+            print("\n>> Permissions Error: It looks like the IAM role attached to this instance does not have permission to fetch data from the specified S3 bucket.  Please update the role's policy and try again.\n")
+        raise
 
-def backup_exists(block_number):
+def backup_exists(backup_bucket, block_number):
     prefix = 'block-%s/' % (block_number)
-    bucket = s3.Bucket(BACKUP_BUCKET)
+    bucket = s3.Bucket(backup_bucket)
     all_objects = bucket.objects.all()
     backup_objects = filter(lambda obj: obj.key.startswith(prefix), all_objects)
     return len(backup_objects) > 0
 
 # Executes the command specified in the provided argparse namespace
 def execute_command(args):
+    if args.bucket_id:
+        backup_bucket = args.bucket_id
+    else:
+        with open(BACKUP_BUCKET_FILE, 'r') as f:
+            backup_bucket = f.read().strip()
     try:
         if args.command == 'backup':
             current_block = eth_client.eth_blockNumber()
             pause_geth()
-            if backup_exists(current_block):
+            if backup_exists(backup_bucket, current_block):
                 if args.force:
                     print 'Backup already found for block %s, OVERWRITING due to --force' % (current_block)
                 else:
                     print 'Backup already found for block %s, ABORTING' % (current_block)
                     return
-            backup_chain_data(current_block)
+            backup_chain_data(backup_bucket, current_block)
         elif args.command == 'restore':
             pause_geth()
-            restore_chain_data(args.block_to_restore)
+            restore_chain_data(backup_bucket, args.block_to_restore)
     finally:
         resume_geth()
 
