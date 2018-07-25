@@ -34,7 +34,7 @@ resource "aws_key_pair" "auth" {
 resource "aws_s3_bucket" "quorum_constellation" {
   count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0) + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
 
-  bucket_prefix = "quorum-constellation-${var.aws_region}-network-${var.network_id}-"
+  bucket_prefix = "constellation-${var.aws_region}-net-${var.network_id}-"
   force_destroy = "${var.force_destroy_s3_buckets}"
 }
 
