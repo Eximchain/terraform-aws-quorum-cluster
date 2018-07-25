@@ -19,8 +19,6 @@ GETH_SUPERVISOR_PROCESS = 'quorum'
 GETH_PORT = 22000
 
 BACKUP_BUCKET_FILE = '/opt/quorum/info/data-backup-bucket.txt'
-with open(BACKUP_BUCKET_FILE, 'r') as f:
-    BACKUP_BUCKET = f.read().strip()
 
 hostname = urllib2.urlopen("http://169.254.169.254/latest/meta-data/public-hostname").read()
 
@@ -102,41 +100,44 @@ def s3_download(bucket_name, source_dir, dest_dir):
         print 'Downloading %s from Amazon S3 bucket %s' % (destpath, bucket_name)
         object.download_file(destpath)
 
-def backup_chain_data(block_number):
+def backup_chain_data(backup_bucket, block_number):
     dest_dir = 'block-%s/' % (block_number)
     print 'Backing up chain at block %s' % (block_number)
-    s3_upload(BACKUP_BUCKET, CHAIN_DATA_DIR, dest_dir)
+    s3_upload(backup_bucket, CHAIN_DATA_DIR, dest_dir)
 
-def restore_chain_data(block_number):
+def restore_chain_data(backup_bucket, block_number):
     source_dir = 'block-%s/' % (block_number)
     print 'Restoring chain from block %s' % (block_number)
-    s3_download(BACKUP_BUCKET, source_dir, CHAIN_DATA_DIR)
+    s3_download(backup_bucket, source_dir, CHAIN_DATA_DIR)
 
-def backup_exists(block_number):
+def backup_exists(backup_bucket, block_number):
     prefix = 'block-%s/' % (block_number)
-    bucket = s3.Bucket(BACKUP_BUCKET)
+    bucket = s3.Bucket(backup_bucket)
     all_objects = bucket.objects.all()
     backup_objects = filter(lambda obj: obj.key.startswith(prefix), all_objects)
     return len(backup_objects) > 0
 
 # Executes the command specified in the provided argparse namespace
 def execute_command(args):
+    if args.bucket_id:
+        backup_bucket = args.bucket_id
+    else:
+        with open(BACKUP_BUCKET_FILE, 'r') as f:
+            backup_bucket = f.read().strip()
     try:
-        if args.bucket_id:
-            BACKUP_BUCKET = args.bucket_id
         if args.command == 'backup':
             current_block = eth_client.eth_blockNumber()
             pause_geth()
-            if backup_exists(current_block):
+            if backup_exists(backup_bucket, current_block):
                 if args.force:
                     print 'Backup already found for block %s, OVERWRITING due to --force' % (current_block)
                 else:
                     print 'Backup already found for block %s, ABORTING' % (current_block)
                     return
-            backup_chain_data(current_block)
+            backup_chain_data(backup_bucket, current_block)
         elif args.command == 'restore':
             pause_geth()
-            restore_chain_data(args.block_to_restore)
+            restore_chain_data(backup_bucket, args.block_to_restore)
     finally:
         resume_geth()
 
