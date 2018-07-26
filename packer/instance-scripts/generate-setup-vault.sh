@@ -1,9 +1,10 @@
 #!/bin/bash
 set -eu -o pipefail
 
+DATA_DIR=/opt/vault/data
 OUTPUT_FILE=/opt/vault/bin/setup-vault.sh
+POLICY_FILE=/opt/vault/bin/setup-policies.sh
 AWS_ACCOUNT_ID=$(curl http://169.254.169.254/latest/meta-data/iam/info | jq .InstanceProfileArn | cut -d: -f5)
-REGIONS=$(cat /opt/vault/data/regions.txt)
 
 NETWORK_ID=$1
 if [ $# -eq 2 ]
@@ -12,10 +13,6 @@ then
 else
   VAULT_ENTERPRISE_LICENSE_KEY=""
 fi
-
-# TODO: Separate permissions of quorum nodes and bootnodes
-QUORUM_ROLE_NAME="quorum-node-network-$NETWORK_ID"
-BOOTNODE_ROLE_NAME="bootnode-network-$NETWORK_ID"
 
 # Write the setup-vault script
 cat << EOF > $OUTPUT_FILE
@@ -39,21 +36,14 @@ vault audit-enable file file_path=\$AUDIT_LOG
 # Mount the quorum path
 vault mount -path=quorum -default-lease-ttl=30 -description="Keys and Addresses for Quorum Nodes" kv
 
-# Create policies
-QUORUM_NODE_POLICY=/opt/vault/config/policies/quorum-node.hcl
-vault policy-write quorum_node \$QUORUM_NODE_POLICY
-
-# Write policy to the roles used by instances
+# Create base policy
+QUORUM_NODE_POLICY=/opt/vault/config/policies/base-read.hcl
+vault policy-write base-read \$QUORUM_NODE_POLICY
 EOF
 
-for region in ${REGIONS[@]}
-do
-    # TODO: Separate permissions of quorum nodes and bootnodes
-    QUORUM_ROLE_NAME="quorum-node-$region-network-$NETWORK_ID"
-    BOOTNODE_ROLE_NAME="bootnode-$region-network-$NETWORK_ID"
-    echo "vault write auth/aws/role/$QUORUM_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$QUORUM_ROLE_NAME || true" >> $OUTPUT_FILE
-    echo "vault write auth/aws/role/$BOOTNODE_ROLE_NAME auth_type=iam policies=quorum_node bound_iam_principal_arn=arn:aws:iam::$AWS_ACCOUNT_ID:role/$BOOTNODE_ROLE_NAME || true" >> $OUTPUT_FILE
-done
+# Use script to fill out policies file, add command to run it
+echo "python /opt/vault/bin/write-node-policies.py $DATA_DIR/regions.txt $DATA_DIR/bootnode-counts.json $DATA_DIR/maker-counts.json $DATA_DIR/validator-counts.json $DATA_DIR/observer-counts.json $POLICY_FILE $NETWORK_ID $AWS_ACCOUNT_ID" >> $OUTPUT_FILE
+echo "$POLICY_FILE" >> $OUTPUT_FILE
 
 # Write the enterprise license key if it was provided
 if [ "$VAULT_ENTERPRISE_LICENSE_KEY" != "" ]
@@ -70,3 +60,13 @@ EOF
 # Give permission to run the script
 sudo chown ubuntu $OUTPUT_FILE
 sudo chmod 744 $OUTPUT_FILE
+
+# Ensure $POLICY_FILE exists, make it runnable
+cat << EOF > $POLICY_FILE
+#!/bin/bash
+set -eu -o pipefail
+
+# Will be dynamically populated by write-node-policies.py script
+EOF
+sudo chown ubuntu $POLICY_FILE
+sudo chmod 744 $POLICY_FILE

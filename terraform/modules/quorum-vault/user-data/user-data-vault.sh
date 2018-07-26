@@ -31,6 +31,13 @@ function run_threatstack_agent_if_configured {
   fi
 }
 
+function populate_counts {
+  echo "${maker_node_count_json}" | sudo tee /opt/vault/data/maker-counts.json
+  echo "${validator_node_count_json}" | sudo tee /opt/vault/data/validator-counts.json
+  echo "${observer_node_count_json}" | sudo tee /opt/vault/data/observer-counts.json
+  echo "${bootnode_count_json}" | sudo tee /opt/vault/data/bootnode-counts.json
+}
+
 readonly VAULT_TLS_CERT_DIR="/opt/vault/tls"
 readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 readonly VAULT_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/vault.crt.pem"
@@ -44,6 +51,9 @@ aws configure set s3.signature_version s3v4
 aws s3 cp s3://${vault_cert_bucket}/ca.crt.pem $VAULT_TLS_CERT_DIR
 aws s3 cp s3://${vault_cert_bucket}/vault.crt.pem $VAULT_TLS_CERT_DIR
 aws s3 cp s3://${vault_cert_bucket}/vault.key.pem $VAULT_TLS_CERT_DIR
+
+# Save node counts to files for use by generate-setup-vault.sh
+populate_counts
 
 # Set ownership and permissions
 sudo chown vault:vault $VAULT_TLS_CERT_DIR/*

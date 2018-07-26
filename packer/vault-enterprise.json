@@ -52,13 +52,13 @@
     ]
   },{
     "type": "file",
-    "source": "vault-policies/quorum-node.hcl",
-    "destination": "/tmp/quorum-node.hcl"
+    "source": "vault-policies/base-read.hcl",
+    "destination": "/tmp/base-read.hcl"
   },{
     "type": "shell",
     "inline": [
       "sudo mkdir /opt/vault/config/policies",
-      "sudo mv /tmp/quorum-node.hcl /opt/vault/config/policies/",
+      "sudo mv /tmp/base-read.hcl /opt/vault/config/policies/",
       "sudo chown vault:vault /opt/vault/config/policies/*",
       "sudo chmod 644 /opt/vault/config/policies/*"
     ]
@@ -83,6 +83,15 @@
       "sudo mv /tmp/generate-setup-vault.sh /opt/vault/bin/",
       "sudo chown ubuntu /opt/vault/bin/generate-setup-vault.sh",
       "sudo chmod 744 /opt/vault/bin/generate-setup-vault.sh"
+    ]
+  },{
+    "type": "file",
+    "source": "vault-policies/write_node_policies.py",
+    "destination": "/tmp/write_node_policies.py"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/write_node_policies.py /opt/vault/bin"
     ]
   },{
     "type": "shell",

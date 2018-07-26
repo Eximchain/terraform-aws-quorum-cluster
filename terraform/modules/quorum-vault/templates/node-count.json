@@ -1,0 +1,16 @@
+{
+  \"ap-northeast-1\":\"${ap_northeast_1_count}\",
+  \"ap-northeast-2\":\"${ap_northeast_2_count}\",
+  \"ap-south-1\":\"${ap_south_1_count}\",
+  \"ap-southeast-1\":\"${ap_southeast_1_count}\",
+  \"ap-southeast-2\":\"${ap_southeast_2_count}\",
+  \"ca-central-1\":\"${ca_central_1_count}\",
+  \"eu-central-1\":\"${eu_central_1_count}\",
+  \"eu-west-1\":\"${eu_west_1_count}\",
+  \"eu-west-2\":\"${eu_west_2_count}\",
+  \"sa-east-1\":\"${sa_east_1_count}\",
+  \"us-east-1\":\"${us_east_1_count}\",
+  \"us-east-2\":\"${us_east_2_count}\",
+  \"us-west-1\":\"${us_west_1_count}\",
+  \"us-west-2\":\"${us_west_2_count}\"
+}
