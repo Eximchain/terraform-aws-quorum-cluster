@@ -116,6 +116,11 @@ variable "use_elastic_bootnode_ips" {
   default     = false
 }
 
+variable "ssh_ips" {
+  description = "List of IP addresses allowed to SSH nodes in this network. If empty, will allow SSH from anywhere."
+  default     = []
+}
+
 variable "bootnode_instance_type" {
   description = "The EC2 instance type to use for bootnodes"
   default     = "t2.small"

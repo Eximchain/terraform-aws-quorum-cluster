@@ -54,6 +54,8 @@ module "quorum_vault" {
 
   force_destroy_s3_bucket = "${var.force_destroy_s3_buckets}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   vault_cluster_size   = "${var.vault_cluster_size}"
   vault_instance_type  = "${var.vault_instance_type}"
   consul_cluster_size  = "${var.consul_cluster_size}"
@@ -115,6 +117,8 @@ module "quorum_cluster_us_east_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -169,6 +173,8 @@ module "quorum_cluster_us_east_2" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
+  ssh_ips = "${var.ssh_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -225,6 +231,8 @@ module "quorum_cluster_us_west_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -279,6 +287,8 @@ module "quorum_cluster_us_west_2" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
+  ssh_ips = "${var.ssh_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -335,6 +345,8 @@ module "quorum_cluster_eu_central_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -389,6 +401,8 @@ module "quorum_cluster_eu_west_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
+  ssh_ips = "${var.ssh_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -445,6 +459,8 @@ module "quorum_cluster_eu_west_2" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -499,6 +515,8 @@ module "quorum_cluster_ap_south_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
+  ssh_ips = "${var.ssh_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -555,6 +573,8 @@ module "quorum_cluster_ap_northeast_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -609,6 +629,8 @@ module "quorum_cluster_ap_northeast_2" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
+  ssh_ips = "${var.ssh_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -665,6 +687,8 @@ module "quorum_cluster_ap_southeast_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -719,6 +743,8 @@ module "quorum_cluster_ap_southeast_2" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
+  ssh_ips = "${var.ssh_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -775,6 +801,8 @@ module "quorum_cluster_ca_central_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -829,6 +857,8 @@ module "quorum_cluster_sa_east_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+
+  ssh_ips = "${var.ssh_ips}"
 
   node_volume_size = "${var.node_volume_size}"
 

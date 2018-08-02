@@ -167,8 +167,9 @@ resource "aws_security_group" "bootnode" {
   vpc_id      = "${aws_vpc.bootnodes.id}"
 }
 
+# TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released
 resource "aws_security_group_rule" "bootnode_ssh" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0) == 0 ? 0 : length(var.ssh_ips) > 0 ? length(var.ssh_ips) : 1}"
 
   security_group_id = "${aws_security_group.bootnode.id}"
   type              = "ingress"
@@ -177,7 +178,7 @@ resource "aws_security_group_rule" "bootnode_ssh" {
   to_port   = 22
   protocol  = "tcp"
 
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(var.ssh_ips, count.index))}"]
 }
 
 resource "aws_security_group_rule" "bootnode_constellation" {
@@ -293,7 +294,7 @@ resource "aws_iam_role_policy_attachment" "bootnode" {
 
 resource "aws_iam_instance_profile" "bootnode" {
   count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
-  
+
   name = "${element(aws_iam_role.bootnode.*.name, count.index)}"
   role = "${element(aws_iam_role.bootnode.*.name, count.index)}"
 }

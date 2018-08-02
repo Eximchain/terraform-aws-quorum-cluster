@@ -78,6 +78,11 @@ variable "lb_ssl_policy" {
   default     = "ELBSecurityPolicy-2016-08"
 }
 
+variable "ssh_ips" {
+  description = "List of IP addresses allowed to SSH nodes in this network. If empty, will allow SSH from anywhere."
+  default     = []
+}
+
 variable "cert_org_name" {
   description = "The organization to associate with the vault certificates."
   default     = "Example Co."

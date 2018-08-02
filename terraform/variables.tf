@@ -117,6 +117,11 @@ variable "use_elastic_bootnode_ips" {
   default     = false
 }
 
+variable "ssh_ips" {
+  description = "List of IP addresses allowed to SSH nodes in this network. If empty, will allow SSH from anywhere."
+  default     = []
+}
+
 variable "cert_org_name" {
   description = "The organization to associate with the vault certificates."
   default     = "Example Co."

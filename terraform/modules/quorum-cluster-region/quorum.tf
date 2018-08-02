@@ -483,8 +483,9 @@ resource "aws_security_group" "quorum" {
   vpc_id      = "${aws_vpc.quorum_cluster.id}"
 }
 
+# TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released
 resource "aws_security_group_rule" "quorum_ssh" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) == 0 ? 0 : length(var.ssh_ips) > 0 ? length(var.ssh_ips) : 1}"
 
   security_group_id = "${aws_security_group.quorum.id}"
   type              = "ingress"
@@ -493,7 +494,7 @@ resource "aws_security_group_rule" "quorum_ssh" {
   to_port   = 22
   protocol  = "tcp"
 
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(var.ssh_ips, count.index))}"]
 }
 
 resource "aws_security_group_rule" "quorum_constellation" {

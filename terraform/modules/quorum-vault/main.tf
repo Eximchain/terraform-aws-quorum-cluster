@@ -146,7 +146,7 @@ module "vault_cluster" {
 
   target_group_arns = ["${aws_lb_target_group.quorum_vault.arn}"]
 
-  allowed_ssh_cidr_blocks            = ["0.0.0.0/0"]
+  allowed_ssh_cidr_blocks            = []
   allowed_inbound_cidr_blocks        = ["0.0.0.0/0"]
   allowed_inbound_security_group_ids = []
   ssh_key_name                       = "${aws_key_pair.auth.id}"
@@ -166,6 +166,20 @@ module "vault_cluster" {
       propagate_at_launch = true
     },
   ]
+}
+
+# TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released, consider inputting list directly to module
+resource "aws_security_group_rule" "vault_ssh" {
+  count = "${length(var.ssh_ips) > 0 ? length(var.ssh_ips) : 1}"
+
+  security_group_id = "${module.vault_cluster.security_group_id}"
+  type              = "ingress"
+
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(var.ssh_ips, count.index))}"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -350,7 +364,7 @@ module "consul_cluster" {
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
 
-  allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
+  allowed_ssh_cidr_blocks     = []
   allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
   ssh_key_name                = "${aws_key_pair.auth.id}"
 
@@ -369,6 +383,20 @@ module "consul_cluster" {
       propagate_at_launch = true
     },
   ]
+}
+
+# TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released, consider inputting list directly to module
+resource "aws_security_group_rule" "consul_ssh" {
+  count = "${length(var.ssh_ips) > 0 ? length(var.ssh_ips) : 1}"
+
+  security_group_id = "${module.consul_cluster.security_group_id}"
+  type              = "ingress"
+
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(var.ssh_ips, count.index))}"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
