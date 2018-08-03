@@ -178,7 +178,7 @@ resource "aws_security_group_rule" "bootnode_ssh" {
   to_port   = 22
   protocol  = "tcp"
 
-  cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(var.ssh_ips, count.index))}"]
+  cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(concat(var.ssh_ips, list("")), count.index))}"]
 }
 
 resource "aws_security_group_rule" "bootnode_constellation" {
