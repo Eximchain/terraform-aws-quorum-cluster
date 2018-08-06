@@ -8,6 +8,12 @@ resource "aws_vpc" "quorum_cluster" {
   enable_dns_hostnames = true
 }
 
+resource "aws_default_security_group" "quorum_cluster" {
+  count = "${aws_vpc.quorum_cluster.count}"
+
+  vpc_id = "${aws_vpc.quorum_cluster.id}"
+}
+
 # Create an internet gateway to give our subnet access to the outside world
 resource "aws_internet_gateway" "quorum_cluster" {
   count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"

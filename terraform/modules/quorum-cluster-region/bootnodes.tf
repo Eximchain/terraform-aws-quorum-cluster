@@ -8,6 +8,12 @@ resource "aws_vpc" "bootnodes" {
   enable_dns_hostnames = true
 }
 
+resource "aws_default_security_group" "bootnodes" {
+  count = "${aws_vpc.bootnodes.count}"
+
+  vpc_id = "${aws_vpc.bootnodes.id}"
+}
+
 resource "aws_internet_gateway" "bootnodes" {
   count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
 

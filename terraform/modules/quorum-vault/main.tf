@@ -54,6 +54,12 @@ resource "aws_vpc" "vault" {
   enable_dns_hostnames = true
 }
 
+resource "aws_default_security_group" "vault" {
+  count = "${aws_vpc.vault.count}"
+
+  vpc_id = "${aws_vpc.vault.id}"
+}
+
 resource "aws_internet_gateway" "vault" {
   vpc_id = "${aws_vpc.vault.id}"
 }
