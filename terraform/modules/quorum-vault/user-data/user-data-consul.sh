@@ -30,6 +30,9 @@ function run_threatstack_agent_if_configured {
   fi
 }
 
+# Start Supervisor
+supervisord -c /etc/supervisor/supervisord.conf
+
 configure_threatstack_agent_if_key_provided
 run_threatstack_agent_if_configured
 

@@ -62,6 +62,9 @@ function populate_data_files {
 # From: https://alestic.com/2010/12/ec2-user-data-output/
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
+# Start Supervisor
+supervisord -c /etc/supervisor/supervisord.conf
+
 sudo apt-get -y update
 sudo ntpd
 

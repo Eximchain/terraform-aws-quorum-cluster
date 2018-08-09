@@ -73,6 +73,7 @@
       "provisioning-scripts/gnupg-update.sh",
       "provisioning-scripts/fcron-update.sh",
       "provisioning-scripts/systemd-update.sh",
+      "provisioning-scripts/supervisor-update.sh",
       "provisioning-scripts/threatstack.sh"
     ]
   },{

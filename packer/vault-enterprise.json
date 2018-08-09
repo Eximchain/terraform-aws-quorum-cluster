@@ -53,6 +53,13 @@
       "sudo cp /tmp/terraform-aws-vault/modules/update-certificate-store/update-certificate-store /opt/vault/bin/"
     ]
   },{
+    "type": "shell",
+    "inline": [
+      "git clone --branch {{user `consul_module_version`}} https://github.com/hashicorp/terraform-aws-consul.git /tmp/terraform-aws-consul",
+      "/tmp/terraform-aws-consul/modules/install-consul/install-consul --version {{user `consul_version`}}",
+      "/tmp/terraform-aws-consul/modules/install-dnsmasq/install-dnsmasq"
+    ]
+  },{
     "type": "file",
     "source": "vault-policies/base-read.hcl",
     "destination": "/tmp/base-read.hcl"
@@ -91,16 +98,14 @@
     "source": "vault-policies/write-node-policies.py",
     "destination": "/tmp/write-node-policies.py"
   },{
-    "type": "shell",
-    "inline": [
-      "sudo mv /tmp/write-node-policies.py /opt/vault/bin"
-    ]
+    "type": "file",
+    "source": "configs/supervisord.conf",
+    "destination": "/tmp/supervisord.conf"
   },{
     "type": "shell",
     "inline": [
-      "git clone --branch {{user `consul_module_version`}} https://github.com/hashicorp/terraform-aws-consul.git /tmp/terraform-aws-consul",
-      "/tmp/terraform-aws-consul/modules/install-consul/install-consul --version {{user `consul_version`}}",
-      "/tmp/terraform-aws-consul/modules/install-dnsmasq/install-dnsmasq"
+      "sudo mv /tmp/write-node-policies.py /opt/vault/bin",
+      "sudo mv /tmp/supervisord.conf /etc/supervisor/"
     ]
   },{
     "type": "shell",
@@ -112,6 +117,7 @@
       "provisioning-scripts/gnupg-update.sh",
       "provisioning-scripts/fcron-update.sh",
       "provisioning-scripts/systemd-update.sh",
+      "provisioning-scripts/supervisor-update.sh",
       "provisioning-scripts/cleanup.sh"
     ]
   }],

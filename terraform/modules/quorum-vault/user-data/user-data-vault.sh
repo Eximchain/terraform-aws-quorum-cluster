@@ -43,6 +43,9 @@ readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 readonly VAULT_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/vault.crt.pem"
 readonly VAULT_TLS_KEY_FILE="$VAULT_TLS_CERT_DIR/vault.key.pem"
 
+# Start Supervisor
+supervisord -c /etc/supervisor/supervisord.conf
+
 # The variables below are filled in via Terraform interpolation
 /opt/vault/bin/generate-setup-vault.sh ${network_id} "${vault_enterprise_license_key}"
 
