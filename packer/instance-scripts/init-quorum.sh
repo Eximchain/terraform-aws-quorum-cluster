@@ -65,6 +65,7 @@ numprocs=1
 autostart=true
 autorestart=false
 stopsignal=INT
+exitcodes=0,1,2
 user=ubuntu" | sudo tee /etc/supervisor/conf.d/quorum-supervisor.conf
 }
 
@@ -79,6 +80,7 @@ autostart=true
 autorestart=unexpected
 stopsignal=QUIT
 user=ubuntu
+buffer_size=1024
 events=PROCESS_STATE" | sudo tee /etc/supervisor/conf.d/crashquorum-supervisor.conf
 }
 
@@ -93,6 +95,7 @@ autostart=true
 autorestart=unexpected
 stopsignal=QUIT
 user=ubuntu
+buffer_size=1024
 events=PROCESS_STATE" | sudo tee /etc/supervisor/conf.d/crashconstellation-supervisor.conf
 }
 
