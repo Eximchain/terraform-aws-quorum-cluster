@@ -117,8 +117,8 @@ resource "aws_security_group_rule" "vault_ssh" {
 
 resource "aws_security_group_rule" "allow_api_inbound_from_cidr_blocks" {
   type        = "ingress"
-  from_port   = 8200
-  to_port     = 8200
+  from_port   = "${var.vault_port}"
+  to_port     = "${var.vault_port}"
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 
