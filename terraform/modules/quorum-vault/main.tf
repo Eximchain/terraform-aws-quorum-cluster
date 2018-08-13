@@ -49,63 +49,33 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-resource "aws_vpc" "vault" {
+resource "aws_vpc" "vault_consul" {
   cidr_block           = "192.168.0.0/16"
   enable_dns_hostnames = true
 }
 
-resource "aws_default_security_group" "vault" {
-  count = "${aws_vpc.vault.count}"
+resource "aws_default_security_group" "vault_consul" {
+  count = "${aws_vpc.vault_consul.count}"
 
-  vpc_id = "${aws_vpc.vault.id}"
+  vpc_id = "${aws_vpc.vault_consul.id}"
 }
 
-resource "aws_internet_gateway" "vault" {
-  vpc_id = "${aws_vpc.vault.id}"
+resource "aws_internet_gateway" "vault_consul" {
+  vpc_id = "${aws_vpc.vault_consul.id}"
 }
 
-resource "aws_route" "vault" {
-  route_table_id         = "${aws_vpc.vault.main_route_table_id}"
+resource "aws_route" "vault_consul" {
+  route_table_id         = "${aws_vpc.vault_consul.main_route_table_id}"
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.vault.id}"
+  gateway_id             = "${aws_internet_gateway.vault_consul.id}"
 }
 
-resource "aws_subnet" "vault" {
-  vpc_id                  = "${aws_vpc.vault.id}"
+resource "aws_subnet" "vault_consul" {
+  vpc_id                  = "${aws_vpc.vault_consul.id}"
   count                   = "${length(data.aws_availability_zones.available.names)}"
   availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
   cidr_block              = "192.168.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# LOAD BALANCER FOR VAULT
-# ---------------------------------------------------------------------------------------------------------------------
-resource "aws_lb" "quorum_vault" {
-  internal = false
-
-  subnets         = ["${aws_subnet.vault.*.id}"]
-  security_groups = ["${aws_security_group.vault_cluster.id}"]
-}
-
-resource "aws_lb_target_group" "quorum_vault" {
-  name = "vault-lb-target-net-${var.network_id}"
-  port = "${var.vault_port}"
-  protocol = "HTTPS"
-  vpc_id = "${aws_vpc.vault.id}"
-}
-
-resource "aws_lb_listener" "quorum_vault" {
-  load_balancer_arn = "${aws_lb.quorum_vault.arn}"
-  port              = "${var.vault_port}"
-  protocol          = "HTTPS"
-  ssl_policy        = "${var.lb_ssl_policy}"
-  certificate_arn   = "${aws_iam_server_certificate.vault_certs.arn}"
-
-  default_action {
-    target_group_arn = "${aws_lb_target_group.quorum_vault.arn}"
-    type             = "forward"
-  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -119,46 +89,6 @@ data "aws_ami" "vault_consul" {
     name   = "name"
     values = ["eximchain-vault-quorum-*"]
   }
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ATTACH IAM POLICIES FOR CONSUL
-# To allow our Vault servers to automatically discover the Consul servers, we need to give them the IAM permissions from
-# the Consul AWS Module's consul-iam-policies module.
-# ---------------------------------------------------------------------------------------------------------------------
-
-module "consul_iam_policies_servers" {
-  source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.1.0"
-
-  iam_role_id = "${aws_iam_role.vault_cluster.id}"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# THE USER DATA SCRIPT THAT WILL RUN ON EACH VAULT SERVER WHEN IT'S BOOTING
-# This script will configure and start Vault
-# ---------------------------------------------------------------------------------------------------------------------
-
-data "template_file" "user_data_vault_cluster" {
-  template = "${file("${path.module}/user-data/user-data-vault.sh")}"
-
-  vars {
-    aws_region                   = "${var.aws_region}"
-    s3_bucket_name               = "${aws_s3_bucket.vault_storage.id}"
-    consul_cluster_tag_key       = "${module.consul_cluster.cluster_tag_key}"
-    consul_cluster_tag_value     = "${module.consul_cluster.cluster_tag_value}"
-    network_id                   = "${var.network_id}"
-    vault_cert_bucket            = "${aws_s3_bucket.vault_certs.bucket}"
-    kms_unseal_key_id            = "${join("", aws_kms_key.vault_unseal.*.key_id)}"
-    vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
-    threatstack_deploy_key       = "${var.threatstack_deploy_key}"
-    maker_node_count_json        = "${data.template_file.maker_node_count_json.rendered}"
-    validator_node_count_json    = "${data.template_file.validator_node_count_json.rendered}"
-    observer_node_count_json     = "${data.template_file.observer_node_count_json.rendered}"
-    bootnode_count_json          = "${data.template_file.bootnode_count_json.rendered}"
-  }
-
-  # user-data needs to download these objects
-  depends_on = ["aws_s3_bucket_object.vault_ca_public_key", "aws_s3_bucket_object.vault_public_key", "aws_s3_bucket_object.vault_private_key"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -249,6 +179,18 @@ data "template_file" "bootnode_count_json" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# ATTACH IAM POLICIES FOR CONSUL
+# To allow our Vault servers to automatically discover the Consul servers, we need to give them the IAM permissions from
+# the Consul AWS Module's consul-iam-policies module.
+# ---------------------------------------------------------------------------------------------------------------------
+
+module "consul_iam_policies_servers" {
+  source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.1.0"
+
+  iam_role_id = "${aws_iam_role.vault_cluster.id}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # DEPLOY THE CONSUL SERVER CLUSTER
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -266,8 +208,8 @@ module "consul_cluster" {
   ami_id    = "${var.vault_consul_ami == "" ? data.aws_ami.vault_consul.id : var.vault_consul_ami}"
   user_data = "${data.template_file.user_data_consul.rendered}"
 
-  vpc_id     = "${aws_vpc.vault.id}"
-  subnet_ids = "${aws_subnet.vault.*.id}"
+  vpc_id     = "${aws_vpc.vault_consul.id}"
+  subnet_ids = "${aws_subnet.vault_consul.*.id}"
 
   tenancy = "${var.use_dedicated_consul_servers ? "dedicated" : "default"}"
 
@@ -321,16 +263,5 @@ data "template_file" "user_data_consul" {
     consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
     consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
     threatstack_deploy_key   = "${var.threatstack_deploy_key}"
-  }
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# EXPORT CURRENT VAULT SERVER IPS
-# These servers may change over time but you can use an arbitrary server for initial setup
-# ---------------------------------------------------------------------------------------------------------------------
-data "aws_instances" "vault_servers" {
-  filter {
-    name   = "tag:aws:autoscaling:groupName"
-    values = ["${aws_autoscaling_group.vault_cluster.name}"]
   }
 }

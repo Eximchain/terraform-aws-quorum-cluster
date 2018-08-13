@@ -13,7 +13,7 @@ data "template_file" "vault_cluster_name" {
 resource "aws_autoscaling_group" "vault_cluster" {
   launch_configuration = "${aws_launch_configuration.vault_cluster.name}"
 
-  vpc_zone_identifier = ["${aws_subnet.vault.*.id}"]
+  vpc_zone_identifier = ["${aws_subnet.vault_consul.*.id}"]
 
   # Use a fixed-size cluster
   min_size             = "${var.vault_cluster_size}"
@@ -85,13 +85,52 @@ resource "aws_launch_configuration" "vault_cluster" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# THE USER DATA SCRIPT THAT WILL RUN ON EACH VAULT SERVER WHEN IT'S BOOTING
+# This script will configure and start Vault
+# ---------------------------------------------------------------------------------------------------------------------
+
+data "template_file" "user_data_vault_cluster" {
+  template = "${file("${path.module}/user-data/user-data-vault.sh")}"
+
+  vars {
+    aws_region                   = "${var.aws_region}"
+    s3_bucket_name               = "${aws_s3_bucket.vault_storage.id}"
+    consul_cluster_tag_key       = "${module.consul_cluster.cluster_tag_key}"
+    consul_cluster_tag_value     = "${module.consul_cluster.cluster_tag_value}"
+    network_id                   = "${var.network_id}"
+    vault_cert_bucket            = "${aws_s3_bucket.vault_certs.bucket}"
+    kms_unseal_key_id            = "${join("", aws_kms_key.vault_unseal.*.key_id)}"
+    vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
+    threatstack_deploy_key       = "${var.threatstack_deploy_key}"
+    maker_node_count_json        = "${data.template_file.maker_node_count_json.rendered}"
+    validator_node_count_json    = "${data.template_file.validator_node_count_json.rendered}"
+    observer_node_count_json     = "${data.template_file.observer_node_count_json.rendered}"
+    bootnode_count_json          = "${data.template_file.bootnode_count_json.rendered}"
+  }
+
+  # user-data needs to download these objects
+  depends_on = ["aws_s3_bucket_object.vault_ca_public_key", "aws_s3_bucket_object.vault_public_key", "aws_s3_bucket_object.vault_private_key"]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# EXPORT CURRENT VAULT SERVER IPS
+# These servers may change over time but you can use an arbitrary server for initial setup
+# ---------------------------------------------------------------------------------------------------------------------
+data "aws_instances" "vault_servers" {
+  filter {
+    name   = "tag:aws:autoscaling:groupName"
+    values = ["${aws_autoscaling_group.vault_cluster.name}"]
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # CREATE A SECURITY GROUP TO CONTROL WHAT REQUESTS CAN GO IN AND OUT OF EACH EC2 INSTANCE
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "aws_security_group" "vault_cluster" {
   name_prefix = "${data.template_file.vault_cluster_name.rendered}-"
   description = "Security group for the ${data.template_file.vault_cluster_name.rendered} launch configuration"
-  vpc_id      = "${aws_vpc.vault.id}"
+  vpc_id      = "${aws_vpc.vault_consul.id}"
 
   # aws_launch_configuration.launch_configuration in this module sets create_before_destroy to true, which means
   # everything it depends on, including this resource, must set it as well, or you'll get cyclic dependency errors
