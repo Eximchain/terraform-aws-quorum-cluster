@@ -82,6 +82,9 @@ resource "aws_launch_configuration" "vault_cluster" {
   lifecycle {
     create_before_destroy = true
   }
+
+  # user-data needs to download these objects
+  depends_on = ["aws_s3_bucket_object.vault_ca_public_key", "aws_s3_bucket_object.vault_public_key", "aws_s3_bucket_object.vault_private_key"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -107,9 +110,6 @@ data "template_file" "user_data_vault_cluster" {
     observer_node_count_json     = "${data.template_file.observer_node_count_json.rendered}"
     bootnode_count_json          = "${data.template_file.bootnode_count_json.rendered}"
   }
-
-  # user-data needs to download these objects
-  depends_on = ["aws_s3_bucket_object.vault_ca_public_key", "aws_s3_bucket_object.vault_public_key", "aws_s3_bucket_object.vault_private_key"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
