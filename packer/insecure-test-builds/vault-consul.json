@@ -5,10 +5,6 @@
     "extra_regions": "",
     "ami_groups": "",
     "encrypted": "false",
-    "vault_version": "0.9.0",
-    "consul_version": "1.0.1",
-    "consul_module_version": "v0.1.0",
-    "terraform_aws_vault_module_version": "master",
     "ca_public_key_path": "certs/ca-cert.pub",
     "tls_public_key_path": "certs/cert.pub",
     "tls_private_key_path": "certs/cert.pem"
@@ -46,19 +42,28 @@
     "script": "../provisioning-scripts/build-deps.sh",
     "pause_before": "30s"
   },{
-    "type": "shell",
-    "inline": [
-      "git clone --branch {{user `terraform_aws_vault_module_version`}} https://github.com/eximchain/terraform-aws-vault.git /tmp/terraform-aws-vault",
-      "/tmp/terraform-aws-vault/modules/install-vault/install-vault --version {{user `vault_version`}}",
-      "sudo cp /tmp/terraform-aws-vault/modules/update-certificate-store/update-certificate-store /opt/vault/bin/"
-    ]
+    "type": "file",
+    "source": "../configs/supervisord.conf",
+    "destination": "/tmp/supervisord.conf"
+  },{
+    "type": "file",
+    "source": "../instance-scripts/run-vault",
+    "destination": "/tmp/run-vault"
+  },{
+    "type": "file",
+    "source": "../instance-scripts/run-consul",
+    "destination": "/tmp/run-consul"
   },{
     "type": "shell",
-    "inline": [
-      "git clone --branch {{user `consul_module_version`}} https://github.com/hashicorp/terraform-aws-consul.git /tmp/terraform-aws-consul",
-      "/tmp/terraform-aws-consul/modules/install-consul/install-consul --version {{user `consul_version`}}",
-      "/tmp/terraform-aws-consul/modules/install-dnsmasq/install-dnsmasq"
+    "scripts": [
+      "../provisioning-scripts/install-vault",
+      "../provisioning-scripts/install-consul",
+      "../provisioning-scripts/install-dnsmasq"
     ]
+  },{
+    "type": "file",
+    "source": "../instance-scripts/update-certificate-store",
+    "destination": "/tmp/update-certificate-store"
   },{
     "type": "file",
     "source": "../vault-policies/base-read.hcl",
@@ -67,6 +72,7 @@
     "type": "shell",
     "inline": [
       "sudo mkdir /opt/vault/config/policies",
+      "sudo mv /tmp/update-certificate-store /opt/vault/bin/",
       "sudo mv /tmp/base-read.hcl /opt/vault/config/policies/",
       "sudo chown vault:vault /opt/vault/config/policies/*",
       "sudo chmod 644 /opt/vault/config/policies/*"
@@ -93,26 +99,20 @@
       "sudo chown ubuntu /opt/vault/bin/generate-setup-vault.sh",
       "sudo chmod 744 /opt/vault/bin/generate-setup-vault.sh"
     ]
-  },
-  {
+  },{
     "type": "file",
     "source": "../vault-policies/write-node-policies.py",
     "destination": "/tmp/write-node-policies.py"
-  },{
-    "type": "file",
-    "source": "../configs/supervisord.conf",
-    "destination": "/tmp/supervisord.conf"
-  },{
-    "type": "shell",
-    "inline": [
-      "sudo mv /tmp/write-node-policies.py /opt/vault/bin/",
-      "sudo mv /tmp/supervisord.conf /etc/supervisor/"
-    ]
   },{
     "type": "shell",
     "scripts": [
       "../provisioning-scripts/threatstack.sh",
       "../provisioning-scripts/cleanup.sh"
+    ]
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/write-node-policies.py /opt/vault/bin/"
     ]
   }],
   "post-processors": [{
