@@ -20,25 +20,32 @@ function complete_constellation_config {
 
     local REGIONS=$(cat /opt/quorum/info/regions.txt)
 
-    # Configure constellation with other node IPs
-    OTHER_NODES=""
-    for region in ${REGIONS[@]}
-    do
-        local NUM_BOOTNODES=$(cat /opt/quorum/info/bootnode-counts/${region}.txt)
-        for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+    DIR=$(dirname "${CONSTELLATION_CONFIG_PATH}")
+    FLAGFILE="$DIR/constellation.done"
+
+    if [ ! -f $FLAGFILE ]
+    then
+        # Configure constellation with other node IPs
+        OTHER_NODES=""
+        for region in ${REGIONS[@]}
         do
-            if [[ $index -ne $CLUSTER_INDEX || $region != $AWS_REGION ]]
-            then
-                BOOTNODE=$(wait_for_successful_command "vault read -field=hostname quorum/bootnodes/addresses/${region}/$index")
-                OTHER_NODES="$OTHER_NODES,\"http://$BOOTNODE:9000/\""
-            fi
+            local NUM_BOOTNODES=$(cat /opt/quorum/info/bootnode-counts/${region}.txt)
+            for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+            do
+                if [[ $index -ne $CLUSTER_INDEX || $region != $AWS_REGION ]]
+                then
+                    BOOTNODE=$(wait_for_successful_command "vault read -field=hostname quorum/bootnodes/addresses/${region}/$index")
+                    OTHER_NODES="$OTHER_NODES,\"http://$BOOTNODE:9000/\""
+                fi
+            done
         done
-    done
-    OTHER_NODES=${OTHER_NODES:1}
-    OTHER_NODES_LINE="othernodes = [$OTHER_NODES]"
-    echo "$OTHER_NODES_LINE" >> $CONSTELLATION_CONFIG_PATH
-    # Configure constellation with URL
-    echo "url = \"http://$HOSTNAME:9000/\"" >> $CONSTELLATION_CONFIG_PATH
+        OTHER_NODES=${OTHER_NODES:1}
+        OTHER_NODES_LINE="othernodes = [$OTHER_NODES]"
+        echo "$OTHER_NODES_LINE" >> $CONSTELLATION_CONFIG_PATH
+        # Configure constellation with URL
+        echo "url = \"http://$HOSTNAME:9000/\"" >> $CONSTELLATION_CONFIG_PATH
+        echo `date` "Constellation created"! > $FLAGFILE
+    fi
 }
 
 function wait_for_all_bootnodes {
