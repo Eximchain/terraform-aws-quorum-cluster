@@ -154,7 +154,7 @@ resource "aws_security_group_rule" "vault_ssh" {
   cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(concat(var.ssh_ips, list("")), count.index))}"]
 }
 
-resource "aws_security_group_rule" "allow_api_inbound_from_cidr_blocks" {
+resource "aws_security_group_rule" "vault_allow_api_inbound_from_cidr_blocks" {
   type        = "ingress"
   from_port   = "${var.vault_port}"
   to_port     = "${var.vault_port}"
@@ -164,7 +164,7 @@ resource "aws_security_group_rule" "allow_api_inbound_from_cidr_blocks" {
   security_group_id = "${aws_security_group.vault_cluster.id}"
 }
 
-resource "aws_security_group_rule" "allow_cluster_inbound_from_self" {
+resource "aws_security_group_rule" "vault_allow_cluster_inbound_from_self" {
   type      = "ingress"
   from_port = 8201
   to_port   = 8201
@@ -174,7 +174,7 @@ resource "aws_security_group_rule" "allow_cluster_inbound_from_self" {
   security_group_id = "${aws_security_group.vault_cluster.id}"
 }
 
-resource "aws_security_group_rule" "allow_all_outbound" {
+resource "aws_security_group_rule" "vault_allow_all_outbound" {
   type        = "egress"
   from_port   = 0
   to_port     = 0
