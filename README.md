@@ -8,6 +8,7 @@ Table of Contents
       * [Supported Regions](#supported-regions)
    * [Generate SSH key for EC2 instances](#generate-ssh-key-for-ec2-instances)
       * [Build AMIs to launch the instances with](#build-amis-to-launch-the-instances-with)
+         * [Faster Test Builds](#faster-test-builds)
       * [Launch Network with Terraform](#launch-network-with-terraform)
       * [Launch and configure vault](#launch-and-configure-vault)
          * [Unseal additional vault servers](#unseal-additional-vault-servers)
@@ -19,6 +20,9 @@ Table of Contents
          * [Destroy the Network](#destroy-the-network)
    * [Using as a Terraform Module](#using-as-a-terraform-module)
    * [Roadmap](#roadmap)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
+
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
@@ -95,6 +99,8 @@ $ packer build quorum.json
 $ cd ..
 ```
 
+These builds can be run in parallel as well
+
 Then copy the AMIs to into terraform variables
 
 ```sh
@@ -106,6 +112,29 @@ If you would like to back up the previous AMI variables in case something goes w
 ```sh
 $ BACKUP=<File path to back up to>
 $ python copy-packer-artifacts-to-terraform.py --tfvars-backup-file $BACKUP
+```
+
+### Faster Test Builds
+
+If you want to quickly build an AMI to test changes, you can use an `insecure-test-build`.  This skips over several lengthy software upgrades that require building a new software version from source. The AMIs produced will have additional security vulnerabilities and are not suitable for use in production systems.
+
+To use this feature, simply run the builds from the `packer/insecure-test-builds` directory as follows:
+
+```sh
+$ cd packer/insecure-test-builds
+$ packer build vault-consul.json
+# Wait for build
+$ packer build bootnode.json
+# Wait for build
+$ packer build quorum.json
+# Wait for build
+$ cd ../..
+```
+
+Then continue by copying the AMIs to into terraform variables as usual:
+
+```sh
+$ python copy-packer-artifacts-to-terraform.py
 ```
 
 ## Launch Network with Terraform

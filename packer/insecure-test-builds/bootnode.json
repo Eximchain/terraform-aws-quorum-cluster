@@ -1,0 +1,143 @@
+{
+  "min_packer_version": "0.12.0",
+  "variables": {
+    "aws_region": "us-east-1",
+    "extra_regions": "us-east-2,us-west-1,us-west-2,eu-central-1,eu-west-1,eu-west-2,ap-south-1,ap-northeast-1,ap-northeast-2,ap-southeast-1,ap-southeast-2,ca-central-1,sa-east-1",
+    "ami_groups": "",
+    "encrypted": "false",
+    "vault_version": "0.9.0",
+    "consul_version": "1.0.1",
+    "consul_module_version": "v0.1.0",
+    "terraform_aws_vault_module_version": "master",
+    "ca_public_key_path": "certs/ca-cert.pub",
+    "tls_public_key_path": "certs/cert.pub"
+  },
+  "builders": [{
+    "ami_name": "eximchain-network-bootnode-{{isotime | clean_ami_name}}",
+    "ami_description": "An Ubuntu 16.04 AMI with Quorum installed, that has Vault and Consul installed to use as a client.",
+    "instance_type": "t2.medium",
+    "name": "ubuntu16-quorum-ami",
+    "region": "{{user `aws_region`}}",
+    "ami_regions": "{{user `extra_regions`}}",
+    "ami_groups": "{{user `ami_groups`}}",
+    "encrypt_boot": "{{user `encrypted`}}",
+    "type": "amazon-ebs",
+    "source_ami_filter": {
+      "filters": {
+        "virtualization-type": "hvm",
+        "architecture": "x86_64",
+        "name": "*ubuntu-xenial-16.04-amd64-server-*",
+        "block-device-mapping.volume-type": "gp2",
+        "root-device-type": "ebs"
+      },
+      "owners": ["099720109477"],
+      "most_recent": true
+    },
+    "launch_block_device_mappings": [{
+      "device_name": "/dev/sda1",
+      "volume_size": 20,
+      "delete_on_termination": true
+    }],
+    "ssh_username": "ubuntu"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "script": "../provisioning-scripts/build-deps.sh",
+    "pause_before": "30s"
+  },{
+    "type": "shell",
+    "inline": [
+      "git clone --branch {{user `terraform_aws_vault_module_version`}} https://github.com/eximchain/terraform-aws-vault.git /tmp/terraform-aws-vault",
+      "/tmp/terraform-aws-vault/modules/install-vault/install-vault --version {{user `vault_version`}}",
+      "sudo cp /tmp/terraform-aws-vault/modules/update-certificate-store/update-certificate-store /opt/vault/bin/"
+    ]
+  },{
+    "type": "shell",
+    "inline": [
+      "git clone --branch {{user `consul_module_version`}} https://github.com/hashicorp/terraform-aws-consul.git /tmp/terraform-aws-consul",
+      "/tmp/terraform-aws-consul/modules/install-consul/install-consul --version {{user `consul_version`}}",
+      "/tmp/terraform-aws-consul/modules/install-dnsmasq/install-dnsmasq"
+    ]
+  },{
+    "type": "shell",
+    "scripts": [
+      "../provisioning-scripts/constellation.sh",
+      "../provisioning-scripts/golang.sh",
+      "../provisioning-scripts/quorum.sh",
+      "../provisioning-scripts/quorum-setup.sh",
+      "../provisioning-scripts/porosity.sh",
+      "../provisioning-scripts/quorum-genesis.sh",
+      "../provisioning-scripts/threatstack.sh"
+    ]
+  },{
+    "type": "file",
+    "source": "../instance-scripts/generate-run-init-bootnode",
+    "destination": "/tmp/generate-run-init-bootnode"
+  },{
+    "type": "file",
+    "source": "../instance-scripts/init-bootnode.sh",
+    "destination": "/tmp/init-bootnode.sh"
+  },{
+    "type": "file",
+    "source": "../instance-scripts/generate-quorum-config.py",
+    "destination": "/tmp/generate-quorum-config.py"
+  },{
+    "type": "file",
+    "source": "../instance-scripts/fill-node-counts.py",
+    "destination": "/tmp/fill-node-counts.py"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/init-bootnode.sh /opt/quorum/bin/",
+      "sudo mv /tmp/generate-run-init-bootnode /opt/quorum/bin/",
+      "sudo mv /tmp/generate-quorum-config.py /opt/quorum/bin/",
+      "sudo mv /tmp/fill-node-counts.py /opt/quorum/bin/",
+      "sudo chmod 744 /opt/quorum/bin/*"
+    ]
+  },{
+    "type": "file",
+    "source": "../configs/bootnode-supervisor.conf",
+    "destination": "/tmp/bootnode-supervisor.conf"
+  },{
+    "type": "file",
+    "source": "../configs/constellation-supervisor.conf",
+    "destination": "/tmp/constellation-supervisor.conf"
+  },{
+    "type": "file",
+    "source": "../configs/constellation.conf",
+    "destination": "/tmp/constellation.conf"
+  },{
+    "type": "file",
+    "source": "../configs/ntp.conf",
+    "destination": "/tmp/ntp.conf"
+  },{
+    "type": "file",
+    "source": "../configs/supervisord.conf",
+    "destination": "/tmp/supervisord.conf"
+  },{
+    "type": "file",
+    "source": "../data/regions.txt",
+    "destination": "/tmp/regions.txt"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/constellation-supervisor.conf /opt/quorum/private/",
+      "sudo mv /tmp/bootnode-supervisor.conf /opt/quorum/private/",
+      "sudo mv /tmp/regions.txt /opt/quorum/info/",
+      "sudo mv /tmp/constellation.conf /opt/quorum/constellation/config.conf",
+      "sudo mv /tmp/ntp.conf /etc/ntp.conf",
+      "sudo mv /tmp/supervisord.conf /etc/supervisor/supervisord.conf"
+    ]
+  },{
+    "type": "shell",
+    "scripts": [
+      "../provisioning-scripts/init-zero-counts.sh",
+      "../provisioning-scripts/cleanup.sh"
+    ]
+  }],
+  "post-processors": [{
+    "type": "manifest",
+    "output": "../manifests/bootnode.json",
+    "strip_path": true
+  }]
+}
