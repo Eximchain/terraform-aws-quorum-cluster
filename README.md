@@ -349,8 +349,8 @@ The master list of desired features for this tool. Feel free to contribute featu
 - [x] Multi Region Network
 - [x] Network with External Participants
 - [x] Quorum Node health checking and replacement
+- [x] Fine-grained Permissions for Private Keys in Vault
 - [ ] Full initial documentation
 - [ ] Secure handling of TLS Certificate
 - [ ] Anti-Fraglie Everything
-- [ ] Fine-grained Permissions for Private Keys in Vault
 - [ ] Tighten security parameters
