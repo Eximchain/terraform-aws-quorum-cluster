@@ -23,9 +23,6 @@ Table of Contents
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
-
-Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
-
 # Warning
 This software launches and uses real AWS resources. It is not a demo or test. By using this software, you will incur the costs of any resources it uses in your AWS account.
 
