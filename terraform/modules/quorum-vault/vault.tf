@@ -91,15 +91,14 @@ resource "aws_launch_configuration" "vault_cluster" {
 # THE USER DATA SCRIPT THAT WILL RUN ON EACH VAULT SERVER WHEN IT'S BOOTING
 # This script will configure and start Vault
 # ---------------------------------------------------------------------------------------------------------------------
-
 data "template_file" "user_data_vault_cluster" {
   template = "${file("${path.module}/user-data/user-data-vault.sh")}"
 
   vars {
     aws_region                   = "${var.aws_region}"
     s3_bucket_name               = "${aws_s3_bucket.vault_storage.id}"
-    consul_cluster_tag_key       = "${module.consul_cluster.cluster_tag_key}"
-    consul_cluster_tag_value     = "${module.consul_cluster.cluster_tag_value}"
+    consul_cluster_tag_key       = "${data.template_file.consul_cluster_tag_key.rendered}"
+    consul_cluster_tag_value     = "${data.template_file.consul_cluster_tag_value.rendered}"
     network_id                   = "${var.network_id}"
     vault_cert_bucket            = "${aws_s3_bucket.vault_certs.bucket}"
     kms_unseal_key_id            = "${join("", aws_kms_key.vault_unseal.*.key_id)}"
@@ -205,7 +204,7 @@ resource "aws_iam_instance_profile" "vault_cluster" {
 
 resource "aws_iam_role" "vault_cluster" {
   name_prefix        = "${data.template_file.vault_cluster_name.rendered}-"
-  assume_role_policy = "${data.aws_iam_policy_document.vault_cluster.json}"
+  assume_role_policy = "${data.aws_iam_policy_document.assume_role.json}"
 
   # aws_iam_instance_profile.instance_profile in this module sets create_before_destroy to true, which means
   # everything it depends on, including this resource, must set it as well, or you'll get cyclic dependency errors
@@ -215,16 +214,14 @@ resource "aws_iam_role" "vault_cluster" {
   }
 }
 
-data "aws_iam_policy_document" "vault_cluster" {
-  statement {
-    effect  = "Allow"
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
+# ---------------------------------------------------------------------------------------------------------------------
+# ATTACH IAM POLICIES FOR CONSUL
+# To allow our Vault servers to automatically discover the Consul servers, we need to give them the IAM permissions from
+# the Consul AWS Module's consul-iam-policies module.
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_iam_role_policy_attachment" "vault_auto_discover_cluster" {
+  role       = "${aws_iam_role.vault_cluster.id}"
+  policy_arn = "${aws_iam_policy.auto_discover_cluster.arn}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

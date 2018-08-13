@@ -51,35 +51,35 @@ output "vault_cluster_tag_value" {
 }
 
 output "consul_asg_name" {
-  value = "${module.consul_cluster.asg_name}"
+  value = "${aws_autoscaling_group.consul_cluster.name}"
 }
 
 output "consul_cluster_size" {
-  value = "${module.consul_cluster.cluster_size}"
+  value = "${aws_autoscaling_group.consul_cluster.desired_capacity}"
 }
 
 output "consul_iam_role_id" {
-  value = "${module.consul_cluster.iam_role_id}"
+  value = "${aws_iam_role.consul_cluster.id}"
 }
 
 output "consul_iam_role_arn" {
-  value = "${module.consul_cluster.iam_role_arn}"
+  value = "${aws_iam_role.consul_cluster.arn}"
 }
 
 output "consul_security_group_id" {
-  value = "${module.consul_cluster.security_group_id}"
+  value = "${aws_security_group.consul_cluster.id}"
 }
 
 output "consul_launch_config_name" {
-  value = "${module.consul_cluster.launch_config_name}"
+  value = "${aws_launch_configuration.consul_cluster.name}"
 }
 
 output "consul_cluster_tag_key" {
-  value = "${module.consul_cluster.cluster_tag_key}"
+  value = "${data.template_file.consul_cluster_tag_key.rendered}"
 }
 
 output "consul_cluster_tag_value" {
-  value = "${module.consul_cluster.cluster_tag_value}"
+  value = "${data.template_file.consul_cluster_tag_value.rendered}"
 }
 
 output "vault_cert_s3_upload_id" {

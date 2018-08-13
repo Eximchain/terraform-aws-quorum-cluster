@@ -20,7 +20,7 @@ resource "aws_key_pair" "auth" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# KMS UNSEAL KEY
+# KMS UNSEAL KEY FOR ENTERPRISE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_kms_key" "vault_unseal" {
   # Create only if we're using vault enterprise
@@ -43,7 +43,7 @@ resource "aws_kms_grant" "vault_unseal" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# VAULT CLUSTER NETWORKING
+# NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_availability_zones" "available" {
   state = "available"
@@ -88,6 +88,45 @@ data "aws_ami" "vault_consul" {
   filter {
     name   = "name"
     values = ["eximchain-vault-quorum-*"]
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# CONSUL AUTO-DISCOVER POLICY
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_iam_policy" "auto_discover_cluster" {
+  name   = "auto-discover-cluster"
+  policy = "${data.aws_iam_policy_document.auto_discover_cluster.json}"
+
+  description = "Allow consul cluster auto-discovery"
+}
+
+data "aws_iam_policy_document" "auto_discover_cluster" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ec2:DescribeInstances",
+      "ec2:DescribeTags",
+      "autoscaling:DescribeAutoScalingGroups",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ASSUME ROLE POLICY DOCUMENT
+# ---------------------------------------------------------------------------------------------------------------------
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
   }
 }
 
@@ -175,93 +214,5 @@ data "template_file" "bootnode_count_json" {
     us_east_2_count      = "${lookup(var.bootnode_counts, "us-east-2", 0)}"
     us_west_1_count      = "${lookup(var.bootnode_counts, "us-west-1", 0)}"
     us_west_2_count      = "${lookup(var.bootnode_counts, "us-west-2", 0)}"
-  }
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ATTACH IAM POLICIES FOR CONSUL
-# To allow our Vault servers to automatically discover the Consul servers, we need to give them the IAM permissions from
-# the Consul AWS Module's consul-iam-policies module.
-# ---------------------------------------------------------------------------------------------------------------------
-
-module "consul_iam_policies_servers" {
-  source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.1.0"
-
-  iam_role_id = "${aws_iam_role.vault_cluster.id}"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# DEPLOY THE CONSUL SERVER CLUSTER
-# ---------------------------------------------------------------------------------------------------------------------
-
-module "consul_cluster" {
-  source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-cluster?ref=v0.1.2"
-
-  cluster_name  = "quorum-consul"
-  cluster_size  = "${var.consul_cluster_size}"
-  instance_type = "${var.consul_instance_type}"
-
-  # The EC2 Instances will use these tags to automatically discover each other and form a cluster
-  cluster_tag_key   = "consul-cluster"
-  cluster_tag_value = "quorum-consul"
-
-  ami_id    = "${var.vault_consul_ami == "" ? data.aws_ami.vault_consul.id : var.vault_consul_ami}"
-  user_data = "${data.template_file.user_data_consul.rendered}"
-
-  vpc_id     = "${aws_vpc.vault_consul.id}"
-  subnet_ids = "${aws_subnet.vault_consul.*.id}"
-
-  tenancy = "${var.use_dedicated_consul_servers ? "dedicated" : "default"}"
-
-  # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
-  # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
-
-  allowed_ssh_cidr_blocks     = []
-  allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
-  ssh_key_name                = "${aws_key_pair.auth.id}"
-
-  tags = [
-    {
-      key                 = "Role"
-      value               = "Consul"
-      propagate_at_launch = true
-    },{
-      key                 = "NetworkId"
-      value               = "${var.network_id}"
-      propagate_at_launch = true
-    },{
-      key                 = "Region"
-      value               = "${var.aws_region}"
-      propagate_at_launch = true
-    },
-  ]
-}
-
-# TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released, consider inputting list directly to module
-resource "aws_security_group_rule" "consul_ssh" {
-  count = "${length(var.ssh_ips) > 0 ? length(var.ssh_ips) : 1}"
-
-  security_group_id = "${module.consul_cluster.security_group_id}"
-  type              = "ingress"
-
-  from_port = 22
-  to_port   = 22
-  protocol  = "tcp"
-
-  cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(concat(var.ssh_ips, list("")), count.index))}"]
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# THE USER DATA SCRIPT THAT WILL RUN ON EACH CONSUL SERVER WHEN IT'S BOOTING
-# This script will configure and start Consul
-# ---------------------------------------------------------------------------------------------------------------------
-
-data "template_file" "user_data_consul" {
-  template = "${file("${path.module}/user-data/user-data-consul.sh")}"
-
-  vars {
-    consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
-    consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
-    threatstack_deploy_key   = "${var.threatstack_deploy_key}"
   }
 }
