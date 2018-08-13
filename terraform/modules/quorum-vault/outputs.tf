@@ -19,35 +19,35 @@ output "vault_cert_bucket_arn" {
 }
 
 output "vault_asg_name" {
-  value = "${module.vault_cluster.asg_name}"
+  value = "${aws_autoscaling_group.vault_cluster.name}"
 }
 
 output "vault_cluster_size" {
-  value = "${module.vault_cluster.cluster_size}"
+  value = "${aws_autoscaling_group.vault_cluster.desired_capacity}"
 }
 
 output "vault_iam_role_id" {
-  value = "${module.vault_cluster.iam_role_id}"
+  value = "${aws_iam_role.vault_cluster.id}"
 }
 
 output "vault_iam_role_arn" {
-  value = "${module.vault_cluster.iam_role_arn}"
+  value = "${aws_iam_role.vault_cluster.arn}"
 }
 
 output "vault_security_group_id" {
-  value = "${module.vault_cluster.security_group_id}"
+  value = "${aws_security_group.vault_cluster.id}"
 }
 
 output "vault_launch_config_name" {
-  value = "${module.vault_cluster.launch_config_name}"
+  value = "${aws_launch_configuration.vault_cluster.name}"
 }
 
 output "vault_cluster_tag_key" {
-  value = "${module.vault_cluster.cluster_tag_key}"
+  value = "Name"
 }
 
 output "vault_cluster_tag_value" {
-  value = "${module.vault_cluster.cluster_tag_value}"
+  value = "${data.template_file.vault_cluster_name.rendered}"
 }
 
 output "consul_asg_name" {

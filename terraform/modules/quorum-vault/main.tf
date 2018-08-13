@@ -37,7 +37,7 @@ resource "aws_kms_grant" "vault_unseal" {
   count = "${var.vault_enterprise_license_key == "" ? 0 : 1}"
 
   key_id            = "${aws_kms_key.vault_unseal.key_id}"
-  grantee_principal = "${module.vault_cluster.iam_role_arn}"
+  grantee_principal = "${aws_iam_role.vault_cluster.arn}"
 
   operations = [ "Encrypt", "Decrypt", "DescribeKey" ]
 }
@@ -79,20 +79,13 @@ resource "aws_subnet" "vault" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# S3 BUCKET FOR VAULT BACKEND
-# ---------------------------------------------------------------------------------------------------------------------
-resource "aws_s3_bucket" "quorum_vault" {
-  bucket_prefix = "quorum-vault-network-${var.network_id}-"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
 # LOAD BALANCER FOR VAULT
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_lb" "quorum_vault" {
   internal = false
 
   subnets         = ["${aws_subnet.vault.*.id}"]
-  security_groups = ["${module.vault_cluster.security_group_id}"]
+  security_groups = ["${aws_security_group.vault_cluster.id}"]
 }
 
 resource "aws_lb_target_group" "quorum_vault" {
@@ -129,95 +122,6 @@ data "aws_ami" "vault_consul" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# DEPLOY THE VAULT SERVER CLUSTER
-# ---------------------------------------------------------------------------------------------------------------------
-
-module "vault_cluster" {
-  source = "github.com/hashicorp/terraform-aws-vault.git//modules/vault-cluster?ref=v0.0.8"
-
-  cluster_name  = "quorum-vault-network-${var.network_id}"
-  cluster_size  = "${var.vault_cluster_size}"
-  instance_type = "${var.vault_instance_type}"
-
-  ami_id    = "${var.vault_consul_ami == "" ? data.aws_ami.vault_consul.id : var.vault_consul_ami}"
-  user_data = "${data.template_file.user_data_vault_cluster.rendered}"
-
-  s3_bucket_name          = "${aws_s3_bucket.quorum_vault.id}"
-  force_destroy_s3_bucket = "${var.force_destroy_s3_bucket}"
-
-  vpc_id     = "${aws_vpc.vault.id}"
-  subnet_ids = "${aws_subnet.vault.*.id}"
-
-  tenancy = "${var.use_dedicated_vault_servers ? "dedicated" : "default"}"
-
-  target_group_arns = ["${aws_lb_target_group.quorum_vault.arn}"]
-
-  allowed_ssh_cidr_blocks            = []
-  allowed_inbound_cidr_blocks        = ["0.0.0.0/0"]
-  allowed_inbound_security_group_ids = []
-  ssh_key_name                       = "${aws_key_pair.auth.id}"
-
-  cluster_extra_tags = [
-    {
-      key                 = "Role"
-      value               = "Vault"
-      propagate_at_launch = true
-    },{
-      key                 = "NetworkId"
-      value               = "${var.network_id}"
-      propagate_at_launch = true
-    },{
-      key                 = "Region"
-      value               = "${var.aws_region}"
-      propagate_at_launch = true
-    },
-  ]
-}
-
-# TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released, consider inputting list directly to module
-resource "aws_security_group_rule" "vault_ssh" {
-  count = "${length(var.ssh_ips) > 0 ? length(var.ssh_ips) : 1}"
-
-  security_group_id = "${module.vault_cluster.security_group_id}"
-  type              = "ingress"
-
-  from_port = 22
-  to_port   = 22
-  protocol  = "tcp"
-
-  cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(concat(var.ssh_ips, list("")), count.index))}"]
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ALLOW VAULT CLUSTER TO USE AWS AUTH
-# ---------------------------------------------------------------------------------------------------------------------
-resource "aws_iam_policy" "allow_aws_auth" {
-  name        = "allow_aws_auth_network_${var.network_id}"
-  description = "Allow authentication to vault by AWS mechanisms"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [{
-    "Effect": "Allow",
-    "Action": [
-      "ec2:DescribeInstances",
-      "iam:GetInstanceProfile",
-      "iam:GetUser",
-      "iam:GetRole"
-    ],
-    "Resource": "*"
-  }]
-}
-EOF
-}
-
-resource "aws_iam_role_policy_attachment" "allow_aws_auth" {
-  role       = "${module.vault_cluster.iam_role_id}"
-  policy_arn = "${aws_iam_policy.allow_aws_auth.arn}"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
 # ATTACH IAM POLICIES FOR CONSUL
 # To allow our Vault servers to automatically discover the Consul servers, we need to give them the IAM permissions from
 # the Consul AWS Module's consul-iam-policies module.
@@ -226,7 +130,7 @@ resource "aws_iam_role_policy_attachment" "allow_aws_auth" {
 module "consul_iam_policies_servers" {
   source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.1.0"
 
-  iam_role_id = "${module.vault_cluster.iam_role_id}"
+  iam_role_id = "${aws_iam_role.vault_cluster.id}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -239,7 +143,7 @@ data "template_file" "user_data_vault_cluster" {
 
   vars {
     aws_region                   = "${var.aws_region}"
-    s3_bucket_name               = "${aws_s3_bucket.quorum_vault.id}"
+    s3_bucket_name               = "${aws_s3_bucket.vault_storage.id}"
     consul_cluster_tag_key       = "${module.consul_cluster.cluster_tag_key}"
     consul_cluster_tag_value     = "${module.consul_cluster.cluster_tag_value}"
     network_id                   = "${var.network_id}"
@@ -427,6 +331,6 @@ data "template_file" "user_data_consul" {
 data "aws_instances" "vault_servers" {
   filter {
     name   = "tag:aws:autoscaling:groupName"
-    values = ["${module.vault_cluster.asg_name}"]
+    values = ["${aws_autoscaling_group.vault_cluster.name}"]
   }
 }
