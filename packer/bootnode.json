@@ -5,10 +5,6 @@
     "extra_regions": "us-east-2,us-west-1,us-west-2,eu-central-1,eu-west-1,eu-west-2,ap-south-1,ap-northeast-1,ap-northeast-2,ap-southeast-1,ap-southeast-2,ca-central-1,sa-east-1",
     "ami_groups": "all",
     "encrypted": "false",
-    "vault_version": "0.9.0",
-    "consul_version": "1.0.1",
-    "consul_module_version": "v0.1.0",
-    "terraform_aws_vault_module_version": "master",
     "ca_public_key_path": "certs/ca-cert.pub",
     "tls_public_key_path": "certs/cert.pub"
   },
@@ -45,18 +41,32 @@
     "script": "provisioning-scripts/build-deps.sh",
     "pause_before": "30s"
   },{
+    "type": "file",
+    "source": "configs/supervisord.conf",
+    "destination": "/tmp/supervisord.conf"
+  },{
+    "type": "file",
+    "source": "instance-scripts/run-vault",
+    "destination": "/tmp/run-vault"
+  },{
+    "type": "file",
+    "source": "instance-scripts/run-consul",
+    "destination": "/tmp/run-consul"
+  },{
     "type": "shell",
-    "inline": [
-      "git clone --branch {{user `terraform_aws_vault_module_version`}} https://github.com/eximchain/terraform-aws-vault.git /tmp/terraform-aws-vault",
-      "/tmp/terraform-aws-vault/modules/install-vault/install-vault --version {{user `vault_version`}}",
-      "sudo cp /tmp/terraform-aws-vault/modules/update-certificate-store/update-certificate-store /opt/vault/bin/"
+    "scripts": [
+      "provisioning-scripts/install-vault",
+      "provisioning-scripts/install-consul",
+      "provisioning-scripts/install-dnsmasq"
     ]
+  },{
+    "type": "file",
+    "source": "instance-scripts/update-certificate-store",
+    "destination": "/tmp/update-certificate-store"
   },{
     "type": "shell",
     "inline": [
-      "git clone --branch {{user `consul_module_version`}} https://github.com/hashicorp/terraform-aws-consul.git /tmp/terraform-aws-consul",
-      "/tmp/terraform-aws-consul/modules/install-consul/install-consul --version {{user `consul_version`}}",
-      "/tmp/terraform-aws-consul/modules/install-dnsmasq/install-dnsmasq"
+      "sudo mv /tmp/update-certificate-store /opt/vault/bin/"
     ]
   },{
     "type": "shell",
@@ -119,10 +129,6 @@
     "destination": "/tmp/ntp.conf"
   },{
     "type": "file",
-    "source": "configs/supervisord.conf",
-    "destination": "/tmp/supervisord.conf"
-  },{
-    "type": "file",
     "source": "data/regions.txt",
     "destination": "/tmp/regions.txt"
   },{
@@ -132,8 +138,7 @@
       "sudo mv /tmp/bootnode-supervisor.conf /opt/quorum/private/",
       "sudo mv /tmp/regions.txt /opt/quorum/info/",
       "sudo mv /tmp/constellation.conf /opt/quorum/constellation/config.conf",
-      "sudo mv /tmp/ntp.conf /etc/ntp.conf",
-      "sudo mv /tmp/supervisord.conf /etc/supervisor/supervisord.conf"
+      "sudo mv /tmp/ntp.conf /etc/ntp.conf"
     ]
   },{
     "type": "shell",
