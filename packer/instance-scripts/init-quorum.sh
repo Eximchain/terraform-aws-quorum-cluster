@@ -63,7 +63,7 @@ stdout_logfile=/opt/quorum/log/quorum-stdout.log
 stderr_logfile=/opt/quorum/log/quorum-error.log
 numprocs=1
 autostart=true
-autorestart=false
+autorestart=unexpected
 stopsignal=INT
 user=ubuntu" | sudo tee /etc/supervisor/conf.d/quorum-supervisor.conf
 }
