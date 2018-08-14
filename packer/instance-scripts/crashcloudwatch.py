@@ -58,6 +58,7 @@ import os
 import sys
 import boto3
 
+from datetime import datetime
 from supervisor import childutils
 
 
@@ -92,6 +93,7 @@ class CrashCloudWatch:
         self.client = boto3.client('cloudwatch', region_name=read_primary_region())
 
     def runforever(self, test=False):
+        YMDHMS = "%Y-%m-%d_%H:%M:%S"
         while 1:
             # we explicitly use self.stdin, self.stdout, and self.stderr
             # instead of sys.* so we can unit test this code
@@ -102,7 +104,7 @@ class CrashCloudWatch:
                 # do nothing with non-TICK events
                 childutils.listener.ok(self.stdout)
                 if test:
-                    self.stderr.write('non-exited event\n')
+                    self.stderr.write(datetime.now().strftime(YMDHMS) + ' non-exited event\n')
                     self.stderr.flush()
                     break
                 continue
@@ -112,12 +114,12 @@ class CrashCloudWatch:
             if int(pheaders['expected']):
                 childutils.listener.ok(self.stdout)
                 if test:
-                    self.stderr.write('expected exit\n')
+                    self.stderr.write(datetime.now().strftime(YMDHMS) + ' expected exit\n')
                     self.stderr.flush()
                     break
                 continue
 
-            self.stderr.write('unexpected exit, emitting cloudwatch metric\n')
+            self.stderr.write(datetime.now().strftime(YMDHMS) + ' unexpected exit, emitting cloudwatch metric\n')
             self.stderr.flush()
 
             self.emit_metric(self.metric)
