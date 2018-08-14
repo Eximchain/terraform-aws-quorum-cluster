@@ -90,13 +90,6 @@ function two_way_symlink() {
 
 }
 
-function install_dependencies {
-  log_info "Installing dependencies"
-
-  sudo apt-get update -y
-  sudo apt-get install -y awscli curl unzip jq
-}
-
 function user_exists {
   local readonly username="$1"
   id "$username" >/dev/null 2>&1
@@ -219,7 +212,6 @@ function install {
 
   log_info "Starting Vault install"
 
-  install_dependencies
   create_vault_user "$user"
   create_vault_install_paths "$path" "$user"
   install_binaries "$version" "$path" "$user" "$url"

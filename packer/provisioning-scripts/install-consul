@@ -69,13 +69,6 @@ function assert_not_empty {
   fi
 }
 
-function install_dependencies {
-  log_info "Installing dependencies"
-
-  sudo apt-get update -y
-  sudo apt-get install -y awscli curl unzip jq
-}
-
 function user_exists {
   local readonly username="$1"
   id "$username" >/dev/null 2>&1
@@ -182,7 +175,6 @@ function install {
 
   log_info "Starting Consul install"
 
-  install_dependencies
   create_consul_user "$user"
   create_consul_install_paths "$path" "$user"
   install_binaries "$version" "$path" "$user"
