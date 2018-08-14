@@ -20,8 +20,8 @@ function complete_constellation_config {
 
     local REGIONS=$(cat /opt/quorum/info/regions.txt)
 
-    DIR=$(dirname "${CONSTELLATION_CONFIG_PATH}")
-    FLAGFILE="$DIR/constellation.done"
+    local DIR=$(dirname "${CONSTELLATION_CONFIG_PATH}")
+    local FLAGFILE="$DIR/constellation.done"
 
     if [ ! -f $FLAGFILE ]
     then
