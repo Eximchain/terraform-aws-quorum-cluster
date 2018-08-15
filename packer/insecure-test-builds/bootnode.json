@@ -56,6 +56,7 @@
     "type": "shell",
     "scripts": [
       "../provisioning-scripts/supervisor.sh",
+      "../provisioning-scripts/foxpass-setup-script.sh",
       "../provisioning-scripts/install-vault",
       "../provisioning-scripts/install-consul",
       "../provisioning-scripts/install-dnsmasq"

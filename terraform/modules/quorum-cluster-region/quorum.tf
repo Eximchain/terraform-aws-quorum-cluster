@@ -194,6 +194,11 @@ data "template_file" "user_data_quorum_maker" {
     constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
 
     threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+    foxpass_base_dn   = "${var.foxpass_base_dn}"
+    foxpass_bind_user = "${var.foxpass_bind_user}"
+    foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+    foxpass_api_key   = "${var.foxpass_api_key}"
   }
 }
 
@@ -235,6 +240,11 @@ data "template_file" "user_data_quorum_validator" {
     constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
 
     threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+    foxpass_base_dn   = "${var.foxpass_base_dn}"
+    foxpass_bind_user = "${var.foxpass_bind_user}"
+    foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+    foxpass_api_key   = "${var.foxpass_api_key}"
   }
 }
 
@@ -276,6 +286,11 @@ data "template_file" "user_data_quorum_observer" {
     constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
 
     threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+    foxpass_base_dn   = "${var.foxpass_base_dn}"
+    foxpass_bind_user = "${var.foxpass_bind_user}"
+    foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+    foxpass_api_key   = "${var.foxpass_api_key}"
   }
 }
 

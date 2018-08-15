@@ -161,6 +161,26 @@ variable "threatstack_deploy_key" {
   default     = ""
 }
 
+variable "foxpass_base_dn" {
+  description = "The Base DN for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_bind_user" {
+  description = "The bind user name for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_bind_pw" {
+  description = "The bind user password for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_api_key" {
+  description = "The API key for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
 variable "bootnode_counts" {
   description = "A mapping from region to the number of bootnodes to launch in that region"
   type        = "map"

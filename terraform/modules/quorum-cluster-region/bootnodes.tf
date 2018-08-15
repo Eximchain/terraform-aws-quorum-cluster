@@ -149,6 +149,11 @@ data "template_file" "user_data_bootnode" {
     vault_cert_bucket = "${var.vault_cert_bucket_name}"
 
     threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+    foxpass_base_dn   = "${var.foxpass_base_dn}"
+    foxpass_bind_user = "${var.foxpass_bind_user}"
+    foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+    foxpass_api_key   = "${var.foxpass_api_key}"
   }
 }
 

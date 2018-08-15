@@ -73,6 +73,11 @@ module "quorum_vault" {
 
   threatstack_deploy_key       = "${var.threatstack_deploy_key}"
   vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -122,6 +127,11 @@ module "quorum_cluster_us_east_1" {
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "us-east-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "us-east-1", "")}"
@@ -180,6 +190,11 @@ module "quorum_cluster_us_east_2" {
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
 
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
+
   quorum_ami   = "${lookup(var.quorum_amis, "us-east-2", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "us-east-2", "")}"
 
@@ -236,6 +251,11 @@ module "quorum_cluster_us_west_1" {
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "us-west-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "us-west-1", "")}"
@@ -294,6 +314,11 @@ module "quorum_cluster_us_west_2" {
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
 
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
+
   quorum_ami   = "${lookup(var.quorum_amis, "us-west-2", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "us-west-2", "")}"
 
@@ -350,6 +375,11 @@ module "quorum_cluster_eu_central_1" {
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "eu-central-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "eu-central-1", "")}"
@@ -408,6 +438,11 @@ module "quorum_cluster_eu_west_1" {
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
 
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
+
   quorum_ami   = "${lookup(var.quorum_amis, "eu-west-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "eu-west-1", "")}"
 
@@ -464,6 +499,11 @@ module "quorum_cluster_eu_west_2" {
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "eu-west-2", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "eu-west-2", "")}"
@@ -522,6 +562,11 @@ module "quorum_cluster_ap_south_1" {
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
 
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
+
   quorum_ami   = "${lookup(var.quorum_amis, "ap-south-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ap-south-1", "")}"
 
@@ -578,6 +623,11 @@ module "quorum_cluster_ap_northeast_1" {
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "ap-northeast-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ap-northeast-1", "")}"
@@ -636,6 +686,11 @@ module "quorum_cluster_ap_northeast_2" {
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
 
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
+
   quorum_ami   = "${lookup(var.quorum_amis, "ap-northeast-2", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ap-northeast-2", "")}"
 
@@ -692,6 +747,11 @@ module "quorum_cluster_ap_southeast_1" {
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "ap-southeast-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ap-southeast-1", "")}"
@@ -750,6 +810,11 @@ module "quorum_cluster_ap_southeast_2" {
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
 
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
+
   quorum_ami   = "${lookup(var.quorum_amis, "ap-southeast-2", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ap-southeast-2", "")}"
 
@@ -807,6 +872,11 @@ module "quorum_cluster_ca_central_1" {
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
 
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
+
   quorum_ami   = "${lookup(var.quorum_amis, "ca-central-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ca-central-1", "")}"
 
@@ -863,6 +933,11 @@ module "quorum_cluster_sa_east_1" {
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "sa-east-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "sa-east-1", "")}"
