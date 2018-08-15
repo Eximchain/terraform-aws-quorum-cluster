@@ -59,7 +59,7 @@ EOF
 
 # Give permission to run the script
 sudo chown ubuntu $OUTPUT_FILE
-sudo chmod 744 $OUTPUT_FILE
+sudo chmod 777 $OUTPUT_FILE
 
 # Ensure $POLICY_FILE exists, make it runnable
 cat << EOF > $POLICY_FILE
