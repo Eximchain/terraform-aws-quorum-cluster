@@ -67,7 +67,8 @@
   },{
     "type": "shell",
     "inline": [
-      "sudo mv /tmp/update-certificate-store /opt/vault/bin/"
+      "sudo mv /tmp/update-certificate-store /opt/vault/bin/",
+      "sudo chmod +x /opt/vault/bin/update-certificate-store"
     ]
   },{
     "type": "shell",
