@@ -59,6 +59,8 @@ readonly VAULT_TLS_KEY_FILE="$VAULT_TLS_CERT_DIR/vault.key.pem"
 # Start Supervisor
 supervisord -c /etc/supervisor/supervisord.conf
 
+setup_foxpass_if_specified
+
 # The variables below are filled in via Terraform interpolation
 /opt/vault/bin/generate-setup-vault.sh ${network_id} "${vault_enterprise_license_key}"
 
@@ -75,8 +77,6 @@ populate_counts
 sudo chown vault:vault $VAULT_TLS_CERT_DIR/*
 sudo chmod 600 $VAULT_TLS_CERT_DIR/*
 sudo /opt/vault/bin/update-certificate-store --cert-file-path $CA_TLS_CERT_FILE
-
-setup_foxpass_if_specified
 
 configure_threatstack_agent_if_key_provided
 run_threatstack_agent_if_configured

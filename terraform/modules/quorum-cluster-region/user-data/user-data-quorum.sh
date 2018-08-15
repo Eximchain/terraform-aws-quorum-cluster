@@ -113,6 +113,8 @@ exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 # Start Supervisor
 supervisord -c /etc/supervisor/supervisord.conf
 
+setup_foxpass_if_specified
+
 sudo apt-get -y update
 sudo ntpd
 
@@ -122,8 +124,6 @@ populate_data_files
 
 # These variables are passed in via Terraform template interpolation
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
-
-setup_foxpass_if_specified
 
 configure_threatstack_agent_if_key_provided
 run_threatstack_agent_if_configured
