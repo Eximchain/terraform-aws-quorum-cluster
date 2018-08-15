@@ -47,6 +47,16 @@ function configure_threatstack_agent_if_key_provided {
   fi
 }
 
+function run_threatstack_agent_if_configured {
+  if [ -e /opt/threatstack/config.json ]
+  then
+    echo "Threatstack agent configuration found. Starting Agent."
+    sudo cloudsight setup --config="/opt/threatstack/config.json"
+  else
+    echo "No Threatstack agent configuration found."
+  fi
+}
+
 function populate_data_files {
   echo "${index}" | sudo tee /opt/quorum/info/index.txt
   echo "${bootnode_count_json}" | sudo tee /opt/quorum/info/bootnode-counts.json
@@ -75,6 +85,7 @@ populate_data_files
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
 
 configure_threatstack_agent_if_key_provided
+run_threatstack_agent_if_configured
 
 /opt/quorum/bin/generate-run-init-bootnode ${vault_dns} ${vault_port}
 /opt/quorum/bin/run-init-bootnode
