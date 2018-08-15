@@ -35,6 +35,9 @@ function setup_foxpass_if_specified {
   then
     echo "Foxpass variables specified. Running foxpass_setup.py."
     sudo python3 /opt/foxpass_setup.py --base-dn ${foxpass_base_dn} --bind-user ${foxpass_bind_user} --bind-pw ${foxpass_bind_pw} --api-key ${foxpass_api_key}
+    echo "Disabling login by default user"
+    printf "\n# Disable default user login\nDenyUsers ubuntu\n" | sudo tee -a /etc/ssh/sshd_config
+    sudo systemctl restart sshd
   else
     echo "Foxpass variables not specified."
   fi
