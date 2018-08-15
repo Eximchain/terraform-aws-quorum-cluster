@@ -76,6 +76,7 @@
       "sudo mv /tmp/update-certificate-store /opt/vault/bin/",
       "sudo mv /tmp/base-read.hcl /opt/vault/config/policies/",
       "sudo chown vault:vault /opt/vault/config/policies/*",
+      "sudo chmod +x /opt/vault/bin/update-certificate-store",
       "sudo chmod 644 /opt/vault/config/policies/*"
     ]
   },{
