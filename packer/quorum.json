@@ -144,7 +144,7 @@
       "sudo mv /tmp/crashcloudwatch.py /opt/quorum/bin/",
       "sudo mv /tmp/private-transaction-test-sender.sh /opt/quorum/bin/",
       "sudo mv /tmp/private-transaction-test-recipient.sh /opt/quorum/bin/",
-      "sudo chmod 744 /opt/quorum/bin/*"
+      "sudo chmod 777 /opt/quorum/bin/*"
     ]
   },{
     "type": "file",
