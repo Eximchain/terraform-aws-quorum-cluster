@@ -70,56 +70,86 @@ def read_data_file(filename):
     with open(filename, 'r') as f:
         return f.readline().strip()
 
-def read_region():
-    return read_data_file("/opt/quorum/info/aws-region.txt")
-
-def read_primary_region():
-    return read_data_file("/opt/quorum/info/primary-region.txt")
-
-def read_network_id():
-    return read_data_file("/opt/quorum/info/network-id.txt")
+def now():
+    YMDHMS = "%Y-%m-%d_%H:%M:%S,%f"
+    return datetime.now().strftime(YMDHMS)
 
 class CrashCloudWatch:
+    BASEDIR = "/opt/quorum/info/"
+
+    def read_region(self):
+        return read_data_file(self.BASEDIR + "aws-region.txt")
+
+    def read_primary_region(self):
+        return read_data_file(self.BASEDIR + "primary-region.txt")
+
+    def read_network_id(self):
+        return read_data_file(self.BASEDIR + "network-id.txt")
+
+    # moved data setup out of __init__ so that BASEDIR and stdin/stdout/stderr can be changed, for unit testing purposes.
+    def init(self):
+        self.region = self.read_region()
+        self.network_id = self.read_network_id()
+        self.client = boto3.client('cloudwatch', region_name=self.read_primary_region())
 
     def __init__(self, programs, any, metric):
         self.programs = programs
         self.any = any
         self.metric = metric
-        self.region = read_region()
-        self.network_id = read_network_id()
-        self.stdin = sys.stdin
-        self.stdout = sys.stdout
-        self.stderr = sys.stderr
-        self.client = boto3.client('cloudwatch', region_name=read_primary_region())
+
+        self.change_inouterr(sys.stdin, sys.stdout, sys.stderr)
+
+    def change_basedir(self, newDir):
+        self.BASEDIR = newDir
+
+    def change_inouterr(self, stdin, stdout, stderr):
+        self.stdin = stdin
+        self.stdout = stdout
+        self.stderr = stderr
+
+    def dump(self, header, data):
+        self.stderr.write("{}\n".format(header))
+        for k, v in data.items():
+            self.stderr.write("{} {}: {}\n".format(now(), k, v))
+        self.stderr.flush()
 
     def runforever(self, test=False):
-        YMDHMS = "%Y-%m-%d_%H:%M:%S"
         while 1:
             # we explicitly use self.stdin, self.stdout, and self.stderr
             # instead of sys.* so we can unit test this code
             headers, payload = childutils.listener.wait(
                 self.stdin, self.stdout)
 
+            # add the program name into the event data for dumping below
+            pheaders, pdata = childutils.eventdata('program:'+self.programs[0]+' '+payload+'\n')
+
+            # match the specified program name we're watching for.
+            # skip if it doesn't match
+            if pheaders['processname'] != self.programs[0]:
+               continue
+
+            # dump complete payload data for diagnostics purposes
+            self.dump("pheaders", pheaders)
+            self.dump("headers", headers)
+
             if not headers['eventname'] == 'PROCESS_STATE_EXITED':
                 # do nothing with non-TICK events
                 childutils.listener.ok(self.stdout)
                 if test:
-                    self.stderr.write(datetime.now().strftime(YMDHMS) + ' non-exited event\n')
+                    self.stderr.write(now()+ ' non-exited event\n')
                     self.stderr.flush()
                     break
                 continue
-
-            pheaders, pdata = childutils.eventdata(payload+'\n')
 
             if int(pheaders['expected']):
                 childutils.listener.ok(self.stdout)
                 if test:
-                    self.stderr.write(datetime.now().strftime(YMDHMS) + ' expected exit\n')
+                    self.stderr.write(now() + ' expected exit\n')
                     self.stderr.flush()
                     break
                 continue
 
-            self.stderr.write(datetime.now().strftime(YMDHMS) + ' unexpected exit, emitting cloudwatch metric\n')
+            self.stderr.write(now() + ' unexpected exit, emitting cloudwatch metric\n')
             self.stderr.flush()
 
             self.emit_metric(self.metric)
@@ -178,7 +208,12 @@ def main(argv=sys.argv):
         sys.stderr.flush()
         return
 
+    if len(programs) != 1:
+        sys.stderr.write('required program to be set\n')
+        return
+
     prog = CrashCloudWatch(programs, any, metric)
+    prog.init()
     prog.runforever()
 
 
