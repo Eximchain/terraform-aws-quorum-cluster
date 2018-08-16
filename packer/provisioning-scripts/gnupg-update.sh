@@ -78,7 +78,7 @@ function install_npth {
 }
 
 function install_ncurses {
-  wget -c ftp://ftp.gnu.org/gnu/ncurses/$NCURSES.tar.gz
+  wget -c http://ftpmirror.gnu.org/gnu/ncurses/$NCURSES.tar.gz
   tar -xzf $NCURSES.tar.gz
   cd $NCURSES
   ./configure

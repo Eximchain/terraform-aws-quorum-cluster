@@ -30,6 +30,21 @@ function run_threatstack_agent_if_configured {
   fi
 }
 
+function setup_foxpass_if_specified {
+  if [ "${foxpass_base_dn}" != "" ] && [ "${foxpass_bind_user}" != "" ] && [ "${foxpass_bind_pw}" != "" ] && [ "${foxpass_api_key}" != "" ]
+  then
+    echo "Foxpass variables specified. Running foxpass_setup.py."
+    sudo python3 /opt/foxpass_setup.py --base-dn ${foxpass_base_dn} --bind-user ${foxpass_bind_user} --bind-pw ${foxpass_bind_pw} --api-key ${foxpass_api_key}
+  else
+    echo "Foxpass variables not specified."
+  fi
+}
+
+# Start Supervisor
+supervisord -c /etc/supervisor/supervisord.conf
+
+setup_foxpass_if_specified
+
 configure_threatstack_agent_if_key_provided
 run_threatstack_agent_if_configured
 

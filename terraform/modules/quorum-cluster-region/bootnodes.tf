@@ -8,6 +8,12 @@ resource "aws_vpc" "bootnodes" {
   enable_dns_hostnames = true
 }
 
+resource "aws_default_security_group" "bootnodes" {
+  count = "${aws_vpc.bootnodes.count}"
+
+  vpc_id = "${aws_vpc.bootnodes.id}"
+}
+
 resource "aws_internet_gateway" "bootnodes" {
   count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
 
@@ -45,7 +51,7 @@ resource "aws_launch_configuration" "bootnodes" {
 
   key_name = "${aws_key_pair.auth.id}"
 
-  iam_instance_profile = "${aws_iam_instance_profile.bootnode.name}"
+  iam_instance_profile = "${element(aws_iam_instance_profile.bootnode.*.name, count.index)}"
   security_groups = ["${aws_security_group.bootnode.id}"]
 
   placement_tenancy = "${var.use_dedicated_bootnodes ? "dedicated" : "default"}"
@@ -69,6 +75,26 @@ resource "aws_autoscaling_group" "bootnodes" {
   health_check_type = "ELB"
 
   vpc_zone_identifier = ["${element(aws_subnet.bootnodes.*.id, count.index)}"]
+
+  tags = [
+    {
+      key                 = "Role"
+      value               = "Bootnode"
+      propagate_at_launch = true
+    },{
+      key                 = "RoleIndex"
+      value               = "${count.index}"
+      propagate_at_launch = true
+    },{
+      key                 = "NetworkId"
+      value               = "${var.network_id}"
+      propagate_at_launch = true
+    },{
+      key                 = "Region"
+      value               = "${var.aws_region}"
+      propagate_at_launch = true
+    },
+  ]
 }
 
 resource "aws_eip" "bootnodes" {
@@ -123,6 +149,11 @@ data "template_file" "user_data_bootnode" {
     vault_cert_bucket = "${var.vault_cert_bucket_name}"
 
     threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+    foxpass_base_dn   = "${var.foxpass_base_dn}"
+    foxpass_bind_user = "${var.foxpass_bind_user}"
+    foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+    foxpass_api_key   = "${var.foxpass_api_key}"
   }
 }
 
@@ -147,8 +178,9 @@ resource "aws_security_group" "bootnode" {
   vpc_id      = "${aws_vpc.bootnodes.id}"
 }
 
+# TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released
 resource "aws_security_group_rule" "bootnode_ssh" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0) == 0 ? 0 : length(var.ssh_ips) > 0 ? length(var.ssh_ips) : 1}"
 
   security_group_id = "${aws_security_group.bootnode.id}"
   type              = "ingress"
@@ -157,7 +189,7 @@ resource "aws_security_group_rule" "bootnode_ssh" {
   to_port   = 22
   protocol  = "tcp"
 
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(concat(var.ssh_ips, list("")), count.index))}"]
 }
 
 resource "aws_security_group_rule" "bootnode_constellation" {
@@ -242,9 +274,9 @@ resource "aws_security_group_rule" "bootnode_egress" {
 # BOOTNODE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "bootnode" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
-  name = "bootnode-${var.aws_region}-network-${var.network_id}"
+  name = "quorum-${var.aws_region}-network-${var.network_id}-bootnodes-${count.index}"
 
   assume_role_policy = <<EOF
 {
@@ -265,15 +297,15 @@ EOF
 # BOOTNODE IAM POLICY ATTACHMENT AND INSTANCE PROFILE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy_attachment" "bootnode" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
-  role       = "${aws_iam_role.bootnode.name}"
+  role       = "${element(aws_iam_role.bootnode.*.name, count.index)}"
   policy_arn = "${aws_iam_policy.quorum.arn}"
 }
 
 resource "aws_iam_instance_profile" "bootnode" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
-  name = "bootnode-${var.aws_region}-network-${var.network_id}"
-  role = "${aws_iam_role.bootnode.name}"
+  name = "${element(aws_iam_role.bootnode.*.name, count.index)}"
+  role = "${element(aws_iam_role.bootnode.*.name, count.index)}"
 }

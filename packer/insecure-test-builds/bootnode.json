@@ -3,7 +3,7 @@
   "variables": {
     "aws_region": "us-east-1",
     "extra_regions": "us-east-2,us-west-1,us-west-2,eu-central-1,eu-west-1,eu-west-2,ap-south-1,ap-northeast-1,ap-northeast-2,ap-southeast-1,ap-southeast-2,ca-central-1,sa-east-1",
-    "ami_groups": "all",
+    "ami_groups": "",
     "encrypted": "false",
     "ca_public_key_path": "certs/ca-cert.pub",
     "tls_public_key_path": "certs/cert.pub"
@@ -38,32 +38,32 @@
   }],
   "provisioners": [{
     "type": "shell",
-    "script": "provisioning-scripts/build-deps.sh",
+    "script": "../provisioning-scripts/build-deps.sh",
     "pause_before": "30s"
   },{
     "type": "file",
-    "source": "configs/supervisord.conf",
+    "source": "../configs/supervisord.conf",
     "destination": "/tmp/supervisord.conf"
   },{
     "type": "file",
-    "source": "instance-scripts/run-vault",
+    "source": "../instance-scripts/run-vault",
     "destination": "/tmp/run-vault"
   },{
     "type": "file",
-    "source": "instance-scripts/run-consul",
+    "source": "../instance-scripts/run-consul",
     "destination": "/tmp/run-consul"
   },{
     "type": "shell",
     "scripts": [
-      "provisioning-scripts/supervisor.sh",
-      "provisioning-scripts/foxpass-setup-script.sh",
-      "provisioning-scripts/install-vault",
-      "provisioning-scripts/install-consul",
-      "provisioning-scripts/install-dnsmasq"
+      "../provisioning-scripts/supervisor.sh",
+      "../provisioning-scripts/foxpass-setup-script.sh",
+      "../provisioning-scripts/install-vault",
+      "../provisioning-scripts/install-consul",
+      "../provisioning-scripts/install-dnsmasq"
     ]
   },{
     "type": "file",
-    "source": "instance-scripts/update-certificate-store",
+    "source": "../instance-scripts/update-certificate-store",
     "destination": "/tmp/update-certificate-store"
   },{
     "type": "shell",
@@ -74,35 +74,29 @@
   },{
     "type": "shell",
     "scripts": [
-      "provisioning-scripts/binutils-update.sh",
-      "provisioning-scripts/constellation.sh",
-      "provisioning-scripts/golang.sh",
-      "provisioning-scripts/quorum.sh",
-      "provisioning-scripts/quorum-setup.sh",
-      "provisioning-scripts/porosity.sh",
-      "provisioning-scripts/quorum-genesis.sh",
-      "provisioning-scripts/rsync-update.sh",
-      "provisioning-scripts/git-update.sh",
-      "provisioning-scripts/gnupg-update.sh",
-      "provisioning-scripts/fcron-update.sh",
-      "provisioning-scripts/systemd-update.sh",
-      "provisioning-scripts/threatstack.sh"
+      "../provisioning-scripts/constellation.sh",
+      "../provisioning-scripts/golang.sh",
+      "../provisioning-scripts/quorum.sh",
+      "../provisioning-scripts/quorum-setup.sh",
+      "../provisioning-scripts/porosity.sh",
+      "../provisioning-scripts/quorum-genesis.sh",
+      "../provisioning-scripts/threatstack.sh"
     ]
   },{
     "type": "file",
-    "source": "instance-scripts/generate-run-init-bootnode",
+    "source": "../instance-scripts/generate-run-init-bootnode",
     "destination": "/tmp/generate-run-init-bootnode"
   },{
     "type": "file",
-    "source": "instance-scripts/init-bootnode.sh",
+    "source": "../instance-scripts/init-bootnode.sh",
     "destination": "/tmp/init-bootnode.sh"
   },{
     "type": "file",
-    "source": "instance-scripts/generate-quorum-config.py",
+    "source": "../instance-scripts/generate-quorum-config.py",
     "destination": "/tmp/generate-quorum-config.py"
   },{
     "type": "file",
-    "source": "instance-scripts/fill-node-counts.py",
+    "source": "../instance-scripts/fill-node-counts.py",
     "destination": "/tmp/fill-node-counts.py"
   },{
     "type": "shell",
@@ -115,23 +109,23 @@
     ]
   },{
     "type": "file",
-    "source": "configs/bootnode-supervisor.conf",
+    "source": "../configs/bootnode-supervisor.conf",
     "destination": "/tmp/bootnode-supervisor.conf"
   },{
     "type": "file",
-    "source": "configs/constellation-supervisor.conf",
+    "source": "../configs/constellation-supervisor.conf",
     "destination": "/tmp/constellation-supervisor.conf"
   },{
     "type": "file",
-    "source": "configs/constellation.conf",
+    "source": "../configs/constellation.conf",
     "destination": "/tmp/constellation.conf"
   },{
     "type": "file",
-    "source": "configs/ntp.conf",
+    "source": "../configs/ntp.conf",
     "destination": "/tmp/ntp.conf"
   },{
     "type": "file",
-    "source": "data/regions.txt",
+    "source": "../data/regions.txt",
     "destination": "/tmp/regions.txt"
   },{
     "type": "shell",
@@ -145,13 +139,13 @@
   },{
     "type": "shell",
     "scripts": [
-      "provisioning-scripts/init-zero-counts.sh",
-      "provisioning-scripts/cleanup.sh"
+      "../provisioning-scripts/init-zero-counts.sh",
+      "../provisioning-scripts/cleanup.sh"
     ]
   }],
   "post-processors": [{
     "type": "manifest",
-    "output": "manifests/bootnode.json",
+    "output": "../manifests/bootnode.json",
     "strip_path": true
   }]
 }

@@ -95,6 +95,6 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "vault_cert_access" {
-  role       = "${module.vault_cluster.iam_role_id}"
+  role       = "${aws_iam_role.vault_cluster.id}"
   policy_arn = "${aws_iam_policy.vault_cert_access.arn}"
 }

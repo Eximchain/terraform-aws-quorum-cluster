@@ -3,7 +3,7 @@
   "variables": {
     "aws_region": "us-east-1",
     "extra_regions": "",
-    "ami_groups": "all",
+    "ami_groups": "",
     "encrypted": "false",
     "ca_public_key_path": "certs/ca-cert.pub",
     "tls_public_key_path": "certs/cert.pub",
@@ -39,36 +39,36 @@
   }],
   "provisioners": [{
     "type": "shell",
-    "script": "provisioning-scripts/build-deps.sh",
+    "script": "../provisioning-scripts/build-deps.sh",
     "pause_before": "30s"
   },{
     "type": "file",
-    "source": "configs/supervisord.conf",
+    "source": "../configs/supervisord.conf",
     "destination": "/tmp/supervisord.conf"
   },{
     "type": "file",
-    "source": "instance-scripts/run-vault",
+    "source": "../instance-scripts/run-vault",
     "destination": "/tmp/run-vault"
   },{
     "type": "file",
-    "source": "instance-scripts/run-consul",
+    "source": "../instance-scripts/run-consul",
     "destination": "/tmp/run-consul"
   },{
     "type": "shell",
     "scripts": [
-      "provisioning-scripts/supervisor.sh",
-      "provisioning-scripts/foxpass-setup-script.sh",
-      "provisioning-scripts/install-vault",
-      "provisioning-scripts/install-consul",
-      "provisioning-scripts/install-dnsmasq"
+      "../provisioning-scripts/supervisor.sh",
+      "../provisioning-scripts/foxpass-setup-script.sh",
+      "../provisioning-scripts/install-vault",
+      "../provisioning-scripts/install-consul",
+      "../provisioning-scripts/install-dnsmasq"
     ]
   },{
     "type": "file",
-    "source": "instance-scripts/update-certificate-store",
+    "source": "../instance-scripts/update-certificate-store",
     "destination": "/tmp/update-certificate-store"
   },{
     "type": "file",
-    "source": "vault-policies/base-read.hcl",
+    "source": "../vault-policies/base-read.hcl",
     "destination": "/tmp/base-read.hcl"
   },{
     "type": "shell",
@@ -82,7 +82,7 @@
     ]
   },{
     "type": "file",
-    "source": "data/regions.txt",
+    "source": "../data/regions.txt",
     "destination": "/tmp/regions.txt"
   },{
     "type": "shell",
@@ -93,7 +93,7 @@
     ]
   },{
     "type": "file",
-    "source": "instance-scripts/generate-setup-vault.sh",
+    "source": "../instance-scripts/generate-setup-vault.sh",
     "destination": "/tmp/generate-setup-vault.sh"
   },{
     "type": "shell",
@@ -104,19 +104,13 @@
     ]
   },{
     "type": "file",
-    "source": "vault-policies/write-node-policies.py",
+    "source": "../vault-policies/write-node-policies.py",
     "destination": "/tmp/write-node-policies.py"
   },{
     "type": "shell",
     "scripts": [
-      "provisioning-scripts/binutils-update.sh",
-      "provisioning-scripts/threatstack.sh",
-      "provisioning-scripts/rsync-update.sh",
-      "provisioning-scripts/git-update.sh",
-      "provisioning-scripts/gnupg-update.sh",
-      "provisioning-scripts/fcron-update.sh",
-      "provisioning-scripts/systemd-update.sh",
-      "provisioning-scripts/cleanup.sh"
+      "../provisioning-scripts/threatstack.sh",
+      "../provisioning-scripts/cleanup.sh"
     ]
   },{
     "type": "shell",
@@ -126,7 +120,7 @@
   }],
   "post-processors": [{
     "type": "manifest",
-    "output": "manifests/vault-consul.json",
+    "output": "../manifests/vault-consul.json",
     "strip_path": true
   }]
 }

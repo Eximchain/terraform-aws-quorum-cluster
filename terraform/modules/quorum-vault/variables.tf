@@ -78,6 +78,11 @@ variable "lb_ssl_policy" {
   default     = "ELBSecurityPolicy-2016-08"
 }
 
+variable "ssh_ips" {
+  description = "List of IP addresses allowed to SSH nodes in this network. If empty, will allow SSH from anywhere."
+  default     = []
+}
+
 variable "cert_org_name" {
   description = "The organization to associate with the vault certificates."
   default     = "Example Co."
@@ -91,4 +96,164 @@ variable "vault_enterprise_license_key" {
 variable "threatstack_deploy_key" {
   description = "Deploy key to use to activate threatstack agents, if using one"
   default     = ""
+}
+
+variable "foxpass_base_dn" {
+  description = "The Base DN for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_bind_user" {
+  description = "The bind user name for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_bind_pw" {
+  description = "The bind user password for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_api_key" {
+  description = "The API key for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "bootnode_counts" {
+  description = "A mapping from region to the number of bootnodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "maker_node_counts" {
+  description = "A mapping from region to the number of maker nodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "validator_node_counts" {
+  description = "A mapping from region to the number of validator nodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "observer_node_counts" {
+  description = "A mapping from region to the number of observer nodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
 }

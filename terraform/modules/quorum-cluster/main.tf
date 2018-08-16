@@ -54,6 +54,8 @@ module "quorum_vault" {
 
   force_destroy_s3_bucket = "${var.force_destroy_s3_buckets}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   vault_cluster_size   = "${var.vault_cluster_size}"
   vault_instance_type  = "${var.vault_instance_type}"
   consul_cluster_size  = "${var.consul_cluster_size}"
@@ -64,8 +66,18 @@ module "quorum_vault" {
 
   vault_consul_ami = "${var.vault_consul_ami}"
 
+  bootnode_counts       = "${var.bootnode_counts}"
+  maker_node_counts     = "${var.maker_node_counts}"
+  validator_node_counts = "${var.validator_node_counts}"
+  observer_node_counts  = "${var.observer_node_counts}"
+
   threatstack_deploy_key       = "${var.threatstack_deploy_key}"
   vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -80,8 +92,6 @@ module "quorum_cluster_us_east_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -112,9 +122,16 @@ module "quorum_cluster_us_east_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "us-east-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "us-east-1", "")}"
@@ -137,8 +154,6 @@ module "quorum_cluster_us_east_2" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -169,9 +184,16 @@ module "quorum_cluster_us_east_2" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "us-east-2", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "us-east-2", "")}"
@@ -194,8 +216,6 @@ module "quorum_cluster_us_west_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -226,9 +246,16 @@ module "quorum_cluster_us_west_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "us-west-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "us-west-1", "")}"
@@ -251,8 +278,6 @@ module "quorum_cluster_us_west_2" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -283,9 +308,16 @@ module "quorum_cluster_us_west_2" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "us-west-2", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "us-west-2", "")}"
@@ -308,8 +340,6 @@ module "quorum_cluster_eu_central_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -340,9 +370,16 @@ module "quorum_cluster_eu_central_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "eu-central-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "eu-central-1", "")}"
@@ -365,8 +402,6 @@ module "quorum_cluster_eu_west_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -397,9 +432,16 @@ module "quorum_cluster_eu_west_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "eu-west-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "eu-west-1", "")}"
@@ -422,8 +464,6 @@ module "quorum_cluster_eu_west_2" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -454,9 +494,16 @@ module "quorum_cluster_eu_west_2" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "eu-west-2", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "eu-west-2", "")}"
@@ -479,8 +526,6 @@ module "quorum_cluster_ap_south_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -511,9 +556,16 @@ module "quorum_cluster_ap_south_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "ap-south-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ap-south-1", "")}"
@@ -536,8 +588,6 @@ module "quorum_cluster_ap_northeast_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -568,9 +618,16 @@ module "quorum_cluster_ap_northeast_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "ap-northeast-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ap-northeast-1", "")}"
@@ -593,8 +650,6 @@ module "quorum_cluster_ap_northeast_2" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -625,9 +680,16 @@ module "quorum_cluster_ap_northeast_2" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "ap-northeast-2", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ap-northeast-2", "")}"
@@ -650,8 +712,6 @@ module "quorum_cluster_ap_southeast_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -682,9 +742,16 @@ module "quorum_cluster_ap_southeast_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "ap-southeast-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ap-southeast-1", "")}"
@@ -707,8 +774,6 @@ module "quorum_cluster_ap_southeast_2" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -739,9 +804,16 @@ module "quorum_cluster_ap_southeast_2" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "ap-southeast-2", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ap-southeast-2", "")}"
@@ -764,8 +836,6 @@ module "quorum_cluster_ca_central_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -796,9 +866,16 @@ module "quorum_cluster_ca_central_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "ca-central-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "ca-central-1", "")}"
@@ -821,8 +898,6 @@ module "quorum_cluster_sa_east_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
-  data_backup_bucket       = "${aws_s3_bucket.data_backup.id}"
-  data_backup_bucket_arn   = "${aws_s3_bucket.data_backup.arn}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -853,9 +928,16 @@ module "quorum_cluster_sa_east_1" {
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
+  ssh_ips = "${var.ssh_ips}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
+
+  foxpass_base_dn   = "${var.foxpass_base_dn}"
+  foxpass_bind_user = "${var.foxpass_bind_user}"
+  foxpass_bind_pw   = "${var.foxpass_bind_pw}"
+  foxpass_api_key   = "${var.foxpass_api_key}"
 
   quorum_ami   = "${lookup(var.quorum_amis, "sa-east-1", "")}"
   bootnode_ami = "${lookup(var.bootnode_amis, "sa-east-1", "")}"

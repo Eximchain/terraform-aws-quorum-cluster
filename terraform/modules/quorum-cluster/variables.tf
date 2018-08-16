@@ -132,6 +132,11 @@ variable "use_elastic_bootnode_ips" {
   default     = false
 }
 
+variable "ssh_ips" {
+  description = "List of IP addresses allowed to SSH nodes in this network. If empty, will allow SSH from anywhere."
+  default     = []
+}
+
 variable "cert_org_name" {
   description = "The organization to associate with the vault certificates."
   default     = "Example Co."
@@ -184,6 +189,26 @@ variable "node_volume_size" {
 
 variable "threatstack_deploy_key" {
   description = "Deploy key to use to activate threatstack agents, if using one"
+  default     = ""
+}
+
+variable "foxpass_base_dn" {
+  description = "The Base DN for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_bind_user" {
+  description = "The bind user name for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_bind_pw" {
+  description = "The bind user password for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_api_key" {
+  description = "The API key for your Foxpass account, if managing SSH keys with Foxpass"
   default     = ""
 }
 
