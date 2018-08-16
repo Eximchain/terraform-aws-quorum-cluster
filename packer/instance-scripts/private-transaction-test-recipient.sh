@@ -1,6 +1,9 @@
 #!/bin/bash
 set -eu -o pipefail
 
+# Source the IPC path
+GETH_IPC=$(cat /opt/quorum/info/geth-ipc.txt)
+
 # The address at which the private contract was mined
 CONTRACT_ADDR=$1
 
@@ -8,7 +11,7 @@ CONTRACT_ADDR=$1
 if [ $# -lt 2 ]
 then
     # Default value if no second argument specified
-    OUTPUT_SCRIPT="/home/ubuntu/private-transaction-test-recipient.js"
+    OUTPUT_SCRIPT="/opt/quorum/bin/private-transaction-test-recipient.js"
 else
     OUTPUT_SCRIPT=$2
 fi
@@ -26,4 +29,4 @@ var simple = simpleContract.at("$CONTRACT_ADDR");
 EOF
 
 # Attach the geth console and execute the script
-geth --preload $OUTPUT_SCRIPT attach
+geth --preload $OUTPUT_SCRIPT attach $GETH_IPC

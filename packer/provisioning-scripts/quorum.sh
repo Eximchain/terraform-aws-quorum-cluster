@@ -3,7 +3,7 @@ set -eu -o pipefail
 
 RELEASE="v1.2.1-modified"
 
-source /home/ubuntu/.bash_profile
+source /etc/profile.d/quorum-custom.sh
 git clone https://github.com/Eximchain/quorum.git
 pushd quorum >/dev/null
 git checkout $RELEASE

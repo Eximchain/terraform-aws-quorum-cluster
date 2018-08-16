@@ -5,12 +5,16 @@
 
 set -eu
 
-readonly BASH_PROFILE_FILE="/home/ubuntu/.bash_profile"
+readonly BASH_PROFILE_FILE="/etc/profile.d/quorum-custom.sh"
+readonly GETH_IPC_PATH_LOCAL="/home/ubuntu/.ethereum/geth.ipc"
 readonly VAULT_TLS_CERT_DIR="/opt/vault/tls"
 readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 
 # This is necessary to retrieve the address for vault
+echo '' | sudo tee -a $BASH_PROFILE_FILE
 echo "export VAULT_ADDR=https://${vault_dns}:${vault_port}
+export GETH_IPC_PATH=$GETH_IPC_PATH_LOCAL
+export GETH_IPC=ipc:$GETH_IPC_PATH_LOCAL
 
 function pause-geth {
   sudo supervisorctl stop quorum
@@ -102,6 +106,7 @@ function populate_data_files {
   echo "${data_backup_bucket}" | sudo tee /opt/quorum/info/data-backup-bucket.txt
   echo "${network_id}" | sudo tee /opt/quorum/info/network-id.txt
   echo "https://${vault_dns}:${vault_port}" | sudo tee /opt/quorum/info/vault-address.txt
+  echo "ipc:$GETH_IPC_PATH_LOCAL" | sudo tee /opt/quorum/info/geth-ipc.txt
 
   sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'
 }

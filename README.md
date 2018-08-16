@@ -251,6 +251,16 @@ The nodes come equipped to run a simple private transaction test (sourced from t
 
 SSH into the sending node (e.g. node 0) and run the following to deploy the private contract
 
+If you are using Foxpass SSH key management, first authenticate to vault with AWS. You will also need to use `sudo` to run the test
+
+```sh
+$ vault auth -method=aws
+$ RECIPIENT_PUB_KEY=$(vault read -field=constellation_pub_key quorum/addresses/us-east-1/1)
+$ sudo /opt/quorum/bin/private-transaction-test-sender.sh $RECIPIENT_PUB_KEY
+```
+
+Otherwise, you should be authenticated already and `sudo` is not necessary
+
 ```sh
 # This assumes that the entire network is running in us-east-1
 # This assumes there are at least two nodes in us-east-1 and the recipient is the node with index 1

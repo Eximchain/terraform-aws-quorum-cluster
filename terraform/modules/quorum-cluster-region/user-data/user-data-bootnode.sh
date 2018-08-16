@@ -5,7 +5,7 @@
 
 set -eu
 
-readonly BASH_PROFILE_FILE="/home/ubuntu/.bash_profile"
+readonly BASH_PROFILE_FILE="/etc/profile.d/quorum-custom.sh"
 readonly VAULT_TLS_CERT_DIR="/opt/vault/tls"
 readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 
