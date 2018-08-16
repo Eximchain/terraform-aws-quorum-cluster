@@ -58,7 +58,7 @@ vault token-revoke \$ROOT_TOKEN
 EOF
 
 # Give permission to run the script
-sudo chown ubuntu $OUTPUT_FILE
+sudo chown vault $OUTPUT_FILE
 sudo chmod 777 $OUTPUT_FILE
 
 # Ensure $POLICY_FILE exists, make it runnable
@@ -68,5 +68,5 @@ set -eu -o pipefail
 
 # Will be dynamically populated by write-node-policies.py script
 EOF
-sudo chown ubuntu $POLICY_FILE
-sudo chmod 744 $POLICY_FILE
+sudo chown vault $POLICY_FILE
+sudo chmod 777 $POLICY_FILE
