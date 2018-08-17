@@ -155,12 +155,12 @@ resource "aws_security_group_rule" "vault_ssh" {
   cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(concat(var.ssh_ips, list("")), count.index))}"]
 }
 
-resource "aws_security_group_rule" "vault_allow_api_inbound_from_cidr_blocks" {
-  type        = "ingress"
-  from_port   = "${var.vault_port}"
-  to_port     = "${var.vault_port}"
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
+resource "aws_security_group_rule" "vault_allow_api_inbound_from_load_balancer" {
+  type                     = "ingress"
+  from_port                = "${var.vault_port}"
+  to_port                  = "${var.vault_port}"
+  protocol                 = "tcp"
+  source_security_group_id = "${aws_security_group.vault_load_balancer.id}"
 
   security_group_id = "${aws_security_group.vault_cluster.id}"
 }
