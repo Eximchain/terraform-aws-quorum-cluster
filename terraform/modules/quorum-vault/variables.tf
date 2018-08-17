@@ -83,6 +83,11 @@ variable "ssh_ips" {
   default     = []
 }
 
+variable "vault_consul_vpc_cidr" {
+  description = "CIDR range to use for the vault-consul VPC."
+  default     = "192.168.0.0/16"
+}
+
 variable "cert_org_name" {
   description = "The organization to associate with the vault certificates."
   default     = "Example Co."

@@ -4,7 +4,7 @@
 resource "aws_vpc" "quorum_cluster" {
   count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
 
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = "${var.quorum_vpc_cidr}"
   enable_dns_hostnames = true
 }
 

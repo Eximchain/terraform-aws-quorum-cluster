@@ -50,7 +50,7 @@ data "aws_availability_zones" "available" {
 }
 
 resource "aws_vpc" "vault_consul" {
-  cidr_block           = "192.168.0.0/16"
+  cidr_block           = "${var.vault_consul_vpc_cidr}"
   enable_dns_hostnames = true
 }
 

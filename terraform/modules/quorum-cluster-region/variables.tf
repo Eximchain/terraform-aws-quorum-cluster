@@ -151,6 +151,16 @@ variable "bootnode_ami" {
   default     = ""
 }
 
+variable "quorum_vpc_cidr" {
+  description = "CIDR range to use for the quorum VPC."
+  default     = "10.0.0.0/16"
+}
+
+variable "bootnode_vpc_cidr" {
+  description = "CIDR range to use for the bootnode VPC."
+  default     = "172.16.0.0/16"
+}
+
 variable "node_volume_size" {
   description = "The size of the EBS volume for a quorum node in GB"
   default     = 20

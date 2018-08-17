@@ -4,7 +4,7 @@
 resource "aws_vpc" "bootnodes" {
   count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
 
-  cidr_block           = "172.16.0.0/16"
+  cidr_block           = "${var.bootnode_vpc_cidr}"
   enable_dns_hostnames = true
 }
 
