@@ -95,7 +95,7 @@ data "aws_ami" "vault_consul" {
 # CONSUL AUTO-DISCOVER POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_policy" "auto_discover_cluster" {
-  name   = "auto-discover-cluster"
+  name   = "auto-discover-cluster-net-${var.network_id}"
   policy = "${data.aws_iam_policy_document.auto_discover_cluster.json}"
 
   description = "Allow consul cluster auto-discovery"
