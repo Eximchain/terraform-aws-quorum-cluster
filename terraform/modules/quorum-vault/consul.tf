@@ -168,7 +168,6 @@ module "security_group_rules" {
 # We can use the IAM role to grant the instance IAM permissions so we can use the AWS CLI without having to figure out
 # how to get our secret AWS access keys onto the box.
 # ---------------------------------------------------------------------------------------------------------------------
-
 resource "aws_iam_instance_profile" "consul_cluster" {
   name_prefix = "${data.template_file.consul_cluster_name.rendered}-"
   path        = "/"

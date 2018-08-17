@@ -9,7 +9,6 @@ data "template_file" "vault_cluster_name" {
 # ---------------------------------------------------------------------------------------------------------------------
 # CREATE AN AUTO SCALING GROUP (ASG) TO RUN VAULT
 # ---------------------------------------------------------------------------------------------------------------------
-
 resource "aws_autoscaling_group" "vault_cluster" {
   launch_configuration = "${aws_launch_configuration.vault_cluster.name}"
 
@@ -129,7 +128,6 @@ data "aws_instances" "vault_servers" {
 # ---------------------------------------------------------------------------------------------------------------------
 # CREATE A SECURITY GROUP TO CONTROL WHAT REQUESTS CAN GO IN AND OUT OF EACH EC2 INSTANCE
 # ---------------------------------------------------------------------------------------------------------------------
-
 resource "aws_security_group" "vault_cluster" {
   name_prefix = "${data.template_file.vault_cluster_name.rendered}-"
   description = "Security group for the ${data.template_file.vault_cluster_name.rendered} launch configuration"
@@ -192,7 +190,6 @@ resource "aws_security_group_rule" "vault_allow_all_outbound" {
 # We can use the IAM role to grant the instance IAM permissions so we can use the AWS APIs without having to figure out
 # how to get our secret AWS access keys onto the box.
 # ---------------------------------------------------------------------------------------------------------------------
-
 resource "aws_iam_instance_profile" "vault_cluster" {
   name_prefix = "${data.template_file.vault_cluster_name.rendered}-"
   path        = "/"
@@ -232,7 +229,6 @@ resource "aws_iam_role_policy_attachment" "vault_auto_discover_cluster" {
 # CREATE AN S3 BUCKET TO USE AS A STORAGE BACKEND
 # Also, add an IAM role policy that gives the Vault servers access to this S3 bucket
 # ---------------------------------------------------------------------------------------------------------------------
-
 resource "aws_s3_bucket" "vault_storage" {
   bucket_prefix = "quorum-vault-network-${var.network_id}-"
   force_destroy = "${var.force_destroy_s3_bucket}"
