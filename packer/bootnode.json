@@ -85,6 +85,7 @@
       "provisioning-scripts/git-update.sh",
       "provisioning-scripts/gnupg-update.sh",
       "provisioning-scripts/fcron-update.sh",
+      "provisioning-scripts/vim-update.sh",
       "provisioning-scripts/systemd-update.sh",
       "provisioning-scripts/threatstack.sh"
     ]
