@@ -1,3 +1,8 @@
+# TODO: Fix excess copy/paste
+# Each region is its own resource because the count variable cannot be computed
+# If that restriction is relaxed, we should convert to one resource for all regions
+# There are several issues regarding this on Hashicorp's GitHub
+
 # ---------------------------------------------------------------------------------------------------------------------
 # CONNECTIONS TO QUORUM NODES
 # ---------------------------------------------------------------------------------------------------------------------
