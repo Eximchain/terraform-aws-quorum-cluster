@@ -33,7 +33,7 @@ resource "aws_subnet" "bootnodes" {
 
   vpc_id                  = "${aws_vpc.bootnodes.id}"
   availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
-  cidr_block              = "172.16.${count.index + 1}.0/24"
+  cidr_block              = "${cidrsubnet(var.bootnode_vpc_cidr, 3, count.index)}"
   map_public_ip_on_launch = true
 }
 

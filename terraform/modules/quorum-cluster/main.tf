@@ -124,6 +124,9 @@ module "quorum_cluster_us_east_1" {
 
   ssh_ips = "${var.ssh_ips}"
 
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 0)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 0)}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -185,6 +188,9 @@ module "quorum_cluster_us_east_2" {
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   ssh_ips = "${var.ssh_ips}"
+
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 1)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 1)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -248,6 +254,9 @@ module "quorum_cluster_us_west_1" {
 
   ssh_ips = "${var.ssh_ips}"
 
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 2)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 2)}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -309,6 +318,9 @@ module "quorum_cluster_us_west_2" {
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   ssh_ips = "${var.ssh_ips}"
+
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 3)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 3)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -372,6 +384,9 @@ module "quorum_cluster_eu_central_1" {
 
   ssh_ips = "${var.ssh_ips}"
 
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 4)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 4)}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -433,6 +448,9 @@ module "quorum_cluster_eu_west_1" {
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   ssh_ips = "${var.ssh_ips}"
+
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 5)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 5)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -496,6 +514,9 @@ module "quorum_cluster_eu_west_2" {
 
   ssh_ips = "${var.ssh_ips}"
 
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 6)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 6)}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -557,6 +578,9 @@ module "quorum_cluster_ap_south_1" {
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   ssh_ips = "${var.ssh_ips}"
+
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 7)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 7)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -620,6 +644,9 @@ module "quorum_cluster_ap_northeast_1" {
 
   ssh_ips = "${var.ssh_ips}"
 
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 8)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 8)}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -681,6 +708,9 @@ module "quorum_cluster_ap_northeast_2" {
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   ssh_ips = "${var.ssh_ips}"
+
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 9)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 9)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -744,6 +774,9 @@ module "quorum_cluster_ap_southeast_1" {
 
   ssh_ips = "${var.ssh_ips}"
 
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 10)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 10)}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -805,6 +838,9 @@ module "quorum_cluster_ap_southeast_2" {
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   ssh_ips = "${var.ssh_ips}"
+
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 11)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 11)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -868,6 +904,9 @@ module "quorum_cluster_ca_central_1" {
 
   ssh_ips = "${var.ssh_ips}"
 
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 12)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 12)}"
+
   node_volume_size = "${var.node_volume_size}"
 
   threatstack_deploy_key = "${var.threatstack_deploy_key}"
@@ -929,6 +968,9 @@ module "quorum_cluster_sa_east_1" {
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
 
   ssh_ips = "${var.ssh_ips}"
+
+  quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 13)}"
+  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 13)}"
 
   node_volume_size = "${var.node_volume_size}"
 

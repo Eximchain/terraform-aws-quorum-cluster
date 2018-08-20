@@ -28,6 +28,8 @@ module "quorum_cluster" {
   use_dedicated_consul_servers   = "${var.use_dedicated_consul_servers}"
   use_elastic_bootnode_ips       = "${var.use_elastic_bootnode_ips}"
   ssh_ips                        = "${var.ssh_ips}"
+  quorum_vpc_base_cidr           = "${var.quorum_vpc_base_cidr}"
+  bootnode_vpc_base_cidr         = "${var.bootnode_vpc_base_cidr}"
   node_volume_size               = "${var.node_volume_size}"
   threatstack_deploy_key         = "${var.threatstack_deploy_key}"
   foxpass_base_dn                = "${var.foxpass_base_dn}"

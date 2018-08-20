@@ -35,7 +35,7 @@ resource "aws_subnet" "quorum_cluster" {
 
   vpc_id                  = "${aws_vpc.quorum_cluster.id}"
   availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
-  cidr_block              = "10.0.${count.index + 1}.0/24"
+  cidr_block              = "${cidrsubnet(var.quorum_vpc_cidr, 3, count.index)}"
   map_public_ip_on_launch = true
 }
 

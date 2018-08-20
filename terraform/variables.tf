@@ -182,6 +182,16 @@ variable "consul_instance_type" {
   default     = "t2.micro"
 }
 
+variable "quorum_vpc_base_cidr" {
+  description = "Base CIDR range to assign quorum VPCs from."
+  default     = "10.0.0.0/16"
+}
+
+variable "bootnode_vpc_base_cidr" {
+  description = "Base CIDR range to assign bootnode VPCs from."
+  default     = "172.16.0.0/16"
+}
+
 variable "node_volume_size" {
   description = "The size of the EBS volume for a quorum node in GB"
   default     = 20
