@@ -1,3 +1,7 @@
+output "vpc_id" {
+  value = "${aws_vpc.vault_consul.id}"
+}
+
 output "vault_server_public_ips" {
   value = "${data.aws_instances.vault_servers.public_ips}"
 }
