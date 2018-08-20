@@ -2,7 +2,7 @@
 # LOAD BALANCER FOR VAULT
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_lb" "quorum_vault" {
-  internal = false
+  internal = true
 
   subnets         = ["${aws_subnet.vault_consul.*.id}"]
   security_groups = ["${aws_security_group.vault_load_balancer.id}"]
