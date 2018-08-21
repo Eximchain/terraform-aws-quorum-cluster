@@ -106,7 +106,7 @@ module "quorum_cluster_us_east_1" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -171,7 +171,7 @@ module "quorum_cluster_us_east_2" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -236,7 +236,7 @@ module "quorum_cluster_us_west_1" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -301,7 +301,7 @@ module "quorum_cluster_us_west_2" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -366,7 +366,7 @@ module "quorum_cluster_eu_central_1" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -431,7 +431,7 @@ module "quorum_cluster_eu_west_1" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -496,7 +496,7 @@ module "quorum_cluster_eu_west_2" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -561,7 +561,7 @@ module "quorum_cluster_ap_south_1" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -626,7 +626,7 @@ module "quorum_cluster_ap_northeast_1" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -691,7 +691,7 @@ module "quorum_cluster_ap_northeast_2" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -756,7 +756,7 @@ module "quorum_cluster_ap_southeast_1" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -821,7 +821,7 @@ module "quorum_cluster_ap_southeast_2" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -886,7 +886,7 @@ module "quorum_cluster_ca_central_1" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -951,7 +951,7 @@ module "quorum_cluster_sa_east_1" {
   max_block_time = "${var.max_block_time}"
 
   vault_port = "${var.vault_port}"
-  vault_dns  = "${module.quorum_vault.vault_dns}"
+  vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
 
   vault_cert_bucket_name   = "${module.quorum_vault.vault_cert_bucket_name}"
   vault_cert_bucket_arn    = "${module.quorum_vault.vault_cert_bucket_arn}"
@@ -1062,6 +1062,90 @@ module "vault_vpc_peering_connections" {
   }
 
   bootnode_vpc_peering_counts {
+    us-east-1      = "${signum(lookup(var.bootnode_counts, "us-east-1", 0))}"
+    us-east-2      = "${signum(lookup(var.bootnode_counts, "us-east-2", 0))}"
+    us-west-1      = "${signum(lookup(var.bootnode_counts, "us-west-1", 0))}"
+    us-west-2      = "${signum(lookup(var.bootnode_counts, "us-west-2", 0))}"
+    eu-central-1   = "${signum(lookup(var.bootnode_counts, "eu-central-1", 0))}"
+    eu-west-1      = "${signum(lookup(var.bootnode_counts, "eu-west-1", 0))}"
+    eu-west-2      = "${signum(lookup(var.bootnode_counts, "eu-west-2", 0))}"
+    ap-south-1     = "${signum(lookup(var.bootnode_counts, "ap-south-1", 0))}"
+    ap-northeast-1 = "${signum(lookup(var.bootnode_counts, "ap-northeast-1", 0))}"
+    ap-northeast-2 = "${signum(lookup(var.bootnode_counts, "ap-northeast-2", 0))}"
+    ap-southeast-1 = "${signum(lookup(var.bootnode_counts, "ap-southeast-1", 0))}"
+    ap-southeast-2 = "${signum(lookup(var.bootnode_counts, "ap-southeast-2", 0))}"
+    ca-central-1   = "${signum(lookup(var.bootnode_counts, "ca-central-1", 0))}"
+    sa-east-1      = "${signum(lookup(var.bootnode_counts, "sa-east-1", 0))}"
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Network Internal DNS Service
+# ---------------------------------------------------------------------------------------------------------------------
+module "internal_dns" {
+  source = "../internal-dns"
+
+  network_id     = "${var.network_id}"
+  primary_vpc    = "${module.quorum_vault.vpc_id}"
+
+  vault_lb_dns_name = "${module.quorum_vault.vault_dns}"
+  vault_lb_zone_id  = "${module.quorum_vault.vault_lb_zone_id}"
+
+  root_domain      = "${var.internal_dns_root_domain}"
+  sub_domain_vault = "${var.internal_dns_sub_domain_vault}"
+
+  quorum_vpcs {
+    us-east-1      = "${module.quorum_cluster_us_east_1.quorum_vpc_id}"
+    us-east-2      = "${module.quorum_cluster_us_east_2.quorum_vpc_id}"
+    us-west-1      = "${module.quorum_cluster_us_west_1.quorum_vpc_id}"
+    us-west-2      = "${module.quorum_cluster_us_west_2.quorum_vpc_id}"
+    eu-central-1   = "${module.quorum_cluster_eu_central_1.quorum_vpc_id}"
+    eu-west-1      = "${module.quorum_cluster_eu_west_1.quorum_vpc_id}"
+    eu-west-2      = "${module.quorum_cluster_eu_west_2.quorum_vpc_id}"
+    ap-south-1     = "${module.quorum_cluster_ap_south_1.quorum_vpc_id}"
+    ap-northeast-1 = "${module.quorum_cluster_ap_northeast_1.quorum_vpc_id}"
+    ap-northeast-2 = "${module.quorum_cluster_ap_northeast_2.quorum_vpc_id}"
+    ap-southeast-1 = "${module.quorum_cluster_ap_southeast_1.quorum_vpc_id}"
+    ap-southeast-2 = "${module.quorum_cluster_ap_southeast_2.quorum_vpc_id}"
+    ca-central-1   = "${module.quorum_cluster_ca_central_1.quorum_vpc_id}"
+    sa-east-1      = "${module.quorum_cluster_sa_east_1.quorum_vpc_id}"
+  }
+
+  quorum_vpc_association_counts {
+    us-east-1      = "${signum(lookup(var.maker_node_counts, "us-east-1", 0) + lookup(var.validator_node_counts, "us-east-1", 0) + lookup(var.observer_node_counts, "us-east-1", 0))}"
+    us-east-2      = "${signum(lookup(var.maker_node_counts, "us-east-2", 0) + lookup(var.validator_node_counts, "us-east-2", 0) + lookup(var.observer_node_counts, "us-east-2", 0))}"
+    us-west-1      = "${signum(lookup(var.maker_node_counts, "us-west-1", 0) + lookup(var.validator_node_counts, "us-west-1", 0) + lookup(var.observer_node_counts, "us-west-1", 0))}"
+    us-west-2      = "${signum(lookup(var.maker_node_counts, "us-west-2", 0) + lookup(var.validator_node_counts, "us-west-2", 0) + lookup(var.observer_node_counts, "us-west-2", 0))}"
+    eu-central-1   = "${signum(lookup(var.maker_node_counts, "eu-central-1", 0) + lookup(var.validator_node_counts, "eu-central-1", 0) + lookup(var.observer_node_counts, "eu-central-1", 0))}"
+    eu-west-1      = "${signum(lookup(var.maker_node_counts, "eu-west-1", 0) + lookup(var.validator_node_counts, "eu-west-1", 0) + lookup(var.observer_node_counts, "eu-west-1", 0))}"
+    eu-west-2      = "${signum(lookup(var.maker_node_counts, "eu-west-2", 0) + lookup(var.validator_node_counts, "eu-west-2", 0) + lookup(var.observer_node_counts, "eu-west-2", 0))}"
+    ap-south-1     = "${signum(lookup(var.maker_node_counts, "ap-south-1", 0) + lookup(var.validator_node_counts, "ap-south-1", 0) + lookup(var.observer_node_counts, "ap-south-1", 0))}"
+    ap-northeast-1 = "${signum(lookup(var.maker_node_counts, "ap-northeast-1", 0) + lookup(var.validator_node_counts, "ap-northeast-1", 0) + lookup(var.observer_node_counts, "ap-northeast-1", 0))}"
+    ap-northeast-2 = "${signum(lookup(var.maker_node_counts, "ap-northeast-2", 0) + lookup(var.validator_node_counts, "ap-northeast-2", 0) + lookup(var.observer_node_counts, "ap-northeast-2", 0))}"
+    ap-southeast-1 = "${signum(lookup(var.maker_node_counts, "ap-southeast-1", 0) + lookup(var.validator_node_counts, "ap-southeast-1", 0) + lookup(var.observer_node_counts, "ap-southeast-1", 0))}"
+    ap-southeast-2 = "${signum(lookup(var.maker_node_counts, "ap-southeast-2", 0) + lookup(var.validator_node_counts, "ap-southeast-2", 0) + lookup(var.observer_node_counts, "ap-southeast-2", 0))}"
+    ca-central-1   = "${signum(lookup(var.maker_node_counts, "ca-central-1", 0) + lookup(var.validator_node_counts, "ca-central-1", 0) + lookup(var.observer_node_counts, "ca-central-1", 0))}"
+    sa-east-1      = "${signum(lookup(var.maker_node_counts, "sa-east-1", 0) + lookup(var.validator_node_counts, "sa-east-1", 0) + lookup(var.observer_node_counts, "sa-east-1", 0))}"
+  }
+
+  bootnode_vpcs {
+    us-east-1      = "${module.quorum_cluster_us_east_1.bootnode_vpc_id}"
+    us-east-2      = "${module.quorum_cluster_us_east_2.bootnode_vpc_id}"
+    us-west-1      = "${module.quorum_cluster_us_west_1.bootnode_vpc_id}"
+    us-west-2      = "${module.quorum_cluster_us_west_2.bootnode_vpc_id}"
+    eu-central-1   = "${module.quorum_cluster_eu_central_1.bootnode_vpc_id}"
+    eu-west-1      = "${module.quorum_cluster_eu_west_1.bootnode_vpc_id}"
+    eu-west-2      = "${module.quorum_cluster_eu_west_2.bootnode_vpc_id}"
+    ap-south-1     = "${module.quorum_cluster_ap_south_1.bootnode_vpc_id}"
+    ap-northeast-1 = "${module.quorum_cluster_ap_northeast_1.bootnode_vpc_id}"
+    ap-northeast-2 = "${module.quorum_cluster_ap_northeast_2.bootnode_vpc_id}"
+    ap-southeast-1 = "${module.quorum_cluster_ap_southeast_1.bootnode_vpc_id}"
+    ap-southeast-2 = "${module.quorum_cluster_ap_southeast_2.bootnode_vpc_id}"
+    ca-central-1   = "${module.quorum_cluster_ca_central_1.bootnode_vpc_id}"
+    sa-east-1      = "${module.quorum_cluster_sa_east_1.bootnode_vpc_id}"
+  }
+
+  bootnode_vpc_association_counts {
     us-east-1      = "${signum(lookup(var.bootnode_counts, "us-east-1", 0))}"
     us-east-2      = "${signum(lookup(var.bootnode_counts, "us-east-2", 0))}"
     us-west-1      = "${signum(lookup(var.bootnode_counts, "us-west-1", 0))}"

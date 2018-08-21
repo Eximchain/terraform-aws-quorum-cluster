@@ -13,7 +13,7 @@ module "cert_tool" {
   organization_name       = "${var.cert_org_name}"
   ca_common_name          = "quorum-vault cert authority network ${var.network_id}"
   common_name             = "quorum-vault cert network ${var.network_id}"
-  dns_names               = ["${aws_lb.quorum_vault.dns_name}"]
+  dns_names               = ["vault.exim"]
   ip_addresses            = ["127.0.0.1"]
   validity_period_hours   = 8760
 }
