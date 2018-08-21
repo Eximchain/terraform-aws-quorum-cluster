@@ -70,3 +70,13 @@ resource "tls_locally_signed_cert" "cert" {
     command = "echo '${tls_locally_signed_cert.cert.cert_pem}' > '${var.public_key_file_path}' && chmod ${var.permissions} '${var.public_key_file_path}' && chown ${var.owner} '${var.public_key_file_path}'"
   }
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# STORE CERTS IN IAM
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_iam_server_certificate" "vault_cert" {
+  name_prefix       = "vault-cert-network-${var.network_id}-"
+  certificate_body  = "${tls_locally_signed_cert.cert.cert_pem}"
+  certificate_chain = "${tls_self_signed_cert.ca.cert_pem}"
+  private_key       = "${tls_private_key.cert.private_key_pem}"
+}

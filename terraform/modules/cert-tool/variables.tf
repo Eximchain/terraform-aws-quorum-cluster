@@ -90,3 +90,12 @@ variable "private_key_rsa_bits" {
   description = "The size of the generated RSA key in bits. Should only be used if var.private_key_algorithm is RSA."
   default     = "2048"
 }
+
+variable "network_id" {
+  description = <<DESCRIPTION
+Ethereum network ID, also used in naming some resources for uniqueness.
+Must be unique amongst networks in the same AWS account and launched with this tool.
+Ideally is globally unique amongst ethereum and quorum networks.
+DESCRIPTION
+  default = 64813
+}

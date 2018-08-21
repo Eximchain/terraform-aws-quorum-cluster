@@ -60,18 +60,6 @@ resource "null_resource" "vault_cert_s3_upload" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# STORE CERTS IN IAM
-# ---------------------------------------------------------------------------------------------------------------------
-resource "aws_iam_server_certificate" "vault_certs" {
-  name_prefix       = "vault-cert-network-${var.network_id}-"
-  certificate_body  = "${module.cert_tool.public_key}"
-  certificate_chain = "${module.cert_tool.ca_public_key}"
-  private_key       = "${module.cert_tool.private_key}"
-
-  depends_on = ["module.cert_tool"]
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
 # IAM POLICY TO ACCESS CERT BUCKET
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_policy" "vault_cert_access" {
