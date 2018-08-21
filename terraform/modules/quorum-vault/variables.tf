@@ -88,6 +88,16 @@ variable "vault_consul_vpc_cidr" {
   default     = "192.168.0.0/16"
 }
 
+variable "quorum_vpc_base_cidr" {
+  description = "Base CIDR range to allow access from for quorum nodes."
+  default     = "10.0.0.0/16"
+}
+
+variable "bootnode_vpc_base_cidr" {
+  description = "Base CIDR range to allow access from for bootnodes."
+  default     = "172.16.0.0/16"
+}
+
 variable "cert_org_name" {
   description = "The organization to associate with the vault certificates."
   default     = "Example Co."

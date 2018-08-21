@@ -56,6 +56,9 @@ module "quorum_vault" {
 
   ssh_ips = "${var.ssh_ips}"
 
+  bootnode_vpc_base_cidr = "${var.bootnode_vpc_base_cidr}"
+  quorum_vpc_base_cidr   = "${var.quorum_vpc_base_cidr}"
+
   vault_cluster_size   = "${var.vault_cluster_size}"
   vault_instance_type  = "${var.vault_instance_type}"
   consul_cluster_size  = "${var.consul_cluster_size}"

@@ -49,7 +49,7 @@ resource "aws_security_group_rule" "vault_lb_allow_api_inbound_from_cidr_blocks"
   from_port   = "${var.vault_port}"
   to_port     = "${var.vault_port}"
   protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks = ["${var.quorum_vpc_base_cidr}", "${var.bootnode_vpc_base_cidr}"]
 
   security_group_id = "${aws_security_group.vault_load_balancer.id}"
 }
