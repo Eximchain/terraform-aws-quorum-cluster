@@ -19,5 +19,6 @@ output "private_key_file_path" {
 }
 
 output "private_key" {
-  value = "${tls_private_key.cert.private_key_pem}"
+  sensitive = true
+  value     = "${tls_private_key.cert.private_key_pem}"
 }
