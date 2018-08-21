@@ -10,6 +10,10 @@ output "vault_dns" {
   value = "${aws_lb.quorum_vault.dns_name}"
 }
 
+output "vault_lb_zone_id" {
+  value = "${aws_lb.quorum_vault.zone_id}"
+}
+
 output "vault_port" {
   value = "${var.vault_port}"
 }
