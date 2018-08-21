@@ -197,6 +197,16 @@ variable "node_volume_size" {
   default     = 20
 }
 
+variable "internal_dns_root_domain" {
+  description = "The base domain for the hosted zone"
+  default     = "exim"
+}
+
+variable "internal_dns_sub_domain_vault" {
+  description = "The sub domain for the vault LB"
+  default     = "vault"
+}
+
 variable "threatstack_deploy_key" {
   description = "Deploy key to use to activate threatstack agents, if using one"
   default     = ""

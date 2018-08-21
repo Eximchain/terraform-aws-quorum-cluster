@@ -37,3 +37,13 @@ Must be unique amongst networks in the same AWS account and launched with this t
 Ideally is globally unique amongst ethereum and quorum networks.
 DESCRIPTION
 }
+
+variable "root_domain" {
+  description = "The base domain for the hosted zone"
+  default     = "exim"
+}
+
+variable "sub_domain_vault" {
+  description = "The sub domain for the vault LB"
+  default     = "vault"
+}

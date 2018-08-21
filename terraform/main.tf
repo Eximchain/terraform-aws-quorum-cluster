@@ -31,6 +31,8 @@ module "quorum_cluster" {
   quorum_vpc_base_cidr           = "${var.quorum_vpc_base_cidr}"
   bootnode_vpc_base_cidr         = "${var.bootnode_vpc_base_cidr}"
   node_volume_size               = "${var.node_volume_size}"
+  internal_dns_root_domain       = "${var.internal_dns_root_domain}"
+  internal_dns_sub_domain_vault  = "${var.internal_dns_sub_domain_vault}"
   threatstack_deploy_key         = "${var.threatstack_deploy_key}"
   foxpass_base_dn                = "${var.foxpass_base_dn}"
   foxpass_bind_user              = "${var.foxpass_bind_user}"
