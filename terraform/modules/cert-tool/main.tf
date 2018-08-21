@@ -42,6 +42,31 @@ resource "tls_private_key" "cert" {
   }
 }
 
+resource "aws_kms_key" "private_key" {
+  count = "${var.use_kms_encryption ? 1 : 0}"
+
+  description = "Key to encrypt vault private key for quorum network ${var.network_id}"
+
+  # 7 Days for a network we expect to be ephemeral, otherwise 30 days
+  deletion_window_in_days = "${var.kms_key_deletion_window}"
+}
+
+data "aws_kms_ciphertext" "private_key" {
+  count = "${var.use_kms_encryption ? 1 : 0}"
+
+  key_id = "${aws_kms_key.private_key.key_id}"
+
+  plaintext = "${tls_private_key.cert.private_key_pem}"
+}
+
+resource "null_resource" "overwrite_private_key_with_encryption" {
+  count = "${var.use_kms_encryption ? 1 : 0}"
+
+  provisioner "local-exec" {
+    command = "echo '${data.aws_kms_ciphertext.private_key.ciphertext_blob}' | base64 --decode > '${var.private_key_file_path}'"
+  }
+}
+
 resource "tls_cert_request" "cert" {
   key_algorithm   = "${tls_private_key.cert.algorithm}"
   private_key_pem = "${tls_private_key.cert.private_key_pem}"
