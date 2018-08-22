@@ -19,7 +19,6 @@ output "private_key_file_path" {
 }
 
 output "private_key" {
-  sensitive = true
   value     = "${var.use_kms_encryption ? element(concat(data.aws_kms_ciphertext.private_key.*.ciphertext_blob, list("")), 0) : tls_private_key.cert.private_key_pem}"
 }
 
