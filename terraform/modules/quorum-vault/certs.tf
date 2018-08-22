@@ -14,21 +14,21 @@ resource "aws_s3_bucket" "vault_certs" {
 resource "aws_s3_bucket_object" "vault_ca_public_key" {
   key                    = "ca.crt.pem"
   bucket                 = "${aws_s3_bucket.vault_certs.bucket}"
-  source                 = "${format("%s/%s", path.module, var.cert_tool_ca_public_key_file_path)}"
+  content                = "${file(format("%s/%s", path.module, var.cert_tool_ca_public_key_file_path))}"
   server_side_encryption = "aws:kms"
 }
 
 resource "aws_s3_bucket_object" "vault_public_key" {
   key                    = "vault.crt.pem"
   bucket                 = "${aws_s3_bucket.vault_certs.bucket}"
-  source                 = "${format("%s/%s", path.module, var.cert_tool_public_key_file_path)}"
+  content                = "${file(format("%s/%s", path.module, var.cert_tool_public_key_file_path))}"
   server_side_encryption = "aws:kms"
 }
 
 resource "aws_s3_bucket_object" "vault_private_key" {
   key                    = "vault.key.pem.encrypted"
   bucket                 = "${aws_s3_bucket.vault_certs.bucket}"
-  source                 = "${format("%s/%s", path.module, var.cert_tool_private_key_file_path)}"
+  content                = "${file(format("%s/%s", path.module, var.cert_tool_private_key_file_path))}"
   server_side_encryption = "aws:kms"
 }
 
