@@ -9,26 +9,47 @@ resource "aws_s3_bucket" "vault_certs" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# CERTIFICATE FILES IF USED
+# ---------------------------------------------------------------------------------------------------------------------
+data "local_file" "cert_tool_ca_public_key_file" {
+  count = "${var.cert_tool_ca_public_key  == "" ? 1 : 0}"
+
+  filename = "${format("%s/%s", path.module, var.cert_tool_ca_public_key_file_path)}"
+}
+
+data "local_file" "cert_tool_public_key_file" {
+  count = "${var.cert_tool_public_key  == "" ? 1 : 0}"
+
+  filename = "${format("%s/%s", path.module, var.cert_tool_public_key_file_path)}"
+}
+
+data "local_file" "cert_tool_private_key_file" {
+  count = "${var.cert_tool_private_key_base64  == "" ? 1 : 0}"
+
+  filename = "${format("%s/%s", path.module, var.cert_tool_private_key_file_path)}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # UPLOAD CERTS TO S3
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_s3_bucket_object" "vault_ca_public_key" {
   key                    = "ca.crt.pem"
   bucket                 = "${aws_s3_bucket.vault_certs.bucket}"
-  content                = "${file(format("%s/%s", path.module, var.cert_tool_ca_public_key_file_path))}"
+  content                = "${var.cert_tool_ca_public_key == "" ? join("", data.local_file.cert_tool_ca_public_key_file.*.content) : var.cert_tool_ca_public_key}"
   server_side_encryption = "aws:kms"
 }
 
 resource "aws_s3_bucket_object" "vault_public_key" {
   key                    = "vault.crt.pem"
   bucket                 = "${aws_s3_bucket.vault_certs.bucket}"
-  content                = "${file(format("%s/%s", path.module, var.cert_tool_public_key_file_path))}"
+  content                = "${var.cert_tool_public_key == "" ? join("", data.local_file.cert_tool_public_key_file.*.content) : var.cert_tool_public_key}"
   server_side_encryption = "aws:kms"
 }
 
 resource "aws_s3_bucket_object" "vault_private_key" {
   key                    = "vault.key.pem.encrypted"
   bucket                 = "${aws_s3_bucket.vault_certs.bucket}"
-  content                = "${file(format("%s/%s", path.module, var.cert_tool_private_key_file_path))}"
+  content                = "${var.cert_tool_private_key_base64 == "" ? join("", data.local_file.cert_tool_private_key_file.*.content) : base64decode(var.cert_tool_private_key_base64)}"
   server_side_encryption = "aws:kms"
 }
 

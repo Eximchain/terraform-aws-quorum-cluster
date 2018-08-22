@@ -206,6 +206,21 @@ variable "internal_dns_sub_domain_vault" {
   default     = "vault"
 }
 
+variable "cert_tool_ca_public_key" {
+  description = "The CA Public Key. If not provided, will default to loading from file."
+  default     = ""
+}
+
+variable "cert_tool_public_key" {
+  description = "The TLS Public Key. If not provided, will default to loading from file."
+  default     = ""
+}
+
+variable "cert_tool_private_key_base64" {
+  description = "The TLS Private Key. If not provided, will default to loading from file. Must be KMS encrypted in base64 format."
+  default     = ""
+}
+
 variable "cert_tool_ca_public_key_file_path" {
   description = "The path where the cert-tool wrote the CA public key file. Path should be relative to the quorum vault module."
   default     = "certs/ca.crt.pem"

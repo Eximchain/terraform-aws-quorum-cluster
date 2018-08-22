@@ -67,6 +67,9 @@ module "quorum_vault" {
 
   vault_consul_ami = "${var.vault_consul_ami}"
 
+  cert_tool_ca_public_key           = "${var.cert_tool_ca_public_key}"
+  cert_tool_public_key              = "${var.cert_tool_public_key}"
+  cert_tool_private_key_base64      = "${var.cert_tool_private_key_base64}"
   cert_tool_ca_public_key_file_path = "${var.cert_tool_ca_public_key_file_path}"
   cert_tool_public_key_file_path    = "${var.cert_tool_public_key_file_path}"
   cert_tool_private_key_file_path   = "${var.cert_tool_private_key_file_path}"
