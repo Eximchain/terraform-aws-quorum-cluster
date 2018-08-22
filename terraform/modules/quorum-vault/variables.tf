@@ -2,12 +2,16 @@
 # REQUIRED PARAMETERS
 # You must provide a value for each of these parameters.
 # ---------------------------------------------------------------------------------------------------------------------
-variable "cert_owner" {
-  description = "The OS user to be made the owner of the local copy of the vault certificates. Should usually be set to the user operating the tool."
-}
-
 variable "public_key" {
   description = "The public key that will be used to SSH the instances in this region."
+}
+
+variable "cert_tool_kms_key_id" {
+  description = "The KMS Key ID that the cert tool encrypted the private key with. Will be output by the cert-tool module."
+}
+
+variable "cert_tool_server_cert_arn" {
+  description = "The ARN of the IAM server certificate created for the Vault Load Balancer. Will be output by the cert-tool module."
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -98,9 +102,19 @@ variable "bootnode_vpc_base_cidr" {
   default     = "172.16.0.0/16"
 }
 
-variable "cert_org_name" {
-  description = "The organization to associate with the vault certificates."
-  default     = "Example Co."
+variable "cert_tool_ca_public_key_file_path" {
+  description = "The path where the cert-tool wrote the CA public key file. Path should be relative to the quorum vault module."
+  default     = "certs/ca.crt.pem"
+}
+
+variable "cert_tool_public_key_file_path" {
+  description = "The path where the cert-tool wrote the public key file. Path should be relative to the quorum vault module."
+  default     = "certs/vault.crt.pem"
+}
+
+variable "cert_tool_private_key_file_path" {
+  description = "The path where the cert-tool wrote the private key file. Path should be relative to the quorum vault module."
+  default     = "certs/vault.key.pem"
 }
 
 variable "vault_enterprise_license_key" {

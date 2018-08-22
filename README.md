@@ -134,22 +134,62 @@ Then continue by copying the AMIs to into terraform variables as usual:
 $ python copy-packer-artifacts-to-terraform.py
 ```
 
-## Launch Network with Terraform
+## Generate Certificates
+
+Certificates need to be generated separately, before launching the network. This allows us to delete the state for the cert-tool, which contains the certificate private key, for improved security in a production network.
+
+Change to the cert-tool directory
+
+```sh
+$ cd terraform/cert-tool
+```
 
 Copy the example.tfvars file
 
 ```sh
-$ cd terraform
 $ cp example.tfvars terraform.tfvars
 ```
 
-Fill in your username as the `cert_owner` via:
+Then open `terraform.tfvars` in a text editor and change anything you'd like to change.
+
+Finally, `init` and `apply` the configuration
 
 ```sh
-$ sed -i "s/FIXME_USER/$USER/" terraform.tfvars
+$ terraform init
+$ terraform apply
+# Respond 'yes' at the prompt
+```
+
+Take note of the output. You will need to input some values into the terraform variables for the next configuration.
+
+If this is an ephemeral test network, you do not need to recreate the certificates every time you replace the network. You can run it once and reuse the certificates each time.
+
+### Delete Terraform State
+
+If this is a production network, or otherwise one in which you are concerned about security, you will need to delete the terraform state, since it contains the plaintext private key, even if you enabled KMS encryption.
+
+```sh
+$ rm terraform.tfstate*
+```
+
+Be aware that an `aws_iam_server_certificate` and an `aws_kms_key` are both created by this configuration, and if the state is deleted they will no longer be managed by Terraform. Be sure you have saved the output from the configuration so that it can be imported by other configurations or cleaned up manually.
+
+## Launch Network with Terraform
+
+Change to the terraform directory, if you aren't already there from the above step
+
+```sh
+$ cd terraform
+```
+
+Copy the example.tfvars file
+
+```sh
+$ cp example.tfvars terraform.tfvars
 ```
 
 Check terraform.tfvars and change any values you would like to change:
+- **Certificate Details:** You will need to fill in the values for `cert_tool_kms_key_id` and `cert_tool_server_cert_arn`. Replace `FIXME` with the values from the output of the `cert-tool`.
 - **SSH Location:** Our default example file is built for OS X, which puts your home directory and its `.ssh` folder (aka `~/.ssh`) at `/Users/$USER/.ssh`.  If your SSH keyfile is not located within that directory, you will need to update the `public_key_path`.
 - **Network ID:** We have a default network value.  If there is already a network running with this ID on your AWS account, you need to change the network ID or there will be a conflict.  
 - **Not Free:** The values given in `example.tfvars` are NOT completely AWS free tier eligible, as they include t2.small and t2.medium instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.

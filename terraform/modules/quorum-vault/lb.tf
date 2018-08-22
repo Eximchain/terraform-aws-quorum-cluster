@@ -20,7 +20,7 @@ resource "aws_lb_listener" "quorum_vault" {
   port              = "${var.vault_port}"
   protocol          = "HTTPS"
   ssl_policy        = "${var.lb_ssl_policy}"
-  certificate_arn   = "${module.cert_tool.server_cert_arn}"
+  certificate_arn   = "${var.cert_tool_server_cert_arn}"
 
   default_action {
     target_group_arn = "${aws_lb_target_group.quorum_vault.arn}"

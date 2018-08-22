@@ -44,13 +44,11 @@ data "local_file" "public_key" {
 module "quorum_vault" {
   source = "../quorum-vault"
 
-  cert_owner = "${var.cert_owner}"
   public_key = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
 
   aws_region    = "${var.primary_region}"
   vault_port    = "${var.vault_port}"
   network_id    = "${var.network_id}"
-  cert_org_name = "${var.cert_org_name}"
 
   force_destroy_s3_bucket = "${var.force_destroy_s3_buckets}"
 
@@ -68,6 +66,13 @@ module "quorum_vault" {
   use_dedicated_consul_servers = "${var.use_dedicated_consul_servers}"
 
   vault_consul_ami = "${var.vault_consul_ami}"
+
+  cert_tool_ca_public_key_file_path = "${var.cert_tool_ca_public_key_file_path}"
+  cert_tool_public_key_file_path    = "${var.cert_tool_public_key_file_path}"
+  cert_tool_private_key_file_path   = "${var.cert_tool_private_key_file_path}"
+
+  cert_tool_kms_key_id      = "${var.cert_tool_kms_key_id}"
+  cert_tool_server_cert_arn = "${var.cert_tool_server_cert_arn}"
 
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
