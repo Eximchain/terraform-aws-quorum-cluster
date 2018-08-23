@@ -393,7 +393,7 @@ resource "aws_launch_configuration" "quorum_maker" {
   key_name = "${aws_key_pair.auth.id}"
 
   iam_instance_profile = "${element(aws_iam_instance_profile.quorum_maker.*.name, count.index)}"
-  security_groups      = ["${aws_security_group.quorum.id}"]
+  security_groups      = ["${aws_security_group.quorum_maker.id}"]
 
   placement_tenancy = "${var.use_dedicated_makers ? "dedicated" : "default"}"
 
@@ -414,7 +414,7 @@ resource "aws_launch_configuration" "quorum_validator" {
   key_name = "${aws_key_pair.auth.id}"
 
   iam_instance_profile = "${element(aws_iam_instance_profile.quorum_validator.*.name, count.index)}"
-  security_groups      = ["${aws_security_group.quorum.id}"]
+  security_groups      = ["${aws_security_group.quorum_validator.id}"]
 
   placement_tenancy = "${var.use_dedicated_validators ? "dedicated" : "default"}"
 
@@ -435,7 +435,7 @@ resource "aws_launch_configuration" "quorum_observer" {
   key_name = "${aws_key_pair.auth.id}"
 
   iam_instance_profile = "${element(aws_iam_instance_profile.quorum_observer.*.name, count.index)}"
-  security_groups      = ["${aws_security_group.quorum.id}"]
+  security_groups      = ["${aws_security_group.quorum_observer.id}"]
 
   placement_tenancy = "${var.use_dedicated_observers ? "dedicated" : "default"}"
 
@@ -494,21 +494,21 @@ data "aws_instance" "quorum_observer_node" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# QUORUM NODE SECURITY GROUP
+# QUORUM MAKER SECURITY GROUP
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_security_group" "quorum" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+resource "aws_security_group" "quorum_maker" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
-  name        = "quorum_nodes"
-  description = "Used for quorum nodes"
+  name_prefix = "quorum-maker-net-${var.network_id}-"
+  description = "Quorum maker nodes in network ${var.network_id}"
   vpc_id      = "${aws_vpc.quorum_cluster.id}"
 }
 
 # TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released
-resource "aws_security_group_rule" "quorum_ssh" {
-  count = "${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) == 0 ? 0 : length(var.ssh_ips) > 0 ? length(var.ssh_ips) : 1}"
+resource "aws_security_group_rule" "quorum_maker_ssh" {
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0) == 0 ? 0 : length(var.ssh_ips) > 0 ? length(var.ssh_ips) : 1}"
 
-  security_group_id = "${aws_security_group.quorum.id}"
+  security_group_id = "${aws_security_group.quorum_maker.id}"
   type              = "ingress"
 
   from_port = 22
@@ -518,10 +518,10 @@ resource "aws_security_group_rule" "quorum_ssh" {
   cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(concat(var.ssh_ips, list("")), count.index))}"]
 }
 
-resource "aws_security_group_rule" "quorum_constellation" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+resource "aws_security_group_rule" "quorum_maker_constellation" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
-  security_group_id = "${aws_security_group.quorum.id}"
+  security_group_id = "${aws_security_group.quorum_maker.id}"
   type              = "ingress"
 
   from_port = 9000
@@ -531,10 +531,10 @@ resource "aws_security_group_rule" "quorum_constellation" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "quorum_quorum" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+resource "aws_security_group_rule" "quorum_maker_quorum" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
-  security_group_id = "${aws_security_group.quorum.id}"
+  security_group_id = "${aws_security_group.quorum_maker.id}"
   type              = "ingress"
 
   from_port = 21000
@@ -544,10 +544,10 @@ resource "aws_security_group_rule" "quorum_quorum" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "quorum_udp" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+resource "aws_security_group_rule" "quorum_maker_udp" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
-  security_group_id = "${aws_security_group.quorum.id}"
+  security_group_id = "${aws_security_group.quorum_maker.id}"
   type              = "ingress"
 
   from_port = 21000
@@ -557,10 +557,10 @@ resource "aws_security_group_rule" "quorum_udp" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "quorum_rpc" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+resource "aws_security_group_rule" "quorum_maker_rpc" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
-  security_group_id = "${aws_security_group.quorum.id}"
+  security_group_id = "${aws_security_group.quorum_maker.id}"
   type              = "ingress"
 
   from_port = 22000
@@ -570,10 +570,10 @@ resource "aws_security_group_rule" "quorum_rpc" {
   cidr_blocks = ["127.0.0.1/32"]
 }
 
-resource "aws_security_group_rule" "supervisor_rpc" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+resource "aws_security_group_rule" "quorum_maker_supervisor_rpc" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
-  security_group_id = "${aws_security_group.quorum.id}"
+  security_group_id = "${aws_security_group.quorum_maker.id}"
   type              = "ingress"
 
   from_port = 9001
@@ -583,10 +583,10 @@ resource "aws_security_group_rule" "supervisor_rpc" {
   cidr_blocks = ["127.0.0.1/32"]
 }
 
-resource "aws_security_group_rule" "quorum_bootnode" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+resource "aws_security_group_rule" "quorum_maker_bootnode" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
-  security_group_id = "${aws_security_group.quorum.id}"
+  security_group_id = "${aws_security_group.quorum_maker.id}"
   type              = "ingress"
 
   from_port = 30301
@@ -596,10 +596,242 @@ resource "aws_security_group_rule" "quorum_bootnode" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "quorum_egress" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+resource "aws_security_group_rule" "quorum_maker_egress" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
-  security_group_id = "${aws_security_group.quorum.id}"
+  security_group_id = "${aws_security_group.quorum_maker.id}"
+  type              = "egress"
+
+  from_port = 0
+  to_port   = 0
+  protocol  = "-1"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# QUORUM VALIDATOR SECURITY GROUP
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_security_group" "quorum_validator" {
+  count = "${signum(lookup(var.validator_node_counts, var.aws_region, 0))}"
+
+  name_prefix = "quorum-validator-net-${var.network_id}-"
+  description = "Quorum validator nodes in network ${var.network_id}"
+  vpc_id      = "${aws_vpc.quorum_cluster.id}"
+}
+
+# TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released
+resource "aws_security_group_rule" "quorum_validator_ssh" {
+  count = "${lookup(var.validator_node_counts, var.aws_region, 0) == 0 ? 0 : length(var.ssh_ips) > 0 ? length(var.ssh_ips) : 1}"
+
+  security_group_id = "${aws_security_group.quorum_validator.id}"
+  type              = "ingress"
+
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(concat(var.ssh_ips, list("")), count.index))}"]
+}
+
+resource "aws_security_group_rule" "quorum_validator_constellation" {
+  count = "${signum(lookup(var.validator_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_validator.id}"
+  type              = "ingress"
+
+  from_port = 9000
+  to_port   = 9000
+  protocol  = "tcp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "quorum_validator_quorum" {
+  count = "${signum(lookup(var.validator_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_validator.id}"
+  type              = "ingress"
+
+  from_port = 21000
+  to_port   = 21000
+  protocol  = "tcp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "quorum_validator_udp" {
+  count = "${signum(lookup(var.validator_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_validator.id}"
+  type              = "ingress"
+
+  from_port = 21000
+  to_port   = 21000
+  protocol  = "udp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "quorum_validator_rpc" {
+  count = "${signum(lookup(var.validator_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_validator.id}"
+  type              = "ingress"
+
+  from_port = 22000
+  to_port   = 22000
+  protocol  = "tcp"
+
+  cidr_blocks = ["127.0.0.1/32"]
+}
+
+resource "aws_security_group_rule" "quorum_validator_supervisor_rpc" {
+  count = "${signum(lookup(var.validator_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_validator.id}"
+  type              = "ingress"
+
+  from_port = 9001
+  to_port   = 9001
+  protocol  = "tcp"
+
+  cidr_blocks = ["127.0.0.1/32"]
+}
+
+resource "aws_security_group_rule" "quorum_validator_bootnode" {
+  count = "${signum(lookup(var.validator_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_validator.id}"
+  type              = "ingress"
+
+  from_port = 30301
+  to_port   = 30301
+  protocol  = "udp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "quorum_validator_egress" {
+  count = "${signum(lookup(var.validator_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_validator.id}"
+  type              = "egress"
+
+  from_port = 0
+  to_port   = 0
+  protocol  = "-1"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# QUORUM OBSERVER SECURITY GROUP
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_security_group" "quorum_observer" {
+  count = "${signum(lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  name_prefix = "quorum-observer-net-${var.network_id}-"
+  description = "Quorum observer nodes in network ${var.network_id}"
+  vpc_id      = "${aws_vpc.quorum_cluster.id}"
+}
+
+# TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released
+resource "aws_security_group_rule" "quorum_observer_ssh" {
+  count = "${lookup(var.observer_node_counts, var.aws_region, 0) == 0 ? 0 : length(var.ssh_ips) > 0 ? length(var.ssh_ips) : 1}"
+
+  security_group_id = "${aws_security_group.quorum_observer.id}"
+  type              = "ingress"
+
+  from_port = 22
+  to_port   = 22
+  protocol  = "tcp"
+
+  cidr_blocks = ["${length(var.ssh_ips) == 0 ? "0.0.0.0/0" : format("%s/32", element(concat(var.ssh_ips, list("")), count.index))}"]
+}
+
+resource "aws_security_group_rule" "quorum_observer_constellation" {
+  count = "${signum(lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_observer.id}"
+  type              = "ingress"
+
+  from_port = 9000
+  to_port   = 9000
+  protocol  = "tcp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "quorum_observer_quorum" {
+  count = "${signum(lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_observer.id}"
+  type              = "ingress"
+
+  from_port = 21000
+  to_port   = 21000
+  protocol  = "tcp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "quorum_observer_udp" {
+  count = "${signum(lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_observer.id}"
+  type              = "ingress"
+
+  from_port = 21000
+  to_port   = 21000
+  protocol  = "udp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "quorum_observer_rpc" {
+  count = "${signum(lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_observer.id}"
+  type              = "ingress"
+
+  from_port = 22000
+  to_port   = 22000
+  protocol  = "tcp"
+
+  cidr_blocks = ["127.0.0.1/32"]
+}
+
+resource "aws_security_group_rule" "quorum_observer_supervisor_rpc" {
+  count = "${signum(lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_observer.id}"
+  type              = "ingress"
+
+  from_port = 9001
+  to_port   = 9001
+  protocol  = "tcp"
+
+  cidr_blocks = ["127.0.0.1/32"]
+}
+
+resource "aws_security_group_rule" "quorum_observer_bootnode" {
+  count = "${signum(lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_observer.id}"
+  type              = "ingress"
+
+  from_port = 30301
+  to_port   = 30301
+  protocol  = "udp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "quorum_observer_egress" {
+  count = "${signum(lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.quorum_observer.id}"
   type              = "egress"
 
   from_port = 0
