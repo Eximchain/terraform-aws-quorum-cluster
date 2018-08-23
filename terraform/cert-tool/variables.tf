@@ -14,7 +14,7 @@ variable "common_name" {
   description = "The common name to use in the subject of the certificate (e.g. acme.co cert)."
 }
 
-variable "dns_names" {
+variable "dns_name" {
   description = "DNS name for which the certificate will be valid (e.g. vault.exim)."
 }
 

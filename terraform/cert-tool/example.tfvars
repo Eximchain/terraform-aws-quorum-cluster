@@ -3,5 +3,5 @@ owner                 = "$USER"
 organization_name     = "Example Co."
 ca_common_name        = "Example CA"
 common_name           = "Example Cert"
-dns_names             = "vault.exim"
+dns_name              = "vault.exim"
 validity_period_hours = 8760
