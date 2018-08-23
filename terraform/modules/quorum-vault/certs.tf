@@ -47,9 +47,9 @@ resource "aws_s3_bucket_object" "vault_public_key" {
 }
 
 resource "aws_s3_bucket_object" "vault_private_key" {
-  key                    = "vault.key.pem.encrypted"
+  key                    = "vault.key.pem.encrypted.b64"
   bucket                 = "${aws_s3_bucket.vault_certs.bucket}"
-  content                = "${var.cert_tool_private_key_base64 == "" ? join("", data.local_file.cert_tool_private_key_file.*.content) : base64decode(var.cert_tool_private_key_base64)}"
+  content                = "${var.cert_tool_private_key_base64 == "" ? join("", data.local_file.cert_tool_private_key_file.*.content) : var.cert_tool_private_key_base64}"
   server_side_encryption = "aws:kms"
 }
 

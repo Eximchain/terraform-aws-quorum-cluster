@@ -68,10 +68,11 @@ setup_foxpass_if_specified
 aws configure set s3.signature_version s3v4
 aws s3 cp s3://${vault_cert_bucket}/ca.crt.pem $VAULT_TLS_CERT_DIR
 aws s3 cp s3://${vault_cert_bucket}/vault.crt.pem $VAULT_TLS_CERT_DIR
-aws s3 cp s3://${vault_cert_bucket}/vault.key.pem.encrypted $VAULT_TLS_CERT_DIR
+aws s3 cp s3://${vault_cert_bucket}/vault.key.pem.encrypted.b64 $VAULT_TLS_CERT_DIR
 
 # Decrypt the private key
 aws configure set default.region ${aws_region}
+cat $VAULT_TLS_CERT_DIR/vault.key.pem.encrypted.b64 | base64 --decode > $VAULT_TLS_CERT_DIR/vault.key.pem.encrypted
 aws kms decrypt --ciphertext-blob fileb://$VAULT_TLS_CERT_DIR/vault.key.pem.encrypted --output text --query Plaintext | base64 --decode > $VAULT_TLS_CERT_DIR/vault.key.pem
 
 # Save node counts to files for use by generate-setup-vault.sh

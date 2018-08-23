@@ -63,7 +63,7 @@ resource "null_resource" "overwrite_private_key_with_encryption" {
   count = "${var.use_kms_encryption ? 1 : 0}"
 
   provisioner "local-exec" {
-    command = "echo '${data.aws_kms_ciphertext.private_key.ciphertext_blob}' | base64 --decode > '${var.private_key_file_path}'"
+    command = "echo '${data.aws_kms_ciphertext.private_key.ciphertext_blob}' > '${var.private_key_file_path}'"
   }
 }
 
