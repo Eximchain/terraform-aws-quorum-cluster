@@ -165,6 +165,20 @@ resource "aws_security_group_rule" "quorum_validator_quorum" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
+# TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released
+resource "aws_security_group_rule" "quorum_validator_extra_quorum" {
+  count = "${lookup(var.validator_node_counts, var.aws_region, 0) == 0 ? 0 : length(var.other_validator_connection_ips)}"
+
+  security_group_id = "${aws_security_group.quorum_validator.id}"
+  type              = "ingress"
+
+  from_port = 21000
+  to_port   = 21000
+  protocol  = "tcp"
+
+  cidr_blocks = ["${format("%s/32", element(concat(var.other_validator_connection_ips, list("")), count.index))}"]
+}
+
 resource "aws_security_group_rule" "quorum_validator_udp" {
   count = "${signum(lookup(var.validator_node_counts, var.aws_region, 0))}"
 

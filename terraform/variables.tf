@@ -126,6 +126,11 @@ variable "ssh_ips" {
   default     = []
 }
 
+variable "other_validator_connection_ips" {
+  description = "List of IP addresses outside the network that validators are allowed to directly connect to."
+  default     = []
+}
+
 variable "bootnode_instance_type" {
   description = "The EC2 instance type to use for bootnodes"
   default = "t2.small"
