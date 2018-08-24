@@ -1021,8 +1021,8 @@ module "quorum_cluster_sa_east_1" {
 # ---------------------------------------------------------------------------------------------------------------------
 # Peering connections between the vault VPC and other VPCs
 # ---------------------------------------------------------------------------------------------------------------------
-module "vault_vpc_peering_connections" {
-  source = "../quorum-vault-vpc-peering"
+module "vpc_peering_connections" {
+  source = "../quorum-vpc-peering"
 
   network_id     = "${var.network_id}"
   primary_region = "${var.primary_region}"
