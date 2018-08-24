@@ -390,7 +390,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_us_east_1" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in us-east-1)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in us-east-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "us-east-1"
@@ -416,7 +416,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_us_east_2" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in us-east-2)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in us-east-2"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "us-east-2"
@@ -442,7 +442,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_us_west_1" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in us-west-1)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in us-west-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "us-west-1"
@@ -468,7 +468,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_us_west_2" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in us-west-2)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in us-west-2"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "us-west-2"
@@ -494,7 +494,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_eu_central_1" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in eu-central-1)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in eu-central-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "eu-central-1"
@@ -520,7 +520,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_eu_west_1" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in eu-west-1)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in eu-west-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "eu-west-1"
@@ -546,7 +546,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_eu_west_2" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in eu-west-2)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in eu-west-2"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "eu-west-2"
@@ -572,7 +572,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_south_1" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in ap-south-1)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in ap-south-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-south-1"
@@ -598,7 +598,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_northeast_1" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in ap-northeast-1)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in ap-northeast-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-northeast-1"
@@ -624,7 +624,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_northeast_2" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in ap-northeast-2)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in ap-northeast-2"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-northeast-2"
@@ -650,7 +650,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_southeast_1" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in ap-southeast-1)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in ap-southeast-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-southeast-1"
@@ -676,7 +676,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_southeast_2" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in ap-southeast-2)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in ap-southeast-2"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-southeast-2"
@@ -702,7 +702,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ca_central_1" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in ca-central-1)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in ca-central-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ca-central-1"
@@ -728,7 +728,7 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_sa_east_1" {
   }
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to bootnode in sa-east-1)"
+    Name       = "Network ${var.network_id} VPC peering to bootnode in sa-east-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "sa-east-1"
