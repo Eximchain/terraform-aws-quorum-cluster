@@ -1,3 +1,11 @@
+output "quorum_vpc_id" {
+  value = "${length(aws_vpc.quorum_cluster.*.id) != 0 ? element(concat(aws_vpc.quorum_cluster.*.id, list("")), 0) : ""}"
+}
+
+output "bootnode_vpc_id" {
+  value = "${length(aws_vpc.bootnodes.*.id) != 0 ? element(concat(aws_vpc.bootnodes.*.id, list("")), 0) : ""}"
+}
+
 output "quorum_maker_node_dns" {
   value = "${data.aws_instance.quorum_maker_node.*.public_dns}"
 }

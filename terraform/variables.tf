@@ -2,10 +2,6 @@
 # REQUIRED PARAMETERS
 # You must provide a value for each of these parameters.
 # ---------------------------------------------------------------------------------------------------------------------
-variable "cert_owner" {
-  description = "The OS user to be made the owner of the local copy of the vault certificates. Should usually be set to the user operating the tool."
-}
-
 variable "vote_threshold" {
   description = "The number of votes needed to confirm a block. This should be more than half of the number of validator nodes."
 }
@@ -16,6 +12,14 @@ variable "min_block_time" {
 
 variable "max_block_time" {
   description = "The maximum number of seconds a block maker should wait between proposing blocks."
+}
+
+variable "cert_tool_kms_key_id" {
+  description = "The KMS Key ID that the cert tool encrypted the private key with. Will be output by the cert-tool module."
+}
+
+variable "cert_tool_server_cert_arn" {
+  description = "The ARN of the IAM server certificate created for the Vault Load Balancer. Will be output by the cert-tool module."
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -117,9 +121,14 @@ variable "use_elastic_bootnode_ips" {
   default     = false
 }
 
-variable "cert_org_name" {
-  description = "The organization to associate with the vault certificates."
-  default     = "Example Co."
+variable "ssh_ips" {
+  description = "List of IP addresses allowed to SSH nodes in this network. If empty, will allow SSH from anywhere."
+  default     = []
+}
+
+variable "other_validator_connection_ips" {
+  description = "List of IP addresses outside the network that validators are allowed to directly connect to."
+  default     = []
 }
 
 variable "bootnode_instance_type" {
@@ -177,13 +186,83 @@ variable "consul_instance_type" {
   default     = "t2.micro"
 }
 
+variable "quorum_vpc_base_cidr" {
+  description = "Base CIDR range to assign quorum VPCs from."
+  default     = "10.0.0.0/16"
+}
+
+variable "bootnode_vpc_base_cidr" {
+  description = "Base CIDR range to assign bootnode VPCs from."
+  default     = "172.16.0.0/16"
+}
+
 variable "node_volume_size" {
   description = "The size of the EBS volume for a quorum node in GB"
   default     = 20
 }
 
+variable "internal_dns_root_domain" {
+  description = "The base domain for the hosted zone"
+  default     = "exim"
+}
+
+variable "internal_dns_sub_domain_vault" {
+  description = "The sub domain for the vault LB"
+  default     = "vault"
+}
+
+variable "cert_tool_ca_public_key" {
+  description = "The CA Public Key. If not provided, will default to loading from file."
+  default     = ""
+}
+
+variable "cert_tool_public_key" {
+  description = "The TLS Public Key. If not provided, will default to loading from file."
+  default     = ""
+}
+
+variable "cert_tool_private_key_base64" {
+  description = "The TLS Private Key. If not provided, will default to loading from file. Must be KMS encrypted in base64 format."
+  default     = ""
+}
+
+variable "cert_tool_ca_public_key_file_path" {
+  description = "The path where the cert-tool wrote the CA public key file. Path should be relative to the quorum vault module."
+  default     = "certs/ca.crt.pem"
+}
+
+variable "cert_tool_public_key_file_path" {
+  description = "The path where the cert-tool wrote the public key file. Path should be relative to the quorum vault module."
+  default     = "certs/vault.crt.pem"
+}
+
+variable "cert_tool_private_key_file_path" {
+  description = "The path where the cert-tool wrote the private key file. Path should be relative to the quorum vault module."
+  default     = "certs/vault.key.pem"
+}
+
 variable "threatstack_deploy_key" {
   description = "Deploy key to use to activate threatstack agents, if using one"
+  default     = ""
+}
+
+variable "foxpass_base_dn" {
+  description = "The Base DN for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_bind_user" {
+  description = "The bind user name for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_bind_pw" {
+  description = "The bind user password for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_api_key" {
+  description = "The API key for your Foxpass account, if managing SSH keys with Foxpass"
   default     = ""
 }
 

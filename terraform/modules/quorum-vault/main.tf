@@ -20,7 +20,7 @@ resource "aws_key_pair" "auth" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# KMS UNSEAL KEY
+# KMS UNSEAL KEY FOR ENTERPRISE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_kms_key" "vault_unseal" {
   # Create only if we're using vault enterprise
@@ -37,76 +37,45 @@ resource "aws_kms_grant" "vault_unseal" {
   count = "${var.vault_enterprise_license_key == "" ? 0 : 1}"
 
   key_id            = "${aws_kms_key.vault_unseal.key_id}"
-  grantee_principal = "${module.vault_cluster.iam_role_arn}"
+  grantee_principal = "${aws_iam_role.vault_cluster.arn}"
 
   operations = [ "Encrypt", "Decrypt", "DescribeKey" ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# VAULT CLUSTER NETWORKING
+# NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_availability_zones" "available" {
   state = "available"
 }
 
-resource "aws_vpc" "vault" {
-  cidr_block           = "192.168.0.0/16"
+resource "aws_vpc" "vault_consul" {
+  cidr_block           = "${var.vault_consul_vpc_cidr}"
   enable_dns_hostnames = true
 }
 
-resource "aws_internet_gateway" "vault" {
-  vpc_id = "${aws_vpc.vault.id}"
+resource "aws_default_security_group" "vault_consul" {
+  count = "${aws_vpc.vault_consul.count}"
+
+  vpc_id = "${aws_vpc.vault_consul.id}"
 }
 
-resource "aws_route" "vault" {
-  route_table_id         = "${aws_vpc.vault.main_route_table_id}"
+resource "aws_internet_gateway" "vault_consul" {
+  vpc_id = "${aws_vpc.vault_consul.id}"
+}
+
+resource "aws_route" "vault_consul" {
+  route_table_id         = "${aws_vpc.vault_consul.main_route_table_id}"
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.vault.id}"
+  gateway_id             = "${aws_internet_gateway.vault_consul.id}"
 }
 
-resource "aws_subnet" "vault" {
-  vpc_id                  = "${aws_vpc.vault.id}"
+resource "aws_subnet" "vault_consul" {
+  vpc_id                  = "${aws_vpc.vault_consul.id}"
   count                   = "${length(data.aws_availability_zones.available.names)}"
   availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
   cidr_block              = "192.168.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# S3 BUCKET FOR VAULT BACKEND
-# ---------------------------------------------------------------------------------------------------------------------
-resource "aws_s3_bucket" "quorum_vault" {
-  bucket_prefix = "quorum-vault-network-${var.network_id}-"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# LOAD BALANCER FOR VAULT
-# ---------------------------------------------------------------------------------------------------------------------
-resource "aws_lb" "quorum_vault" {
-  internal = false
-
-  subnets         = ["${aws_subnet.vault.*.id}"]
-  security_groups = ["${module.vault_cluster.security_group_id}"]
-}
-
-resource "aws_lb_target_group" "quorum_vault" {
-  name = "vault-lb-target-net-${var.network_id}"
-  port = "${var.vault_port}"
-  protocol = "HTTPS"
-  vpc_id = "${aws_vpc.vault.id}"
-}
-
-resource "aws_lb_listener" "quorum_vault" {
-  load_balancer_arn = "${aws_lb.quorum_vault.arn}"
-  port              = "${var.vault_port}"
-  protocol          = "HTTPS"
-  ssl_policy        = "${var.lb_ssl_policy}"
-  certificate_arn   = "${aws_iam_server_certificate.vault_certs.arn}"
-
-  default_action {
-    target_group_arn = "${aws_lb_target_group.quorum_vault.arn}"
-    type             = "forward"
-  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -123,153 +92,127 @@ data "aws_ami" "vault_consul" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# DEPLOY THE VAULT SERVER CLUSTER
+# CONSUL AUTO-DISCOVER POLICY
 # ---------------------------------------------------------------------------------------------------------------------
+resource "aws_iam_policy" "auto_discover_cluster" {
+  name   = "auto-discover-cluster-net-${var.network_id}"
+  policy = "${data.aws_iam_policy_document.auto_discover_cluster.json}"
 
-module "vault_cluster" {
-  source = "github.com/hashicorp/terraform-aws-vault.git//modules/vault-cluster?ref=v0.0.8"
-
-  cluster_name  = "quorum-vault-network-${var.network_id}"
-  cluster_size  = "${var.vault_cluster_size}"
-  instance_type = "${var.vault_instance_type}"
-
-  ami_id    = "${var.vault_consul_ami == "" ? data.aws_ami.vault_consul.id : var.vault_consul_ami}"
-  user_data = "${data.template_file.user_data_vault_cluster.rendered}"
-
-  s3_bucket_name          = "${aws_s3_bucket.quorum_vault.id}"
-  force_destroy_s3_bucket = "${var.force_destroy_s3_bucket}"
-
-  vpc_id     = "${aws_vpc.vault.id}"
-  subnet_ids = "${aws_subnet.vault.*.id}"
-
-  tenancy = "${var.use_dedicated_vault_servers ? "dedicated" : "default"}"
-
-  target_group_arns = ["${aws_lb_target_group.quorum_vault.arn}"]
-
-  allowed_ssh_cidr_blocks            = ["0.0.0.0/0"]
-  allowed_inbound_cidr_blocks        = ["0.0.0.0/0"]
-  allowed_inbound_security_group_ids = []
-  ssh_key_name                       = "${aws_key_pair.auth.id}"
+  description = "Allow consul cluster auto-discovery"
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# ALLOW VAULT CLUSTER TO USE AWS AUTH
-# ---------------------------------------------------------------------------------------------------------------------
-resource "aws_iam_policy" "allow_aws_auth" {
-  name        = "allow_aws_auth_network_${var.network_id}"
-  description = "Allow authentication to vault by AWS mechanisms"
+data "aws_iam_policy_document" "auto_discover_cluster" {
+  statement {
+    effect = "Allow"
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [{
-    "Effect": "Allow",
-    "Action": [
+    actions = [
       "ec2:DescribeInstances",
-      "iam:GetInstanceProfile",
-      "iam:GetUser",
-      "iam:GetRole"
-    ],
-    "Resource": "*"
-  }]
-}
-EOF
-}
+      "ec2:DescribeTags",
+      "autoscaling:DescribeAutoScalingGroups",
+    ]
 
-resource "aws_iam_role_policy_attachment" "allow_aws_auth" {
-  role       = "${module.vault_cluster.iam_role_id}"
-  policy_arn = "${aws_iam_policy.allow_aws_auth.arn}"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ATTACH IAM POLICIES FOR CONSUL
-# To allow our Vault servers to automatically discover the Consul servers, we need to give them the IAM permissions from
-# the Consul AWS Module's consul-iam-policies module.
-# ---------------------------------------------------------------------------------------------------------------------
-
-module "consul_iam_policies_servers" {
-  source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-iam-policies?ref=v0.1.0"
-
-  iam_role_id = "${module.vault_cluster.iam_role_id}"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# THE USER DATA SCRIPT THAT WILL RUN ON EACH VAULT SERVER WHEN IT'S BOOTING
-# This script will configure and start Vault
-# ---------------------------------------------------------------------------------------------------------------------
-
-data "template_file" "user_data_vault_cluster" {
-  template = "${file("${path.module}/user-data/user-data-vault.sh")}"
-
-  vars {
-    aws_region                   = "${var.aws_region}"
-    s3_bucket_name               = "${aws_s3_bucket.quorum_vault.id}"
-    consul_cluster_tag_key       = "${module.consul_cluster.cluster_tag_key}"
-    consul_cluster_tag_value     = "${module.consul_cluster.cluster_tag_value}"
-    network_id                   = "${var.network_id}"
-    vault_cert_bucket            = "${aws_s3_bucket.vault_certs.bucket}"
-    kms_unseal_key_id            = "${join("", aws_kms_key.vault_unseal.*.key_id)}"
-    vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
-    threatstack_deploy_key       = "${var.threatstack_deploy_key}"
-  }
-
-  # user-data needs to download these objects
-  depends_on = ["aws_s3_bucket_object.vault_ca_public_key", "aws_s3_bucket_object.vault_public_key", "aws_s3_bucket_object.vault_private_key"]
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# DEPLOY THE CONSUL SERVER CLUSTER
-# ---------------------------------------------------------------------------------------------------------------------
-
-module "consul_cluster" {
-  source = "github.com/hashicorp/terraform-aws-consul.git//modules/consul-cluster?ref=v0.1.0"
-
-  cluster_name  = "quorum-consul"
-  cluster_size  = "${var.consul_cluster_size}"
-  instance_type = "${var.consul_instance_type}"
-
-  # The EC2 Instances will use these tags to automatically discover each other and form a cluster
-  cluster_tag_key   = "consul-cluster"
-  cluster_tag_value = "quorum-consul"
-
-  ami_id    = "${var.vault_consul_ami == "" ? data.aws_ami.vault_consul.id : var.vault_consul_ami}"
-  user_data = "${data.template_file.user_data_consul.rendered}"
-
-  vpc_id     = "${aws_vpc.vault.id}"
-  subnet_ids = "${aws_subnet.vault.*.id}"
-
-  tenancy = "${var.use_dedicated_consul_servers ? "dedicated" : "default"}"
-
-  # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
-  # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
-
-  allowed_ssh_cidr_blocks     = ["0.0.0.0/0"]
-  allowed_inbound_cidr_blocks = ["0.0.0.0/0"]
-  ssh_key_name                = "${aws_key_pair.auth.id}"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# THE USER DATA SCRIPT THAT WILL RUN ON EACH CONSUL SERVER WHEN IT'S BOOTING
-# This script will configure and start Consul
-# ---------------------------------------------------------------------------------------------------------------------
-
-data "template_file" "user_data_consul" {
-  template = "${file("${path.module}/user-data/user-data-consul.sh")}"
-
-  vars {
-    consul_cluster_tag_key   = "${module.consul_cluster.cluster_tag_key}"
-    consul_cluster_tag_value = "${module.consul_cluster.cluster_tag_value}"
-    threatstack_deploy_key   = "${var.threatstack_deploy_key}"
+    resources = ["*"]
   }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# EXPORT CURRENT VAULT SERVER IPS
-# These servers may change over time but you can use an arbitrary server for initial setup
+# ASSUME ROLE POLICY DOCUMENT
 # ---------------------------------------------------------------------------------------------------------------------
-data "aws_instances" "vault_servers" {
-  filter {
-    name   = "tag:aws:autoscaling:groupName"
-    values = ["${module.vault_cluster.asg_name}"]
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# NODE COUNT JSONS REQUIRED TO CREATE VAULT POLICIES
+# ---------------------------------------------------------------------------------------------------------------------
+data "template_file" "maker_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.maker_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.maker_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.maker_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.maker_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.maker_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.maker_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.maker_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.maker_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.maker_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.maker_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.maker_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.maker_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.maker_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.maker_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "validator_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.validator_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.validator_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.validator_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.validator_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.validator_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.validator_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.validator_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.validator_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.validator_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.validator_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.validator_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.validator_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.validator_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.validator_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "observer_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.observer_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.observer_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.observer_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.observer_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.observer_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.observer_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.observer_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.observer_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.observer_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.observer_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.observer_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.observer_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.observer_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.observer_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "bootnode_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.bootnode_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.bootnode_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.bootnode_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.bootnode_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.bootnode_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.bootnode_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.bootnode_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.bootnode_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.bootnode_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.bootnode_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.bootnode_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.bootnode_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.bootnode_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.bootnode_counts, "us-west-2", 0)}"
   }
 }

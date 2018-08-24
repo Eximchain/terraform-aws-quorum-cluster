@@ -1,8 +1,10 @@
-public_key_path                = "/Users/FIXME_USER/.ssh/quorum.pub"
+public_key_path                = "/Users/$USER/.ssh/quorum.pub"
 primary_region                 = "us-east-1"
-cert_owner                     = "FIXME_USER"
+cert_owner                     = "$USER"
 key_name                       = "quorum-cluster"
 network_id                     = 64813
+cert_tool_kms_key_id           = "FIXME"
+cert_tool_server_cert_arn      = "FIXME"
 force_destroy_s3_buckets       = true
 generate_metrics               = true
 use_dedicated_bootnodes        = false

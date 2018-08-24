@@ -50,6 +50,16 @@ variable "validity_period_hours" {
 # These parameters have reasonable defaults.
 # ---------------------------------------------------------------------------------------------------------------------
 
+variable "use_kms_encryption" {
+  description = "If true, will create a KMS key to encrypt the private key with."
+  default     = false
+}
+
+variable "kms_key_deletion_window" {
+  description = "How long to wait after destroying this environment before deleting the KMS key, if used."
+  default     = 7
+}
+
 variable "ca_allowed_uses" {
   description = "List of keywords from RFC5280 describing a use that is permitted for the CA certificate. For more info and the list of keywords, see https://www.terraform.io/docs/providers/tls/r/self_signed_cert.html#allowed_uses."
   type        = "list"
@@ -89,4 +99,13 @@ variable "private_key_ecdsa_curve" {
 variable "private_key_rsa_bits" {
   description = "The size of the generated RSA key in bits. Should only be used if var.private_key_algorithm is RSA."
   default     = "2048"
+}
+
+variable "network_id" {
+  description = <<DESCRIPTION
+Ethereum network ID, also used in naming some resources for uniqueness.
+Must be unique amongst networks in the same AWS account and launched with this tool.
+Ideally is globally unique amongst ethereum and quorum networks.
+DESCRIPTION
+  default = 64813
 }

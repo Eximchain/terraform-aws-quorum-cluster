@@ -1,0 +1,126 @@
+{
+  "min_packer_version": "0.12.0",
+  "variables": {
+    "aws_region": "us-east-1",
+    "extra_regions": "",
+    "ami_groups": "",
+    "encrypted": "false",
+    "ca_public_key_path": "certs/ca-cert.pub",
+    "tls_public_key_path": "certs/cert.pub",
+    "tls_private_key_path": "certs/cert.pem"
+  },
+  "builders": [{
+    "ami_name": "eximchain-vault-quorum-{{isotime | clean_ami_name}}",
+    "ami_description": "An Ubuntu 16.04 AMI that has Vault and Consul installed.",
+    "instance_type": "t2.medium",
+    "name": "ubuntu16-ami",
+    "region": "{{user `aws_region`}}",
+    "ami_regions": "{{user `extra_regions`}}",
+    "ami_groups": "{{user `ami_groups`}}",
+    "encrypt_boot": "{{user `encrypted`}}",
+    "type": "amazon-ebs",
+    "source_ami_filter": {
+      "filters": {
+        "virtualization-type": "hvm",
+        "architecture": "x86_64",
+        "name": "*ubuntu-xenial-16.04-amd64-server-*",
+        "block-device-mapping.volume-type": "gp2",
+        "root-device-type": "ebs"
+      },
+      "owners": ["099720109477"],
+      "most_recent": true
+    },
+    "launch_block_device_mappings": [{
+      "device_name": "/dev/sda1",
+      "volume_size": 20,
+      "delete_on_termination": true
+    }],
+    "ssh_username": "ubuntu"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "script": "../provisioning-scripts/build-deps.sh",
+    "pause_before": "30s"
+  },{
+    "type": "file",
+    "source": "../configs/supervisord.conf",
+    "destination": "/tmp/supervisord.conf"
+  },{
+    "type": "file",
+    "source": "../instance-scripts/run-vault",
+    "destination": "/tmp/run-vault"
+  },{
+    "type": "file",
+    "source": "../instance-scripts/run-consul",
+    "destination": "/tmp/run-consul"
+  },{
+    "type": "shell",
+    "scripts": [
+      "../provisioning-scripts/supervisor.sh",
+      "../provisioning-scripts/foxpass-setup-script.sh",
+      "../provisioning-scripts/install-vault",
+      "../provisioning-scripts/install-consul",
+      "../provisioning-scripts/install-dnsmasq"
+    ]
+  },{
+    "type": "file",
+    "source": "../instance-scripts/update-certificate-store",
+    "destination": "/tmp/update-certificate-store"
+  },{
+    "type": "file",
+    "source": "../vault-policies/base-read.hcl",
+    "destination": "/tmp/base-read.hcl"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mkdir /opt/vault/config/policies",
+      "sudo mv /tmp/update-certificate-store /opt/vault/bin/",
+      "sudo mv /tmp/base-read.hcl /opt/vault/config/policies/",
+      "sudo chown vault:vault /opt/vault/config/policies/*",
+      "sudo chmod +x /opt/vault/bin/update-certificate-store",
+      "sudo chmod 644 /opt/vault/config/policies/*"
+    ]
+  },{
+    "type": "file",
+    "source": "../data/regions.txt",
+    "destination": "/tmp/regions.txt"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/regions.txt /opt/vault/data/",
+      "sudo chown vault:vault /opt/vault/data/*",
+      "sudo chmod 644 /opt/vault/data/*"
+    ]
+  },{
+    "type": "file",
+    "source": "../instance-scripts/generate-setup-vault.sh",
+    "destination": "/tmp/generate-setup-vault.sh"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/generate-setup-vault.sh /opt/vault/bin/",
+      "sudo chown ubuntu /opt/vault/bin/generate-setup-vault.sh",
+      "sudo chmod 744 /opt/vault/bin/generate-setup-vault.sh"
+    ]
+  },{
+    "type": "file",
+    "source": "../vault-policies/write-node-policies.py",
+    "destination": "/tmp/write-node-policies.py"
+  },{
+    "type": "shell",
+    "scripts": [
+      "../provisioning-scripts/threatstack.sh",
+      "../provisioning-scripts/cleanup.sh"
+    ]
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo mv /tmp/write-node-policies.py /opt/vault/bin/"
+    ]
+  }],
+  "post-processors": [{
+    "type": "manifest",
+    "output": "../manifests/vault-consul.json",
+    "strip_path": true
+  }]
+}

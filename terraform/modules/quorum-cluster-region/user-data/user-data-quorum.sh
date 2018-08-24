@@ -5,12 +5,16 @@
 
 set -eu
 
-readonly BASH_PROFILE_FILE="/home/ubuntu/.bash_profile"
+readonly BASH_PROFILE_FILE="/etc/profile.d/quorum-custom.sh"
+readonly GETH_IPC_PATH_LOCAL="/home/ubuntu/.ethereum/geth.ipc"
 readonly VAULT_TLS_CERT_DIR="/opt/vault/tls"
 readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 
 # This is necessary to retrieve the address for vault
+echo '' | sudo tee -a $BASH_PROFILE_FILE
 echo "export VAULT_ADDR=https://${vault_dns}:${vault_port}
+export GETH_IPC_PATH=$GETH_IPC_PATH_LOCAL
+export GETH_IPC=ipc:$GETH_IPC_PATH_LOCAL
 
 function pause-geth {
   sudo supervisorctl stop quorum
@@ -61,6 +65,29 @@ function configure_threatstack_agent_if_key_provided {
   fi
 }
 
+function run_threatstack_agent_if_configured {
+  if [ -e /opt/threatstack/config.json ]
+  then
+    echo "Threatstack agent configuration found. Starting Agent."
+    sudo cloudsight setup --config="/opt/threatstack/config.json"
+  else
+    echo "No Threatstack agent configuration found."
+  fi
+}
+
+function setup_foxpass_if_specified {
+  if [ "${foxpass_base_dn}" != "" ] && [ "${foxpass_bind_user}" != "" ] && [ "${foxpass_bind_pw}" != "" ] && [ "${foxpass_api_key}" != "" ]
+  then
+    echo "Foxpass variables specified. Running foxpass_setup.py."
+    sudo python3 /opt/foxpass_setup.py --base-dn ${foxpass_base_dn} --bind-user ${foxpass_bind_user} --bind-pw ${foxpass_bind_pw} --api-key ${foxpass_api_key}
+    echo "Disabling login by default user"
+    printf "\n# Disable default user login\nDenyUsers ubuntu\n" | sudo tee -a /etc/ssh/sshd_config
+    sudo systemctl restart sshd
+  else
+    echo "Foxpass variables not specified."
+  fi
+}
+
 function populate_data_files {
   echo "${index}" | sudo tee /opt/quorum/info/role-index.txt
   echo "${index + overall_index_base}" | sudo tee /opt/quorum/info/overall-index.txt
@@ -79,6 +106,7 @@ function populate_data_files {
   echo "${data_backup_bucket}" | sudo tee /opt/quorum/info/data-backup-bucket.txt
   echo "${network_id}" | sudo tee /opt/quorum/info/network-id.txt
   echo "https://${vault_dns}:${vault_port}" | sudo tee /opt/quorum/info/vault-address.txt
+  echo "ipc:$GETH_IPC_PATH_LOCAL" | sudo tee /opt/quorum/info/geth-ipc.txt
 
   sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'
 }
@@ -86,6 +114,11 @@ function populate_data_files {
 # Send the log output from this script to user-data.log, syslog, and the console
 # From: https://alestic.com/2010/12/ec2-user-data-output/
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+
+# Start Supervisor
+supervisord -c /etc/supervisor/supervisord.conf
+
+setup_foxpass_if_specified
 
 sudo apt-get -y update
 sudo ntpd
@@ -98,6 +131,7 @@ populate_data_files
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
 
 configure_threatstack_agent_if_key_provided
+run_threatstack_agent_if_configured
 
 /opt/quorum/bin/generate-run-init-quorum ${vault_dns} ${vault_port}
 /opt/quorum/bin/run-init-quorum

@@ -31,10 +31,35 @@ function run_threatstack_agent_if_configured {
   fi
 }
 
+function setup_foxpass_if_specified {
+  if [ "${foxpass_base_dn}" != "" ] && [ "${foxpass_bind_user}" != "" ] && [ "${foxpass_bind_pw}" != "" ] && [ "${foxpass_api_key}" != "" ]
+  then
+    echo "Foxpass variables specified. Running foxpass_setup.py."
+    sudo python3 /opt/foxpass_setup.py --base-dn ${foxpass_base_dn} --bind-user ${foxpass_bind_user} --bind-pw ${foxpass_bind_pw} --api-key ${foxpass_api_key}
+    echo "Disabling login by default user"
+    printf "\n# Disable default user login\nDenyUsers ubuntu\n" | sudo tee -a /etc/ssh/sshd_config
+    sudo systemctl restart sshd
+  else
+    echo "Foxpass variables not specified."
+  fi
+}
+
+function populate_counts {
+  echo "${maker_node_count_json}" | sudo tee /opt/vault/data/maker-counts.json
+  echo "${validator_node_count_json}" | sudo tee /opt/vault/data/validator-counts.json
+  echo "${observer_node_count_json}" | sudo tee /opt/vault/data/observer-counts.json
+  echo "${bootnode_count_json}" | sudo tee /opt/vault/data/bootnode-counts.json
+}
+
 readonly VAULT_TLS_CERT_DIR="/opt/vault/tls"
 readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 readonly VAULT_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/vault.crt.pem"
 readonly VAULT_TLS_KEY_FILE="$VAULT_TLS_CERT_DIR/vault.key.pem"
+
+# Start Supervisor
+supervisord -c /etc/supervisor/supervisord.conf
+
+setup_foxpass_if_specified
 
 # The variables below are filled in via Terraform interpolation
 /opt/vault/bin/generate-setup-vault.sh ${network_id} "${vault_enterprise_license_key}"
@@ -43,7 +68,15 @@ readonly VAULT_TLS_KEY_FILE="$VAULT_TLS_CERT_DIR/vault.key.pem"
 aws configure set s3.signature_version s3v4
 aws s3 cp s3://${vault_cert_bucket}/ca.crt.pem $VAULT_TLS_CERT_DIR
 aws s3 cp s3://${vault_cert_bucket}/vault.crt.pem $VAULT_TLS_CERT_DIR
-aws s3 cp s3://${vault_cert_bucket}/vault.key.pem $VAULT_TLS_CERT_DIR
+aws s3 cp s3://${vault_cert_bucket}/vault.key.pem.encrypted.b64 $VAULT_TLS_CERT_DIR
+
+# Decrypt the private key
+aws configure set default.region ${aws_region}
+cat $VAULT_TLS_CERT_DIR/vault.key.pem.encrypted.b64 | base64 --decode > $VAULT_TLS_CERT_DIR/vault.key.pem.encrypted
+aws kms decrypt --ciphertext-blob fileb://$VAULT_TLS_CERT_DIR/vault.key.pem.encrypted --output text --query Plaintext | base64 --decode > $VAULT_TLS_CERT_DIR/vault.key.pem
+
+# Save node counts to files for use by generate-setup-vault.sh
+populate_counts
 
 # Set ownership and permissions
 sudo chown vault:vault $VAULT_TLS_CERT_DIR/*

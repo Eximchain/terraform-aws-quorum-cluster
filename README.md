@@ -8,6 +8,7 @@ Table of Contents
       * [Supported Regions](#supported-regions)
    * [Generate SSH key for EC2 instances](#generate-ssh-key-for-ec2-instances)
       * [Build AMIs to launch the instances with](#build-amis-to-launch-the-instances-with)
+         * [Faster Test Builds](#faster-test-builds)
       * [Launch Network with Terraform](#launch-network-with-terraform)
       * [Launch and configure vault](#launch-and-configure-vault)
          * [Unseal additional vault servers](#unseal-additional-vault-servers)
@@ -95,6 +96,8 @@ $ packer build quorum.json
 $ cd ..
 ```
 
+These builds can be run in parallel as well
+
 Then copy the AMIs to into terraform variables
 
 ```sh
@@ -108,22 +111,85 @@ $ BACKUP=<File path to back up to>
 $ python copy-packer-artifacts-to-terraform.py --tfvars-backup-file $BACKUP
 ```
 
-## Launch Network with Terraform
+### Faster Test Builds
+
+If you want to quickly build an AMI to test changes, you can use an `insecure-test-build`.  This skips over several lengthy software upgrades that require building a new software version from source. The AMIs produced will have additional security vulnerabilities and are not suitable for use in production systems.
+
+To use this feature, simply run the builds from the `packer/insecure-test-builds` directory as follows:
+
+```sh
+$ cd packer/insecure-test-builds
+$ packer build vault-consul.json
+# Wait for build
+$ packer build bootnode.json
+# Wait for build
+$ packer build quorum.json
+# Wait for build
+$ cd ../..
+```
+
+Then continue by copying the AMIs to into terraform variables as usual:
+
+```sh
+$ python copy-packer-artifacts-to-terraform.py
+```
+
+## Generate Certificates
+
+Certificates need to be generated separately, before launching the network. This allows us to delete the state for the cert-tool, which contains the certificate private key, for improved security in a production network.
+
+Change to the cert-tool directory
+
+```sh
+$ cd terraform/cert-tool
+```
 
 Copy the example.tfvars file
 
 ```sh
-$ cd terraform
 $ cp example.tfvars terraform.tfvars
 ```
 
-Fill in your username as the `cert_owner` via:
+Then open `terraform.tfvars` in a text editor and change anything you'd like to change.
+
+Finally, `init` and `apply` the configuration
 
 ```sh
-$ sed -i "s/FIXME_USER/$USER/" terraform.tfvars
+$ terraform init
+$ terraform apply
+# Respond 'yes' at the prompt
+```
+
+Take note of the output. You will need to input some values into the terraform variables for the next configuration.
+
+If this is an ephemeral test network, you do not need to recreate the certificates every time you replace the network. You can run it once and reuse the certificates each time.
+
+### Delete Terraform State
+
+If this is a production network, or otherwise one in which you are concerned about security, you will need to delete the terraform state, since it contains the plaintext private key, even if you enabled KMS encryption.
+
+```sh
+$ rm terraform.tfstate*
+```
+
+Be aware that an `aws_iam_server_certificate` and an `aws_kms_key` are both created by this configuration, and if the state is deleted they will no longer be managed by Terraform. Be sure you have saved the output from the configuration so that it can be imported by other configurations or cleaned up manually.
+
+## Launch Network with Terraform
+
+Change to the terraform directory, if you aren't already there from the above step
+
+```sh
+$ cd terraform
+```
+
+Copy the example.tfvars file
+
+```sh
+$ cp example.tfvars terraform.tfvars
 ```
 
 Check terraform.tfvars and change any values you would like to change:
+- **Certificate Details:** You will need to fill in the values for `cert_tool_kms_key_id` and `cert_tool_server_cert_arn`. Replace `FIXME` with the values from the output of the `cert-tool`.
 - **SSH Location:** Our default example file is built for OS X, which puts your home directory and its `.ssh` folder (aka `~/.ssh`) at `/Users/$USER/.ssh`.  If your SSH keyfile is not located within that directory, you will need to update the `public_key_path`.
 - **Network ID:** We have a default network value.  If there is already a network running with this ID on your AWS account, you need to change the network ID or there will be a conflict.  
 - **Not Free:** The values given in `example.tfvars` are NOT completely AWS free tier eligible, as they include t2.small and t2.medium instances. We do not recommend using t2.micro instances, as they were unable to compile solidity during testing.
@@ -167,8 +233,6 @@ $ /opt/vault/bin/setup-vault.sh $ROOT_TOKEN
 ```
 
 If any of these commands fail, wait a short time and try again. If waiting doesn't fix the issue, you may need to destroy and recreate the infrastructure.
-
-> Note: The `setup-vault.sh` command will produce one error for each supported region that does not have a bootnode.  Those are expected and can be ignored.
 
 ### Unseal additional vault servers
 
@@ -226,6 +290,16 @@ The nodes come equipped to run a simple private transaction test (sourced from t
 #### Deploy the private contract
 
 SSH into the sending node (e.g. node 0) and run the following to deploy the private contract
+
+If you are using Foxpass SSH key management, first authenticate to vault with AWS. You will also need to use `sudo` to run the test
+
+```sh
+$ vault auth -method=aws
+$ RECIPIENT_PUB_KEY=$(vault read -field=constellation_pub_key quorum/addresses/us-east-1/1)
+$ sudo /opt/quorum/bin/private-transaction-test-sender.sh $RECIPIENT_PUB_KEY
+```
+
+Otherwise, you should be authenticated already and `sudo` is not necessary
 
 ```sh
 # This assumes that the entire network is running in us-east-1
@@ -351,8 +425,8 @@ The master list of desired features for this tool. Feel free to contribute featu
 - [x] Multi Region Network
 - [x] Network with External Participants
 - [x] Quorum Node health checking and replacement
+- [x] Fine-grained Permissions for Private Keys in Vault
 - [ ] Full initial documentation
 - [ ] Secure handling of TLS Certificate
 - [ ] Anti-Fraglie Everything
-- [ ] Fine-grained Permissions for Private Keys in Vault
 - [ ] Tighten security parameters

@@ -2,12 +2,16 @@
 # REQUIRED PARAMETERS
 # You must provide a value for each of these parameters.
 # ---------------------------------------------------------------------------------------------------------------------
-variable "cert_owner" {
-  description = "The OS user to be made the owner of the local copy of the vault certificates. Should usually be set to the user operating the tool."
-}
-
 variable "public_key" {
   description = "The public key that will be used to SSH the instances in this region."
+}
+
+variable "cert_tool_kms_key_id" {
+  description = "The KMS Key ID that the cert tool encrypted the private key with. Will be output by the cert-tool module."
+}
+
+variable "cert_tool_server_cert_arn" {
+  description = "The ARN of the IAM server certificate created for the Vault Load Balancer. Will be output by the cert-tool module."
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -78,9 +82,54 @@ variable "lb_ssl_policy" {
   default     = "ELBSecurityPolicy-2016-08"
 }
 
-variable "cert_org_name" {
-  description = "The organization to associate with the vault certificates."
-  default     = "Example Co."
+variable "ssh_ips" {
+  description = "List of IP addresses allowed to SSH nodes in this network. If empty, will allow SSH from anywhere."
+  default     = []
+}
+
+variable "vault_consul_vpc_cidr" {
+  description = "CIDR range to use for the vault-consul VPC."
+  default     = "192.168.0.0/16"
+}
+
+variable "quorum_vpc_base_cidr" {
+  description = "Base CIDR range to allow access from for quorum nodes."
+  default     = "10.0.0.0/16"
+}
+
+variable "bootnode_vpc_base_cidr" {
+  description = "Base CIDR range to allow access from for bootnodes."
+  default     = "172.16.0.0/16"
+}
+
+variable "cert_tool_ca_public_key" {
+  description = "The CA Public Key. If not provided, will default to loading from file."
+  default     = ""
+}
+
+variable "cert_tool_public_key" {
+  description = "The TLS Public Key. If not provided, will default to loading from file."
+  default     = ""
+}
+
+variable "cert_tool_private_key_base64" {
+  description = "The TLS Private Key. If not provided, will default to loading from file. Must be KMS encrypted in base64 encoding."
+  default     = ""
+}
+
+variable "cert_tool_ca_public_key_file_path" {
+  description = "The path where the cert-tool wrote the CA public key file. Path should be relative to the quorum vault module."
+  default     = "certs/ca.crt.pem"
+}
+
+variable "cert_tool_public_key_file_path" {
+  description = "The path where the cert-tool wrote the public key file. Path should be relative to the quorum vault module."
+  default     = "certs/vault.crt.pem"
+}
+
+variable "cert_tool_private_key_file_path" {
+  description = "The path where the cert-tool wrote the private key file. Path should be relative to the quorum vault module."
+  default     = "certs/vault.key.pem"
 }
 
 variable "vault_enterprise_license_key" {
@@ -91,4 +140,164 @@ variable "vault_enterprise_license_key" {
 variable "threatstack_deploy_key" {
   description = "Deploy key to use to activate threatstack agents, if using one"
   default     = ""
+}
+
+variable "foxpass_base_dn" {
+  description = "The Base DN for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_bind_user" {
+  description = "The bind user name for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_bind_pw" {
+  description = "The bind user password for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "foxpass_api_key" {
+  description = "The API key for your Foxpass account, if managing SSH keys with Foxpass"
+  default     = ""
+}
+
+variable "bootnode_counts" {
+  description = "A mapping from region to the number of bootnodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "maker_node_counts" {
+  description = "A mapping from region to the number of maker nodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "validator_node_counts" {
+  description = "A mapping from region to the number of validator nodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
+}
+
+variable "observer_node_counts" {
+  description = "A mapping from region to the number of observer nodes to launch in that region"
+  type        = "map"
+  default     = {
+    # Virginia
+    us-east-1      = 0
+    # Ohio
+    us-east-2      = 0
+    # California
+    us-west-1      = 0
+    # Oregon
+    us-west-2      = 0
+    # Frankfurt
+    eu-central-1   = 0
+    # Ireland
+    eu-west-1      = 0
+    # London
+    eu-west-2      = 0
+    # Mumbai
+    ap-south-1     = 0
+    # Tokyo
+    ap-northeast-1 = 0
+    # Seoul
+    ap-northeast-2 = 0
+    # Singapore
+    ap-southeast-1 = 0
+    # Sydney
+    ap-southeast-2 = 0
+    # Canada
+    ca-central-1   = 0
+    # South America
+    sa-east-1      = 0
+  }
 }

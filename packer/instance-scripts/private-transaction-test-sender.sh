@@ -1,6 +1,9 @@
 #!/bin/bash
 set -eu -o pipefail
 
+# Source the IPC path
+GETH_IPC=$(cat /opt/quorum/info/geth-ipc.txt)
+
 # Constellation public key of the recipient
 RECIPIENT_PUB_KEY=$1
 
@@ -8,7 +11,7 @@ RECIPIENT_PUB_KEY=$1
 if [ $# -lt 2 ]
 then
     # Default value if no second argument specified
-    OUTPUT_SCRIPT="/home/ubuntu/private-transaction-test-sender.js"
+    OUTPUT_SCRIPT="/opt/quorum/bin/private-transaction-test-sender.js"
 else
     OUTPUT_SCRIPT=$2
 fi
@@ -37,4 +40,4 @@ var simple = simpleContract.new(42, {from:web3.eth.accounts[0], data: simpleComp
 EOF
 
 # Attach the geth console and execute the script
-geth --preload $OUTPUT_SCRIPT attach
+geth --preload $OUTPUT_SCRIPT attach $GETH_IPC

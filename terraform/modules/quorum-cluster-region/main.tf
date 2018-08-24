@@ -34,7 +34,17 @@ resource "aws_key_pair" "auth" {
 resource "aws_s3_bucket" "quorum_constellation" {
   count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0) + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
 
-  bucket_prefix = "quorum-constellation-network-${var.network_id}-"
+  bucket        = "constellation-${var.aws_region}-net-${var.network_id}"
+  force_destroy = "${var.force_destroy_s3_buckets}"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# S3FS BUCKET FOR REGIONAL BACKUPS
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_s3_bucket" "quorum_backup" {
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0) + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  bucket        = "quorum-backup-${var.aws_region}-network-${var.network_id}"
   force_destroy = "${var.force_destroy_s3_buckets}"
 }
 
@@ -72,13 +82,13 @@ resource "aws_iam_policy" "quorum" {
       "s3:GetObject",
       "s3:PutObject"
     ],
-    "Resource": ["${var.data_backup_bucket_arn}/*"]
+    "Resource": ["${aws_s3_bucket.quorum_backup.arn}/*"]
   },{
     "Effect": "Allow",
     "Action": ["s3:ListBucket"],
     "Resource": [
       "${var.vault_cert_bucket_arn}",
-      "${var.data_backup_bucket_arn}"
+      "${aws_s3_bucket.quorum_backup.arn}"
     ]
   },{
     "Effect": "Allow",
