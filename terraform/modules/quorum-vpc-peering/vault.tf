@@ -516,6 +516,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_us_east_1" {
   }
 }
 
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_us_east_1" {
+  provider = "aws.us-east-1"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "us-east-1", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_us_east_1.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "us-east-1"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
 resource "aws_vpc_peering_connection" "vault_to_bootnode_us_east_2" {
   count = "${lookup(var.bootnode_vpc_peering_counts, "us-east-2", 0)}"
 
@@ -525,6 +543,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_us_east_2" {
 
   tags {
     Name       = "Network ${var.network_id} VPC peering to bootnode in us-east-2"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "us-east-2"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_us_east_2" {
+  provider = "aws.us-east-2"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "us-east-2", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_us_east_2.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "us-east-2"
@@ -550,6 +586,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_us_west_1" {
   }
 }
 
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_us_west_1" {
+  provider = "aws.us-west-1"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "us-west-1", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_us_west_1.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "us-west-1"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
 resource "aws_vpc_peering_connection" "vault_to_bootnode_us_west_2" {
   count = "${lookup(var.bootnode_vpc_peering_counts, "us-west-2", 0)}"
 
@@ -559,6 +613,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_us_west_2" {
 
   tags {
     Name       = "Network ${var.network_id} VPC peering to bootnode in us-west-2"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "us-west-2"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_us_west_2" {
+  provider = "aws.us-west-2"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "us-west-2", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_us_west_2.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "us-west-2"
@@ -584,6 +656,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_eu_central_1" {
   }
 }
 
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_eu_central_1" {
+  provider = "aws.eu-central-1"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "eu-central-1", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_eu_central_1.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "eu-central-1"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
 resource "aws_vpc_peering_connection" "vault_to_bootnode_eu_west_1" {
   count = "${lookup(var.bootnode_vpc_peering_counts, "eu-west-1", 0)}"
 
@@ -593,6 +683,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_eu_west_1" {
 
   tags {
     Name       = "Network ${var.network_id} VPC peering to bootnode in eu-west-1"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "eu-west-1"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_eu_west_1" {
+  provider = "aws.eu-west-1"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "eu-west-1", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_eu_west_1.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "eu-west-1"
@@ -618,6 +726,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_eu_west_2" {
   }
 }
 
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_eu_west_2" {
+  provider = "aws.eu-west-2"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "eu-west-2", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_eu_west_2.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "eu-west-2"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
 resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_south_1" {
   count = "${lookup(var.bootnode_vpc_peering_counts, "ap-south-1", 0)}"
 
@@ -627,6 +753,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_south_1" {
 
   tags {
     Name       = "Network ${var.network_id} VPC peering to bootnode in ap-south-1"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "ap-south-1"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_ap_south_1" {
+  provider = "aws.ap-south-1"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "ap-south-1", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_ap_south_1.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-south-1"
@@ -652,6 +796,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_northeast_1" {
   }
 }
 
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_ap_northeast_1" {
+  provider = "aws.ap-northeast-1"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "ap-northeast-1", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_ap_northeast_1.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "ap-northeast-1"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
 resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_northeast_2" {
   count = "${lookup(var.bootnode_vpc_peering_counts, "ap-northeast-2", 0)}"
 
@@ -661,6 +823,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_northeast_2" {
 
   tags {
     Name       = "Network ${var.network_id} VPC peering to bootnode in ap-northeast-2"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "ap-northeast-2"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_ap_northeast_2" {
+  provider = "aws.ap-northeast-2"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "ap-northeast-2", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_ap_northeast_2.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-northeast-2"
@@ -686,6 +866,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_southeast_1" {
   }
 }
 
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_ap_southeast_1" {
+  provider = "aws.ap-southeast-1"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "ap-southeast-1", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_ap_southeast_1.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "ap-southeast-1"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
 resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_southeast_2" {
   count = "${lookup(var.bootnode_vpc_peering_counts, "ap-southeast-2", 0)}"
 
@@ -695,6 +893,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ap_southeast_2" {
 
   tags {
     Name       = "Network ${var.network_id} VPC peering to bootnode in ap-southeast-2"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "ap-southeast-2"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_ap_southeast_2" {
+  provider = "aws.ap-southeast-2"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "ap-southeast-2", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_ap_southeast_2.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-southeast-2"
@@ -720,6 +936,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_ca_central_1" {
   }
 }
 
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_ca_central_1" {
+  provider = "aws.ca-central-1"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "ca-central-1", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_ca_central_1.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "ca-central-1"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
 resource "aws_vpc_peering_connection" "vault_to_bootnode_sa_east_1" {
   count = "${lookup(var.bootnode_vpc_peering_counts, "sa-east-1", 0)}"
 
@@ -729,6 +963,24 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_sa_east_1" {
 
   tags {
     Name       = "Network ${var.network_id} VPC peering to bootnode in sa-east-1"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "sa-east-1"
+    ToType     = "Bootnode"
+    FromType   = "Vault"
+  }
+}
+
+resource "aws_vpc_peering_connection_accepter" "vault_to_bootnode_sa_east_1" {
+  provider = "aws.sa-east-1"
+
+  count = "${lookup(var.bootnode_vpc_peering_counts, "sa-east-1", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_bootnode_sa_east_1.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to bootnode from vault"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "sa-east-1"
