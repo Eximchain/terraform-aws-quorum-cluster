@@ -478,6 +478,24 @@ resource "aws_vpc_peering_connection" "vault_to_quorum_sa_east_1" {
   }
 }
 
+resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_sa_east_1" {
+  provider = "aws.sa-east-1"
+
+  count = "${lookup(var.quorum_vpc_peering_counts, "sa-east-1", 0)}"
+
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_quorum_sa_east_1.id}"
+  auto_accept               = true
+
+  tags {
+    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    NetworkId  = "${var.network_id}"
+    FromRegion = "${var.primary_region}"
+    ToRegion   = "sa-east-1"
+    ToType     = "Quorum"
+    FromType   = "Vault"
+  }
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # CONNECTIONS TO BOOTNODES
 # ---------------------------------------------------------------------------------------------------------------------
@@ -715,24 +733,6 @@ resource "aws_vpc_peering_connection" "vault_to_bootnode_sa_east_1" {
     FromRegion = "${var.primary_region}"
     ToRegion   = "sa-east-1"
     ToType     = "Bootnode"
-    FromType   = "Vault"
-  }
-}
-
-resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_sa_east_1" {
-  provider = "aws.sa-east-1"
-
-  count = "${lookup(var.quorum_vpc_peering_counts, "sa-east-1", 0)}"
-
-  vpc_peering_connection_id = "${aws_vpc_peering_connection.vault_to_quorum_sa_east_1.id}"
-  auto_accept               = true
-
-  tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
-    NetworkId  = "${var.network_id}"
-    FromRegion = "${var.primary_region}"
-    ToRegion   = "sa-east-1"
-    ToType     = "Quorum"
     FromType   = "Vault"
   }
 }
