@@ -30,12 +30,57 @@ resource "aws_route" "quorum_cluster" {
   gateway_id             = "${aws_internet_gateway.quorum_cluster.id}"
 }
 
-resource "aws_subnet" "quorum_cluster" {
-  count                   = "${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? length(data.aws_availability_zones.available.names) : 0}"
+# ---------------------------------------------------------------------------------------------------------------------
+# SUBNETS
+# ---------------------------------------------------------------------------------------------------------------------
+data "template_file" "quorum_maker_cidr_block" {
+  template = "$${cidr_block}"
+
+  vars {
+    cidr_block = "${cidrsubnet(var.quorum_vpc_cidr, 2, 0)}"
+  }
+}
+
+data "template_file" "quorum_validator_cidr_block" {
+  template = "$${cidr_block}"
+
+  vars {
+    cidr_block = "${cidrsubnet(var.quorum_vpc_cidr, 2, 1)}"
+  }
+}
+
+data "template_file" "quorum_observer_cidr_block" {
+  template = "$${cidr_block}"
+
+  vars {
+    cidr_block = "${cidrsubnet(var.quorum_vpc_cidr, 2, 2)}"
+  }
+}
+
+resource "aws_subnet" "quorum_maker" {
+  count                   = "${lookup(var.maker_node_counts, var.aws_region, 0) > 0 ? length(data.aws_availability_zones.available.names) : 0}"
 
   vpc_id                  = "${aws_vpc.quorum_cluster.id}"
   availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
-  cidr_block              = "${cidrsubnet(var.quorum_vpc_cidr, 3, count.index)}"
+  cidr_block              = "${cidrsubnet(data.template_file.quorum_maker_cidr_block.rendered, 3, count.index)}"
+  map_public_ip_on_launch = true
+}
+
+resource "aws_subnet" "quorum_validator" {
+  count                   = "${lookup(var.validator_node_counts, var.aws_region, 0) > 0 ? length(data.aws_availability_zones.available.names) : 0}"
+
+  vpc_id                  = "${aws_vpc.quorum_cluster.id}"
+  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
+  cidr_block              = "${cidrsubnet(data.template_file.quorum_validator_cidr_block.rendered, 3, count.index)}"
+  map_public_ip_on_launch = true
+}
+
+resource "aws_subnet" "quorum_observer" {
+  count                   = "${lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? length(data.aws_availability_zones.available.names) : 0}"
+
+  vpc_id                  = "${aws_vpc.quorum_cluster.id}"
+  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
+  cidr_block              = "${cidrsubnet(data.template_file.quorum_observer_cidr_block.rendered, 3, count.index)}"
   map_public_ip_on_launch = true
 }
 
@@ -56,7 +101,7 @@ resource "aws_autoscaling_group" "quorum_maker" {
   health_check_grace_period = 300
   health_check_type         = "ELB"
 
-  vpc_zone_identifier = ["${element(aws_subnet.quorum_cluster.*.id, count.index)}"]
+  vpc_zone_identifier = ["${element(aws_subnet.quorum_maker.*.id, count.index)}"]
 
   tags = [
     {
@@ -93,7 +138,7 @@ resource "aws_autoscaling_group" "quorum_validator" {
   health_check_grace_period = 300
   health_check_type         = "ELB"
 
-  vpc_zone_identifier = ["${element(aws_subnet.quorum_cluster.*.id, count.index)}"]
+  vpc_zone_identifier = ["${element(aws_subnet.quorum_validator.*.id, count.index)}"]
 
   tags = [
     {
@@ -130,7 +175,7 @@ resource "aws_autoscaling_group" "quorum_observer" {
   health_check_grace_period = 300
   health_check_type         = "ELB"
 
-  vpc_zone_identifier = ["${element(aws_subnet.quorum_cluster.*.id, count.index)}"]
+  vpc_zone_identifier = ["${element(aws_subnet.quorum_observer.*.id, count.index)}"]
 
   tags = [
     {
