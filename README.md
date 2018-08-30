@@ -9,6 +9,8 @@ Table of Contents
    * [Generate SSH key for EC2 instances](#generate-ssh-key-for-ec2-instances)
       * [Build AMIs to launch the instances with](#build-amis-to-launch-the-instances-with)
          * [Faster Test Builds](#faster-test-builds)
+      * [Generate Certificates](#generate-certificates)
+         * [Delete Terraform State](#delete-terraform-state)
       * [Launch Network with Terraform](#launch-network-with-terraform)
       * [Launch and configure vault](#launch-and-configure-vault)
          * [Unseal additional vault servers](#unseal-additional-vault-servers)

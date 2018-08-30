@@ -56,7 +56,6 @@
     "type": "shell",
     "scripts": [
       "provisioning-scripts/supervisor.sh",
-      "provisioning-scripts/foxpass-setup-script.sh",
       "provisioning-scripts/install-vault",
       "provisioning-scripts/install-consul",
       "provisioning-scripts/install-dnsmasq"
@@ -66,10 +65,16 @@
     "source": "instance-scripts/update-certificate-store",
     "destination": "/tmp/update-certificate-store"
   },{
+    "type": "file",
+    "source": "instance-scripts/foxpass_setup.py",
+    "destination": "/tmp/foxpass_setup.py"
+  },{
     "type": "shell",
     "inline": [
       "sudo mv /tmp/update-certificate-store /opt/vault/bin/",
-      "sudo chmod +x /opt/vault/bin/update-certificate-store"
+      "sudo chmod +x /opt/vault/bin/update-certificate-store",
+      "sudo mv /tmp/foxpass_setup.py /opt/",
+      "sudo chmod 744 /opt/foxpass_setup.py"
     ]
   },{
     "type": "shell",
