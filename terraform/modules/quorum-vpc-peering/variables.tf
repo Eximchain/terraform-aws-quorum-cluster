@@ -31,13 +31,3 @@ variable "quorum_vpc_peering_counts" {
   description = "A mapping from region to a 1 if there should be a quorum peering connection to that region or 0 otherwise."
   type        = "map"
 }
-
-variable "bootnode_vpcs" {
-  description = "A mapping from region to the bootnode VPC in that region"
-  type        = "map"
-}
-
-variable "bootnode_vpc_peering_counts" {
-  description = "A mapping from region to a 1 if there should be a bootnode peering connection to that region or 0 otherwise."
-  type        = "map"
-}

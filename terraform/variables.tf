@@ -117,7 +117,7 @@ variable "use_dedicated_consul_servers" {
 }
 
 variable "use_elastic_bootnode_ips" {
-  description = "Whether or not to give bootnodes elastic IPs, maintaining one static IP forever. Disabled by default because clusters with more than 5 bootnodes in one region will require personally requesting more EIPs from AWS."
+  description = "Whether or not to give bootnodes elastic IPs, maintaining one static IP forever. Disabled by default because clusters with more than 5 bootnodes in one region will require personally requesting more EIPs from AWS. WARNING: UNTESTED SINCE MOVING BOOTNODES INTO QUORUM VPC. MAY BE REMOVED IN A FUTURE UPDATE."
   default     = false
 }
 

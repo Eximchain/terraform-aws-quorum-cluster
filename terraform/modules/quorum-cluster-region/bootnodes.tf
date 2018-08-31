@@ -1,39 +1,12 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # BOOTNODE NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_vpc" "bootnodes" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
-
-  cidr_block           = "${var.bootnode_vpc_cidr}"
-  enable_dns_hostnames = true
-}
-
-resource "aws_default_security_group" "bootnodes" {
-  count = "${aws_vpc.bootnodes.count}"
-
-  vpc_id = "${aws_vpc.bootnodes.id}"
-}
-
-resource "aws_internet_gateway" "bootnodes" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
-
-  vpc_id = "${aws_vpc.bootnodes.id}"
-}
-
-resource "aws_route" "bootnodes" {
-  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0))}"
-
-  route_table_id         = "${aws_vpc.bootnodes.main_route_table_id}"
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.bootnodes.id}"
-}
-
 resource "aws_subnet" "bootnodes" {
   count                   = "${lookup(var.bootnode_counts, var.aws_region, 0) > 0 ? length(data.aws_availability_zones.available.names) : 0}"
 
-  vpc_id                  = "${aws_vpc.bootnodes.id}"
+  vpc_id                  = "${aws_vpc.quorum_cluster.id}"
   availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
-  cidr_block              = "${cidrsubnet(var.bootnode_vpc_cidr, 3, count.index)}"
+  cidr_block              = "${cidrsubnet(data.template_file.bootnode_cidr_block.rendered, 3, count.index)}"
   map_public_ip_on_launch = true
 }
 

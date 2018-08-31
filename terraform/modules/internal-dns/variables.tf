@@ -20,16 +20,6 @@ variable "quorum_vpc_association_counts" {
   type        = "map"
 }
 
-variable "bootnode_vpcs" {
-  description = "A mapping from region to the bootnode VPC in that region"
-  type        = "map"
-}
-
-variable "bootnode_vpc_association_counts" {
-  description = "A mapping from region to a 1 if there should be a bootnode hosted zone association with that region or 0 otherwise."
-  type        = "map"
-}
-
 variable "network_id" {
   description = <<DESCRIPTION
 Ethereum network ID, also used in naming some resources for uniqueness.

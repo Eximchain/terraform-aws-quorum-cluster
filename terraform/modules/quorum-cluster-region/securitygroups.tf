@@ -368,7 +368,7 @@ resource "aws_security_group" "bootnode" {
 
   name        = "bootnodes"
   description = "Used for quorum bootnodes"
-  vpc_id      = "${aws_vpc.bootnodes.id}"
+  vpc_id      = "${aws_vpc.quorum_cluster.id}"
 }
 
 # TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released

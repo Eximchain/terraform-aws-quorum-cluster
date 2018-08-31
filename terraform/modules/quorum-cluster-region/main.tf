@@ -117,3 +117,46 @@ resource "aws_iam_policy" "quorum" {
 }
 EOF
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# NETWORKING CIDR RANGES
+# ---------------------------------------------------------------------------------------------------------------------
+data "template_file" "quorum_cidr_block" {
+  template = "$${cidr_block}"
+
+  vars {
+    cidr_block = "${cidrsubnet(var.quorum_vpc_cidr, 1, 0)}"
+  }
+}
+
+data "template_file" "bootnode_cidr_block" {
+  template = "$${cidr_block}"
+
+  vars {
+    cidr_block = "${cidrsubnet(var.quorum_vpc_cidr, 1, 1)}"
+  }
+}
+
+data "template_file" "quorum_maker_cidr_block" {
+  template = "$${cidr_block}"
+
+  vars {
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 0)}"
+  }
+}
+
+data "template_file" "quorum_validator_cidr_block" {
+  template = "$${cidr_block}"
+
+  vars {
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 1)}"
+  }
+}
+
+data "template_file" "quorum_observer_cidr_block" {
+  template = "$${cidr_block}"
+
+  vars {
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 2)}"
+  }
+}

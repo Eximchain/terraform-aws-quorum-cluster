@@ -82,20 +82,21 @@ wait_for_successful_command 'vault auth -method=aws'
 # Get metadata for this instance
 INDEX=$(cat /opt/quorum/info/index.txt)
 AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
-PUBLIC_IP=$(cat /opt/quorum/info/public-ip.txt)
+IP_ADDR=$(cat /opt/quorum/info/public-ip.txt)
 USING_EIP=$(cat /opt/quorum/info/using-eip.txt)
 EIP_ID=$(cat /opt/quorum/info/eip-id.txt)
 INSTANCE_ID=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/instance-id')
 BOOT_PORT=30301
 
 # Associate the EIP with this instance
+# TODO: Test or remove now that quorum nodes and bootnodes are in the same VPC.
 if [ "$USING_EIP" == "1" ]
 then
     wait_for_successful_command "aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP_ID --region $AWS_REGION --allow-reassociation"
 elif [ "$USING_EIP"  == "0" ]
 then
-    PUBLIC_IP=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/public-ipv4')
-else 
+    IP_ADDR=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/local-ipv4')
+else
     echo ">> FATAL ERROR: USING_EIP needs to be boolean with value 0 or 1, instead has value $USING_EIP.  Erroring out."
     exit 1
 fi
@@ -141,7 +142,7 @@ else
     wait_for_successful_command "vault write quorum/bootnodes/passwords/$AWS_REGION/$INDEX constellation_pw=$CONSTELLATION_PW"
     BOOT_PUB=$(bootnode --genkey=$BOOT_KEY_FILE --writeaddress)
     BOOT_KEY=$(cat $BOOT_KEY_FILE)
-    BOOT_ADDR="enode://$BOOT_PUB@$PUBLIC_IP:$BOOT_PORT"
+    BOOT_ADDR="enode://$BOOT_PUB@$IP_ADDR:$BOOT_PORT"
     echo $BOOT_ADDR > $BOOT_ADDR_FILE
     # Generate constellation keys
     echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation
@@ -151,7 +152,7 @@ CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key
 
 # Write bootnode address to vault
 wait_for_successful_command "vault write quorum/bootnodes/keys/$AWS_REGION/$INDEX bootnode_key=\"$BOOT_KEY\" constellation_priv_key=\"$CONSTELLATION_PRIV_KEY\""
-wait_for_successful_command "vault write quorum/bootnodes/addresses/$AWS_REGION/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB hostname=$PUBLIC_IP constellation_pub_key=$CONSTELLATION_PUB_KEY"
+wait_for_successful_command "vault write quorum/bootnodes/addresses/$AWS_REGION/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB hostname=$IP_ADDR constellation_pub_key=$CONSTELLATION_PUB_KEY"
 # Wait for all bootnodes to write their address to vault
 wait_for_all_bootnodes
 

@@ -112,7 +112,7 @@ variable "use_dedicated_observers" {
 }
 
 variable "use_elastic_bootnode_ips" {
-  description = "Whether or not to give bootnodes elastic IPs, maintaining one static IP forever. Disabled by default because regions with more than 5 bootnodes will require personally requesting more EIPs from AWS."
+  description = "Whether or not to give bootnodes elastic IPs, maintaining one static IP forever. Disabled by default because regions with more than 5 bootnodes will require personally requesting more EIPs from AWS. WARNING: UNTESTED SINCE MOVING BOOTNODES INTO QUORUM VPC. MAY BE REMOVED IN A FUTURE UPDATE."
   default     = false
 }
 
@@ -159,11 +159,6 @@ variable "bootnode_ami" {
 variable "quorum_vpc_cidr" {
   description = "CIDR range to use for the quorum VPC."
   default     = "10.0.0.0/16"
-}
-
-variable "bootnode_vpc_cidr" {
-  description = "CIDR range to use for the bootnode VPC."
-  default     = "172.16.0.0/16"
 }
 
 variable "node_volume_size" {

@@ -33,30 +33,6 @@ resource "aws_route" "quorum_cluster" {
 # ---------------------------------------------------------------------------------------------------------------------
 # SUBNETS
 # ---------------------------------------------------------------------------------------------------------------------
-data "template_file" "quorum_maker_cidr_block" {
-  template = "$${cidr_block}"
-
-  vars {
-    cidr_block = "${cidrsubnet(var.quorum_vpc_cidr, 2, 0)}"
-  }
-}
-
-data "template_file" "quorum_validator_cidr_block" {
-  template = "$${cidr_block}"
-
-  vars {
-    cidr_block = "${cidrsubnet(var.quorum_vpc_cidr, 2, 1)}"
-  }
-}
-
-data "template_file" "quorum_observer_cidr_block" {
-  template = "$${cidr_block}"
-
-  vars {
-    cidr_block = "${cidrsubnet(var.quorum_vpc_cidr, 2, 2)}"
-  }
-}
-
 resource "aws_subnet" "quorum_maker" {
   count                   = "${lookup(var.maker_node_counts, var.aws_region, 0) > 0 ? length(data.aws_availability_zones.available.names) : 0}"
 

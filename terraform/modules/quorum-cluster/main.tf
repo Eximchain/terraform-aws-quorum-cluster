@@ -137,7 +137,6 @@ module "quorum_cluster_us_east_1" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 0)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 0)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -203,7 +202,6 @@ module "quorum_cluster_us_east_2" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 1)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 1)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -269,7 +267,6 @@ module "quorum_cluster_us_west_1" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 2)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 2)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -335,7 +332,6 @@ module "quorum_cluster_us_west_2" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 3)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 3)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -401,7 +397,6 @@ module "quorum_cluster_eu_central_1" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 4)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 4)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -467,7 +462,6 @@ module "quorum_cluster_eu_west_1" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 5)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 5)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -533,7 +527,6 @@ module "quorum_cluster_eu_west_2" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 6)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 6)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -599,7 +592,6 @@ module "quorum_cluster_ap_south_1" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 7)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 7)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -665,7 +657,6 @@ module "quorum_cluster_ap_northeast_1" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 8)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 8)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -731,7 +722,6 @@ module "quorum_cluster_ap_northeast_2" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 9)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 9)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -797,7 +787,6 @@ module "quorum_cluster_ap_southeast_1" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 10)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 10)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -863,7 +852,6 @@ module "quorum_cluster_ap_southeast_2" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 11)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 11)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -929,7 +917,6 @@ module "quorum_cluster_ca_central_1" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 12)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 12)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -995,7 +982,6 @@ module "quorum_cluster_sa_east_1" {
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 13)}"
-  bootnode_vpc_cidr = "${cidrsubnet(var.bootnode_vpc_base_cidr, 5, 13)}"
 
   node_volume_size = "${var.node_volume_size}"
 
@@ -1065,40 +1051,6 @@ module "vpc_peering_connections" {
     ca-central-1   = "${signum(lookup(var.maker_node_counts, "ca-central-1", 0) + lookup(var.validator_node_counts, "ca-central-1", 0) + lookup(var.observer_node_counts, "ca-central-1", 0))}"
     sa-east-1      = "${signum(lookup(var.maker_node_counts, "sa-east-1", 0) + lookup(var.validator_node_counts, "sa-east-1", 0) + lookup(var.observer_node_counts, "sa-east-1", 0))}"
   }
-
-  bootnode_vpcs {
-    us-east-1      = "${module.quorum_cluster_us_east_1.bootnode_vpc_id}"
-    us-east-2      = "${module.quorum_cluster_us_east_2.bootnode_vpc_id}"
-    us-west-1      = "${module.quorum_cluster_us_west_1.bootnode_vpc_id}"
-    us-west-2      = "${module.quorum_cluster_us_west_2.bootnode_vpc_id}"
-    eu-central-1   = "${module.quorum_cluster_eu_central_1.bootnode_vpc_id}"
-    eu-west-1      = "${module.quorum_cluster_eu_west_1.bootnode_vpc_id}"
-    eu-west-2      = "${module.quorum_cluster_eu_west_2.bootnode_vpc_id}"
-    ap-south-1     = "${module.quorum_cluster_ap_south_1.bootnode_vpc_id}"
-    ap-northeast-1 = "${module.quorum_cluster_ap_northeast_1.bootnode_vpc_id}"
-    ap-northeast-2 = "${module.quorum_cluster_ap_northeast_2.bootnode_vpc_id}"
-    ap-southeast-1 = "${module.quorum_cluster_ap_southeast_1.bootnode_vpc_id}"
-    ap-southeast-2 = "${module.quorum_cluster_ap_southeast_2.bootnode_vpc_id}"
-    ca-central-1   = "${module.quorum_cluster_ca_central_1.bootnode_vpc_id}"
-    sa-east-1      = "${module.quorum_cluster_sa_east_1.bootnode_vpc_id}"
-  }
-
-  bootnode_vpc_peering_counts {
-    us-east-1      = "${signum(lookup(var.bootnode_counts, "us-east-1", 0))}"
-    us-east-2      = "${signum(lookup(var.bootnode_counts, "us-east-2", 0))}"
-    us-west-1      = "${signum(lookup(var.bootnode_counts, "us-west-1", 0))}"
-    us-west-2      = "${signum(lookup(var.bootnode_counts, "us-west-2", 0))}"
-    eu-central-1   = "${signum(lookup(var.bootnode_counts, "eu-central-1", 0))}"
-    eu-west-1      = "${signum(lookup(var.bootnode_counts, "eu-west-1", 0))}"
-    eu-west-2      = "${signum(lookup(var.bootnode_counts, "eu-west-2", 0))}"
-    ap-south-1     = "${signum(lookup(var.bootnode_counts, "ap-south-1", 0))}"
-    ap-northeast-1 = "${signum(lookup(var.bootnode_counts, "ap-northeast-1", 0))}"
-    ap-northeast-2 = "${signum(lookup(var.bootnode_counts, "ap-northeast-2", 0))}"
-    ap-southeast-1 = "${signum(lookup(var.bootnode_counts, "ap-southeast-1", 0))}"
-    ap-southeast-2 = "${signum(lookup(var.bootnode_counts, "ap-southeast-2", 0))}"
-    ca-central-1   = "${signum(lookup(var.bootnode_counts, "ca-central-1", 0))}"
-    sa-east-1      = "${signum(lookup(var.bootnode_counts, "sa-east-1", 0))}"
-  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -1148,39 +1100,5 @@ module "internal_dns" {
     ap-southeast-2 = "${signum(lookup(var.maker_node_counts, "ap-southeast-2", 0) + lookup(var.validator_node_counts, "ap-southeast-2", 0) + lookup(var.observer_node_counts, "ap-southeast-2", 0))}"
     ca-central-1   = "${signum(lookup(var.maker_node_counts, "ca-central-1", 0) + lookup(var.validator_node_counts, "ca-central-1", 0) + lookup(var.observer_node_counts, "ca-central-1", 0))}"
     sa-east-1      = "${signum(lookup(var.maker_node_counts, "sa-east-1", 0) + lookup(var.validator_node_counts, "sa-east-1", 0) + lookup(var.observer_node_counts, "sa-east-1", 0))}"
-  }
-
-  bootnode_vpcs {
-    us-east-1      = "${module.quorum_cluster_us_east_1.bootnode_vpc_id}"
-    us-east-2      = "${module.quorum_cluster_us_east_2.bootnode_vpc_id}"
-    us-west-1      = "${module.quorum_cluster_us_west_1.bootnode_vpc_id}"
-    us-west-2      = "${module.quorum_cluster_us_west_2.bootnode_vpc_id}"
-    eu-central-1   = "${module.quorum_cluster_eu_central_1.bootnode_vpc_id}"
-    eu-west-1      = "${module.quorum_cluster_eu_west_1.bootnode_vpc_id}"
-    eu-west-2      = "${module.quorum_cluster_eu_west_2.bootnode_vpc_id}"
-    ap-south-1     = "${module.quorum_cluster_ap_south_1.bootnode_vpc_id}"
-    ap-northeast-1 = "${module.quorum_cluster_ap_northeast_1.bootnode_vpc_id}"
-    ap-northeast-2 = "${module.quorum_cluster_ap_northeast_2.bootnode_vpc_id}"
-    ap-southeast-1 = "${module.quorum_cluster_ap_southeast_1.bootnode_vpc_id}"
-    ap-southeast-2 = "${module.quorum_cluster_ap_southeast_2.bootnode_vpc_id}"
-    ca-central-1   = "${module.quorum_cluster_ca_central_1.bootnode_vpc_id}"
-    sa-east-1      = "${module.quorum_cluster_sa_east_1.bootnode_vpc_id}"
-  }
-
-  bootnode_vpc_association_counts {
-    us-east-1      = "${signum(lookup(var.bootnode_counts, "us-east-1", 0))}"
-    us-east-2      = "${signum(lookup(var.bootnode_counts, "us-east-2", 0))}"
-    us-west-1      = "${signum(lookup(var.bootnode_counts, "us-west-1", 0))}"
-    us-west-2      = "${signum(lookup(var.bootnode_counts, "us-west-2", 0))}"
-    eu-central-1   = "${signum(lookup(var.bootnode_counts, "eu-central-1", 0))}"
-    eu-west-1      = "${signum(lookup(var.bootnode_counts, "eu-west-1", 0))}"
-    eu-west-2      = "${signum(lookup(var.bootnode_counts, "eu-west-2", 0))}"
-    ap-south-1     = "${signum(lookup(var.bootnode_counts, "ap-south-1", 0))}"
-    ap-northeast-1 = "${signum(lookup(var.bootnode_counts, "ap-northeast-1", 0))}"
-    ap-northeast-2 = "${signum(lookup(var.bootnode_counts, "ap-northeast-2", 0))}"
-    ap-southeast-1 = "${signum(lookup(var.bootnode_counts, "ap-southeast-1", 0))}"
-    ap-southeast-2 = "${signum(lookup(var.bootnode_counts, "ap-southeast-2", 0))}"
-    ca-central-1   = "${signum(lookup(var.bootnode_counts, "ca-central-1", 0))}"
-    sa-east-1      = "${signum(lookup(var.bootnode_counts, "sa-east-1", 0))}"
   }
 }
