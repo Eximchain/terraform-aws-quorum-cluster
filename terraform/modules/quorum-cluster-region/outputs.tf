@@ -19,21 +19,21 @@ output "bootnode_ips" {
 }
 
 output "quorum_cidr_block" {
-  value = "${data.template_file.quorum_cidr_block.rendered}"
+  value = "${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? data.template_file.quorum_cidr_block.rendered : ""}"
 }
 
 output "bootnode_cidr_block" {
-  value = "${data.template_file.bootnode_cidr_block.rendered}"
+  value = "${lookup(var.bootnode_counts, var.aws_region, 0) > 0 ? data.template_file.bootnode_cidr_block.rendered : ""}"
 }
 
 output "quorum_maker_cidr_block" {
-  value = "${data.template_file.quorum_maker_cidr_block.rendered}"
+  value = "${lookup(var.maker_node_counts, var.aws_region, 0) > 0 ? data.template_file.quorum_maker_cidr_block.rendered : ""}"
 }
 
 output "quorum_validator_cidr_block" {
-  value = "${data.template_file.quorum_validator_cidr_block.rendered}"
+  value = "${lookup(var.validator_node_counts, var.aws_region, 0) > 0 ? data.template_file.quorum_validator_cidr_block.rendered : ""}"
 }
 
 output "quorum_observer_cidr_block" {
-  value = "${data.template_file.quorum_observer_cidr_block.rendered}"
+  value = "${lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? data.template_file.quorum_observer_cidr_block.rendered : ""}"
 }
