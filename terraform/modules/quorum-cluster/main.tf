@@ -157,6 +157,57 @@ module "quorum_cluster_us_east_1" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_us_east_2" {
@@ -222,6 +273,57 @@ module "quorum_cluster_us_east_2" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_us_west_1" {
@@ -287,6 +389,57 @@ module "quorum_cluster_us_west_1" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_us_west_2" {
@@ -352,6 +505,57 @@ module "quorum_cluster_us_west_2" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_eu_central_1" {
@@ -417,6 +621,57 @@ module "quorum_cluster_eu_central_1" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_eu_west_1" {
@@ -482,6 +737,57 @@ module "quorum_cluster_eu_west_1" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_eu_west_2" {
@@ -547,6 +853,57 @@ module "quorum_cluster_eu_west_2" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_ap_south_1" {
@@ -612,6 +969,57 @@ module "quorum_cluster_ap_south_1" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_ap_northeast_1" {
@@ -677,6 +1085,57 @@ module "quorum_cluster_ap_northeast_1" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_ap_northeast_2" {
@@ -742,6 +1201,57 @@ module "quorum_cluster_ap_northeast_2" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_ap_southeast_1" {
@@ -807,6 +1317,57 @@ module "quorum_cluster_ap_southeast_1" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_ap_southeast_2" {
@@ -872,6 +1433,57 @@ module "quorum_cluster_ap_southeast_2" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_ca_central_1" {
@@ -937,6 +1549,57 @@ module "quorum_cluster_ca_central_1" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 module "quorum_cluster_sa_east_1" {
@@ -1002,6 +1665,57 @@ module "quorum_cluster_sa_east_1" {
 
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+
+  quorum_maker_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_maker_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_maker_cidr_block}"
+  ]
+
+  quorum_validator_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_validator_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_validator_cidr_block}"
+  ]
+
+  quorum_observer_cidrs = [
+    "${module.quorum_cluster_us_east_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_east_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_us_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_eu_west_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_south_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_northeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ap_southeast_2.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_ca_central_1.quorum_observer_cidr_block}",
+    "${module.quorum_cluster_sa_east_1.quorum_observer_cidr_block}"
+  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
