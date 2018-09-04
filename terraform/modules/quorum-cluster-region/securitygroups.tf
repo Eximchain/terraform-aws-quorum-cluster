@@ -46,7 +46,7 @@ resource "aws_security_group_rule" "quorum_maker_quorum" {
   to_port   = 21000
   protocol  = "tcp"
 
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks = ["${compact(concat(var.quorum_maker_cidrs, var.quorum_validator_cidrs))}"]
 }
 
 resource "aws_security_group_rule" "quorum_maker_udp" {
@@ -162,7 +162,7 @@ resource "aws_security_group_rule" "quorum_validator_quorum" {
   to_port   = 21000
   protocol  = "tcp"
 
-  cidr_blocks = ["0.0.0.0/0"]
+  cidr_blocks = ["${compact(concat(var.quorum_maker_cidrs, var.quorum_validator_cidrs, var.quorum_observer_cidrs))}"]
 }
 
 # TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released
