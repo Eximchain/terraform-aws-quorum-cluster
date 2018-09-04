@@ -17,3 +17,23 @@ output "quorum_observer_node_dns" {
 output "bootnode_ips" {
   value = "${coalescelist(aws_eip.bootnodes.*.public_ip, data.aws_instance.bootnodes.*.public_ip)}"
 }
+
+output "quorum_cidr_block" {
+  value = "${data.template_file.quorum_cidr_block.rendered}"
+}
+
+output "bootnode_cidr_block" {
+  value = "${data.template_file.bootnode_cidr_block.rendered}"
+}
+
+output "quorum_maker_cidr_block" {
+  value = "${data.template_file.quorum_maker_cidr_block.rendered}"
+}
+
+output "quorum_validator_cidr_block" {
+  value = "${data.template_file.quorum_validator_cidr_block.rendered}"
+}
+
+output "quorum_observer_cidr_block" {
+  value = "${data.template_file.quorum_observer_cidr_block.rendered}"
+}
