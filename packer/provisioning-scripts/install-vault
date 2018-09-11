@@ -9,7 +9,7 @@ set -e
 
 readonly DEFAULT_INSTALL_PATH="/opt/vault"
 readonly DEFAULT_VAULT_USER="vault"
-readonly DEFAULT_VERSION="0.10.4"
+readonly DEFAULT_VERSION="0.11.1"
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SYSTEM_BIN_DIR="/usr/local/bin"
