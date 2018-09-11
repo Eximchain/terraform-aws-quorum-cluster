@@ -62,7 +62,7 @@ supervisord -c /etc/supervisor/supervisord.conf
 setup_foxpass_if_specified
 
 # The variables below are filled in via Terraform interpolation
-/opt/vault/bin/generate-setup-vault.sh ${network_id} "${vault_enterprise_license_key}"
+/opt/vault/bin/generate-setup-vault.sh ${network_id} -v "${vault_enterprise_license_key}"
 
 # Download vault certs from s3
 aws configure set s3.signature_version s3v4

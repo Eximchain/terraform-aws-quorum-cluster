@@ -6,13 +6,34 @@ OUTPUT_FILE=/opt/vault/bin/setup-vault.sh
 POLICY_FILE=/opt/vault/bin/setup-policies.sh
 AWS_ACCOUNT_ID=$(curl http://169.254.169.254/latest/meta-data/iam/info | jq .InstanceProfileArn | cut -d: -f5)
 
+# Default Arg Values
+VAULT_ENTERPRISE_LICENSE_KEY=""
+OKTA_ORG_NAME=""
+# Parse Required Args
 NETWORK_ID=$1
-if [ $# -eq 2 ]
-then
-  VAULT_ENTERPRISE_LICENSE_KEY="$2"
-else
-  VAULT_ENTERPRISE_LICENSE_KEY=""
-fi
+shift # past argument
+# Parse Optional Args
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -v|--vault-enterprise-license-key)
+    VAULT_ENTERPRISE_LICENSE_KEY="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -o|--okta-org-name)
+    OKTA_ORG_NAME="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    *)    # unknown option
+    echo "Unexpected Option '$1' Found"
+    shift # past argument
+    ;;
+esac
+done
 
 # Write the setup-vault script
 cat << EOF > $OUTPUT_FILE
