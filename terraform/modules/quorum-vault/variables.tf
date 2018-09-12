@@ -162,6 +162,26 @@ variable "foxpass_api_key" {
   default     = ""
 }
 
+variable "okta_base_url" {
+  description = "The base URL to configure Okta access to vault with."
+  default     = "okta.com"
+}
+
+variable "okta_org_name" {
+  description = "The organization name to configure Okta access to use. Leave empty to skip configuring Okta vault access."
+  default     = ""
+}
+
+variable "okta_api_token" {
+  description = "The API token to configure Okta access to use. Leave empty to skip configuring Okta vault access."
+  default     = ""
+}
+
+variable "okta_access_group" {
+  description = "The Okta group that should be granted access to the vault. Leave empty to skip configuring Okta vault access."
+  default     = ""
+}
+
 variable "bootnode_counts" {
   description = "A mapping from region to the number of bootnodes to launch in that region"
   type        = "map"

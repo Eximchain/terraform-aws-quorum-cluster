@@ -51,6 +51,12 @@ function populate_counts {
   echo "${bootnode_count_json}" | sudo tee /opt/vault/data/bootnode-counts.json
 }
 
+function write_okta_api_token {
+  echo "${okta_api_token}" | sudo tee /opt/vault/data/okta-api-token.txt > /dev/null
+  sudo chown vault:vault /opt/vault/data/okta-api-token.txt
+  sudo chmod 600 /opt/vault/data/okta-api-token.txt
+}
+
 readonly VAULT_TLS_CERT_DIR="/opt/vault/tls"
 readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 readonly VAULT_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/vault.crt.pem"
@@ -61,8 +67,10 @@ supervisord -c /etc/supervisor/supervisord.conf
 
 setup_foxpass_if_specified
 
+write_okta_api_token
+
 # The variables below are filled in via Terraform interpolation
-/opt/vault/bin/generate-setup-vault.sh ${network_id} -v "${vault_enterprise_license_key}"
+/opt/vault/bin/generate-setup-vault.sh ${network_id} -v "${vault_enterprise_license_key}" -b "${okta_base_url}" -o "${okta_org_name}" -a "${okta_access_group}"
 
 # Download vault certs from s3
 aws configure set s3.signature_version s3v4

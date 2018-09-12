@@ -85,6 +85,22 @@ then
   echo "vault write sys/license text=$VAULT_ENTERPRISE_LICENSE_KEY" >> $OUTPUT_FILE
 fi
 
+# Set up Okta auth if enabled
+if [ "$OKTA_ORG_NAME" != "" ]
+then
+  cat << EOF >> $OUTPUT_FILE
+
+# Enable and Configure Okta Access
+OKTA_API_TOKEN=\$(sudo cat /opt/vault/data/okta-api-token.txt)
+vault auth enable okta
+vault write auth/okta/config base_url="$OKTA_BASE_URL" organization="$OKTA_ORG_NAME" token="\$OKTA_API_TOKEN"
+
+# Write policy and assign to a group
+vault policy-write quorum-root /opt/vault/config/policies/quorum-root.hcl
+vault write auth/okta/groups/$OKTA_ACCESS_GROUP policies=quorum-root
+EOF
+fi
+
 cat << EOF >> $OUTPUT_FILE
 # Revoke the root token to reduce security risk
 vault token-revoke \$ROOT_TOKEN

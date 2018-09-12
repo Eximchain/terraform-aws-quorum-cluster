@@ -85,6 +85,11 @@ module "quorum_vault" {
   threatstack_deploy_key       = "${var.threatstack_deploy_key}"
   vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
 
+  okta_base_url     = "${var.okta_base_url}"
+  okta_org_name     = "${var.okta_org_name}"
+  okta_api_token    = "${var.okta_api_token}"
+  okta_access_group = "${var.okta_access_group}"
+
   foxpass_base_dn   = "${var.foxpass_base_dn}"
   foxpass_bind_user = "${var.foxpass_bind_user}"
   foxpass_bind_pw   = "${var.foxpass_bind_pw}"
