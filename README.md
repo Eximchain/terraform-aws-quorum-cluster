@@ -222,15 +222,15 @@ Initialize the vault. Choose the number of key shards and the unseal threshold b
 ```sh
 $ KEY_SHARES=<Number of key shards>
 $ KEY_THRESHOLD=<Number of keys needed to unseal the vault>
-$ vault init -key-shares=$KEY_SHARES -key-threshold=$KEY_THRESHOLD
+$ vault operator init -key-shares=$KEY_SHARES -key-threshold=$KEY_THRESHOLD
 ```
 
 Unseal the vault and initialize it with permissions for the quorum nodes. Once setup-vault.sh is complete, the quorum nodes will be able to finish their boot-up procedure. Note that this example is for a single key initialization, and if the key is sharded with a threshold greater than one, multiple users will need to run the unseal command with their shards.
 
 ```sh
-$ UNSEAL_KEY=<Unseal key output by vault init command>
-$ vault unseal $UNSEAL_KEY
-$ ROOT_TOKEN=<Root token output by vault init command>
+$ UNSEAL_KEY=<Unseal key output by vault operator init command>
+$ vault operator unseal $UNSEAL_KEY
+$ ROOT_TOKEN=<Root token output by vault operator init command>
 $ /opt/vault/bin/setup-vault.sh $ROOT_TOKEN
 ```
 
@@ -242,8 +242,8 @@ You can proceed with initial setup with only one unsealed server, but if all uns
 
 SSH each vault server and for enough unseal keys to reach the threshold run:
 ```sh
-$ UNSEAL_KEY=<Unseal key output by vault init command>
-$ vault unseal $UNSEAL_KEY
+$ UNSEAL_KEY=<Unseal key output by vault operator init command>
+$ vault operator unseal $UNSEAL_KEY
 ```
 
 ## Access the Quorum Node

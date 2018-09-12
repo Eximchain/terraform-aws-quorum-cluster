@@ -57,21 +57,21 @@ set -eu -o pipefail
 ROOT_TOKEN=\$1
 
 # Authorize with the root token
-vault auth \$ROOT_TOKEN
+vault login \$ROOT_TOKEN
 
 # Enable the aws auth backend
-vault auth-enable aws
+vault auth enable aws
 
 # Enable audit logging
 AUDIT_LOG=/opt/vault/log/audit.log
-vault audit-enable file file_path=\$AUDIT_LOG
+vault audit enable file file_path=\$AUDIT_LOG
 
 # Mount the quorum path
-vault mount -path=quorum -default-lease-ttl=30 -description="Keys and Addresses for Quorum Nodes" kv
+vault secrets enable -path=quorum -default-lease-ttl=30 -description="Keys and Addresses for Quorum Nodes" kv
 
 # Create base policy
 QUORUM_NODE_POLICY=/opt/vault/config/policies/base-read.hcl
-vault policy-write base-read \$QUORUM_NODE_POLICY
+vault policy write base-read \$QUORUM_NODE_POLICY
 EOF
 
 # Use script to fill out policies file, add command to run it
@@ -96,14 +96,14 @@ vault auth enable okta
 vault write auth/okta/config base_url="$OKTA_BASE_URL" organization="$OKTA_ORG_NAME" token="\$OKTA_API_TOKEN"
 
 # Write policy and assign to a group
-vault policy-write quorum-root /opt/vault/config/policies/quorum-root.hcl
+vault policy write quorum-root /opt/vault/config/policies/quorum-root.hcl
 vault write auth/okta/groups/$OKTA_ACCESS_GROUP policies=quorum-root
 EOF
 fi
 
 cat << EOF >> $OUTPUT_FILE
 # Revoke the root token to reduce security risk
-vault token-revoke \$ROOT_TOKEN
+vault token revoke \$ROOT_TOKEN
 EOF
 
 # Give permission to run the script
