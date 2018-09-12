@@ -9,6 +9,8 @@ AWS_ACCOUNT_ID=$(curl http://169.254.169.254/latest/meta-data/iam/info | jq .Ins
 # Default Arg Values
 VAULT_ENTERPRISE_LICENSE_KEY=""
 OKTA_ORG_NAME=""
+OKTA_ACCESS_GROUP=""
+OKTA_BASE_URL="okta.com"
 # Parse Required Args
 NETWORK_ID=$1
 shift # past argument
@@ -25,6 +27,16 @@ case $key in
     ;;
     -o|--okta-org-name)
     OKTA_ORG_NAME="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -b|--okta-base-url)
+    OKTA_BASE_URL="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -a|--okta-access-group)
+    OKTA_ACCESS_GROUP="$2"
     shift # past argument
     shift # past value
     ;;
