@@ -74,11 +74,16 @@
     "source": "vault-policies/base-read.hcl",
     "destination": "/tmp/base-read.hcl"
   },{
+    "type": "file",
+    "source": "vault-policies/quorum-root.hcl",
+    "destination": "/tmp/quorum-root.hcl"
+  },{
     "type": "shell",
     "inline": [
       "sudo mkdir /opt/vault/config/policies",
       "sudo mv /tmp/update-certificate-store /opt/vault/bin/",
       "sudo mv /tmp/base-read.hcl /opt/vault/config/policies/",
+      "sudo mv /tmp/quorum-root.hcl /opt/vault/config/policies/",
       "sudo chown vault:vault /opt/vault/config/policies/*",
       "sudo chmod +x /opt/vault/bin/update-certificate-store",
       "sudo chmod 644 /opt/vault/config/policies/*",
