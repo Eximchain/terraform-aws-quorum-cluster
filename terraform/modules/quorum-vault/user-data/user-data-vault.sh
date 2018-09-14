@@ -83,7 +83,7 @@ aws configure set default.region ${aws_region}
 cat $VAULT_TLS_CERT_DIR/vault.key.pem.encrypted.b64 | base64 --decode > $VAULT_TLS_CERT_DIR/vault.key.pem.encrypted
 aws kms decrypt --ciphertext-blob fileb://$VAULT_TLS_CERT_DIR/vault.key.pem.encrypted --output text --query Plaintext | base64 --decode > $VAULT_TLS_CERT_DIR/vault.key.pem
 
-# Save node counts to files for use by generate-setup-vault.sh
+# Save node counts to files for use by write-node-policies.sh
 populate_counts
 
 # Set ownership and permissions
