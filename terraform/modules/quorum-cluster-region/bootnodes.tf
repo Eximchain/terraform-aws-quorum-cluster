@@ -28,6 +28,10 @@ resource "aws_launch_configuration" "bootnodes" {
   security_groups = ["${aws_security_group.bootnode.id}"]
 
   placement_tenancy = "${var.use_dedicated_bootnodes ? "dedicated" : "default"}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -161,6 +165,10 @@ resource "aws_iam_role" "bootnode" {
   }]
 }
 EOF
+
+lifecycle {
+  create_before_destroy = true
+}
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -171,6 +179,10 @@ resource "aws_iam_role_policy_attachment" "bootnode" {
 
   role       = "${element(aws_iam_role.bootnode.*.name, count.index)}"
   policy_arn = "${aws_iam_policy.quorum.arn}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_iam_instance_profile" "bootnode" {
@@ -178,4 +190,8 @@ resource "aws_iam_instance_profile" "bootnode" {
 
   name = "${element(aws_iam_role.bootnode.*.name, count.index)}"
   role = "${element(aws_iam_role.bootnode.*.name, count.index)}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }

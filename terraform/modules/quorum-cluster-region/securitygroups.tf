@@ -7,6 +7,10 @@ resource "aws_security_group" "quorum_maker" {
   name_prefix = "quorum-maker-net-${var.network_id}-"
   description = "Quorum maker nodes in network ${var.network_id}"
   vpc_id      = "${aws_vpc.quorum_cluster.id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released
@@ -123,6 +127,10 @@ resource "aws_security_group" "quorum_validator" {
   name_prefix = "quorum-validator-net-${var.network_id}-"
   description = "Quorum validator nodes in network ${var.network_id}"
   vpc_id      = "${aws_vpc.quorum_cluster.id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released
@@ -253,6 +261,10 @@ resource "aws_security_group" "quorum_observer" {
   name_prefix = "quorum-observer-net-${var.network_id}-"
   description = "Quorum observer nodes in network ${var.network_id}"
   vpc_id      = "${aws_vpc.quorum_cluster.id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released
@@ -369,6 +381,10 @@ resource "aws_security_group" "bootnode" {
   name        = "bootnodes"
   description = "Used for quorum bootnodes"
   vpc_id      = "${aws_vpc.quorum_cluster.id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # TODO: Swap to list interpolation for cidr_blocks once Terraform v0.12 is released

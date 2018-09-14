@@ -421,6 +421,10 @@ resource "aws_launch_configuration" "quorum_maker" {
   root_block_device {
     volume_size = "${var.node_volume_size}"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_launch_configuration" "quorum_validator" {
@@ -442,6 +446,10 @@ resource "aws_launch_configuration" "quorum_validator" {
   root_block_device {
     volume_size = "${var.node_volume_size}"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_launch_configuration" "quorum_observer" {
@@ -462,6 +470,10 @@ resource "aws_launch_configuration" "quorum_observer" {
 
   root_block_device {
     volume_size = "${var.node_volume_size}"
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -535,6 +547,10 @@ resource "aws_iam_role" "quorum_maker" {
   }]
 }
 EOF
+
+lifecycle {
+  create_before_destroy = true
+}
 }
 
 resource "aws_iam_role" "quorum_validator" {
@@ -555,6 +571,10 @@ resource "aws_iam_role" "quorum_validator" {
   }]
 }
 EOF
+
+lifecycle {
+  create_before_destroy = true
+}
 }
 
 resource "aws_iam_role" "quorum_observer" {
@@ -575,6 +595,10 @@ resource "aws_iam_role" "quorum_observer" {
   }]
 }
 EOF
+
+lifecycle {
+  create_before_destroy = true
+}
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -585,6 +609,10 @@ resource "aws_iam_role_policy_attachment" "quorum_maker" {
 
   role       = "${element(aws_iam_role.quorum_maker.*.name, count.index)}"
   policy_arn = "${aws_iam_policy.quorum.arn}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_iam_instance_profile" "quorum_maker" {
@@ -592,6 +620,10 @@ resource "aws_iam_instance_profile" "quorum_maker" {
 
   name = "quorum-${var.aws_region}-network-${var.network_id}-makers-${count.index}"
   role = "${element(aws_iam_role.quorum_maker.*.name, count.index)}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "quorum_validator" {
@@ -599,6 +631,10 @@ resource "aws_iam_role_policy_attachment" "quorum_validator" {
 
   role       = "${element(aws_iam_role.quorum_validator.*.name, count.index)}"
   policy_arn = "${aws_iam_policy.quorum.arn}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_iam_instance_profile" "quorum_validator" {
@@ -606,6 +642,10 @@ resource "aws_iam_instance_profile" "quorum_validator" {
 
   name = "quorum-${var.aws_region}-network-${var.network_id}-validators-${count.index}"
   role = "${element(aws_iam_role.quorum_validator.*.name, count.index)}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "quorum_observer" {
@@ -613,6 +653,10 @@ resource "aws_iam_role_policy_attachment" "quorum_observer" {
 
   role       = "${element(aws_iam_role.quorum_observer.*.name, count.index)}"
   policy_arn = "${aws_iam_policy.quorum.arn}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_iam_instance_profile" "quorum_observer" {
@@ -620,4 +664,8 @@ resource "aws_iam_instance_profile" "quorum_observer" {
 
   name = "quorum-${var.aws_region}-network-${var.network_id}-observers-${count.index}"
   role = "${element(aws_iam_role.quorum_observer.*.name, count.index)}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
