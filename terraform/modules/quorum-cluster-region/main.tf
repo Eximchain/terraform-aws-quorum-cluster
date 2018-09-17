@@ -39,7 +39,7 @@ resource "aws_s3_bucket" "quorum_constellation" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# S3FS BUCKET FOR REGIONAL BACKUPS
+# S3 BUCKET FOR REGIONAL BACKUPS
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_s3_bucket" "quorum_backup" {
   count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0) + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
