@@ -106,11 +106,18 @@
     "source": "../instance-scripts/generate-setup-vault.sh",
     "destination": "/tmp/generate-setup-vault.sh"
   },{
+    "type": "file",
+    "source": "../instance-scripts/move-vault-data.sh",
+    "destination": "/tmp/move-vault-data.sh"
+  },{
     "type": "shell",
     "inline": [
       "sudo mv /tmp/generate-setup-vault.sh /opt/vault/bin/",
+      "sudo mv /tmp/move-vault-data.sh /opt/vault/bin/",
       "sudo chown ubuntu /opt/vault/bin/generate-setup-vault.sh",
-      "sudo chmod 744 /opt/vault/bin/generate-setup-vault.sh"
+      "sudo chmod 744 /opt/vault/bin/generate-setup-vault.sh",
+      "sudo chown ubuntu /opt/vault/bin/move-vault-data.sh",
+      "sudo chmod 744 /opt/vault/bin/move-vault-data.sh"
     ]
   },{
     "type": "file",
