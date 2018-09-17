@@ -6,7 +6,7 @@ FROM_REGION=""
 FROM_INDEX=""
 TO_REGION=""
 TO_INDEX=""
-CLEANUP="NO"
+CLEANUP="YES"
 # Parse Args
 while [[ $# -gt 0 ]]
 do
@@ -39,8 +39,8 @@ case $key in
     shift # past argument
     shift # past value
     ;;
-    -c|--cleanup)
-    CLEANUP="YES"
+    -nc|--no-cleanup)
+    CLEANUP="NO"
     shift # past argument
     ;;
     *)    # unknown option
