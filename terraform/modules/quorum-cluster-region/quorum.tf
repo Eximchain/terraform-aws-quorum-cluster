@@ -200,11 +200,6 @@ data "template_file" "user_data_quorum_maker" {
     generate_metrics   = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
 
-    maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
-    validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"
-    observer_node_count_json  = "${data.template_file.observer_node_count_json.rendered}"
-    bootnode_count_json       = "${data.template_file.bootnode_count_json.rendered}"
-
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
 
@@ -213,6 +208,7 @@ data "template_file" "user_data_quorum_maker" {
 
     vault_cert_bucket       = "${var.vault_cert_bucket_name}"
     constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
+    node_count_bucket       = "${var.node_count_bucket_name}"
 
     threatstack_deploy_key = "${var.threatstack_deploy_key}"
 
@@ -230,7 +226,6 @@ data "template_file" "user_data_quorum_validator" {
 
   vars {
     index              = "${count.index}"
-    overall_index_base = "${data.template_file.user_data_quorum_maker.count}"
 
     role = "validator"
 
@@ -246,11 +241,6 @@ data "template_file" "user_data_quorum_validator" {
     generate_metrics = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
 
-    maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
-    validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"
-    observer_node_count_json  = "${data.template_file.observer_node_count_json.rendered}"
-    bootnode_count_json       = "${data.template_file.bootnode_count_json.rendered}"
-
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
 
@@ -259,6 +249,7 @@ data "template_file" "user_data_quorum_validator" {
 
     vault_cert_bucket       = "${var.vault_cert_bucket_name}"
     constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
+    node_count_bucket       = "${var.node_count_bucket_name}"
 
     threatstack_deploy_key = "${var.threatstack_deploy_key}"
 
@@ -276,7 +267,6 @@ data "template_file" "user_data_quorum_observer" {
 
   vars {
     index              = "${count.index}"
-    overall_index_base = "${data.template_file.user_data_quorum_maker.count + data.template_file.user_data_quorum_validator.count}"
 
     role = "observer"
 
@@ -292,11 +282,6 @@ data "template_file" "user_data_quorum_observer" {
     generate_metrics = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
 
-    maker_node_count_json     = "${data.template_file.maker_node_count_json.rendered}"
-    validator_node_count_json = "${data.template_file.validator_node_count_json.rendered}"
-    observer_node_count_json  = "${data.template_file.observer_node_count_json.rendered}"
-    bootnode_count_json       = "${data.template_file.bootnode_count_json.rendered}"
-
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
 
@@ -305,6 +290,7 @@ data "template_file" "user_data_quorum_observer" {
 
     vault_cert_bucket       = "${var.vault_cert_bucket_name}"
     constellation_s3_bucket = "${aws_s3_bucket.quorum_constellation.id}"
+    node_count_bucket       = "${var.node_count_bucket_name}"
 
     threatstack_deploy_key = "${var.threatstack_deploy_key}"
 
@@ -312,90 +298,6 @@ data "template_file" "user_data_quorum_observer" {
     foxpass_bind_user = "${var.foxpass_bind_user}"
     foxpass_bind_pw   = "${var.foxpass_bind_pw}"
     foxpass_api_key   = "${var.foxpass_api_key}"
-  }
-}
-
-data "template_file" "maker_node_count_json" {
-  template = "${file("${path.module}/templates/node-count.json")}"
-
-  vars {
-    ap_northeast_1_count = "${lookup(var.maker_node_counts, "ap-northeast-1", 0)}"
-    ap_northeast_2_count = "${lookup(var.maker_node_counts, "ap-northeast-2", 0)}"
-    ap_south_1_count     = "${lookup(var.maker_node_counts, "ap-south-1", 0)}"
-    ap_southeast_1_count = "${lookup(var.maker_node_counts, "ap-southeast-1", 0)}"
-    ap_southeast_2_count = "${lookup(var.maker_node_counts, "ap-southeast-2", 0)}"
-    ca_central_1_count   = "${lookup(var.maker_node_counts, "ca-central-1", 0)}"
-    eu_central_1_count   = "${lookup(var.maker_node_counts, "eu-central-1", 0)}"
-    eu_west_1_count      = "${lookup(var.maker_node_counts, "eu-west-1", 0)}"
-    eu_west_2_count      = "${lookup(var.maker_node_counts, "eu-west-2", 0)}"
-    sa_east_1_count      = "${lookup(var.maker_node_counts, "sa-east-1", 0)}"
-    us_east_1_count      = "${lookup(var.maker_node_counts, "us-east-1", 0)}"
-    us_east_2_count      = "${lookup(var.maker_node_counts, "us-east-2", 0)}"
-    us_west_1_count      = "${lookup(var.maker_node_counts, "us-west-1", 0)}"
-    us_west_2_count      = "${lookup(var.maker_node_counts, "us-west-2", 0)}"
-  }
-}
-
-data "template_file" "validator_node_count_json" {
-  template = "${file("${path.module}/templates/node-count.json")}"
-
-  vars {
-    ap_northeast_1_count = "${lookup(var.validator_node_counts, "ap-northeast-1", 0)}"
-    ap_northeast_2_count = "${lookup(var.validator_node_counts, "ap-northeast-2", 0)}"
-    ap_south_1_count     = "${lookup(var.validator_node_counts, "ap-south-1", 0)}"
-    ap_southeast_1_count = "${lookup(var.validator_node_counts, "ap-southeast-1", 0)}"
-    ap_southeast_2_count = "${lookup(var.validator_node_counts, "ap-southeast-2", 0)}"
-    ca_central_1_count   = "${lookup(var.validator_node_counts, "ca-central-1", 0)}"
-    eu_central_1_count   = "${lookup(var.validator_node_counts, "eu-central-1", 0)}"
-    eu_west_1_count      = "${lookup(var.validator_node_counts, "eu-west-1", 0)}"
-    eu_west_2_count      = "${lookup(var.validator_node_counts, "eu-west-2", 0)}"
-    sa_east_1_count      = "${lookup(var.validator_node_counts, "sa-east-1", 0)}"
-    us_east_1_count      = "${lookup(var.validator_node_counts, "us-east-1", 0)}"
-    us_east_2_count      = "${lookup(var.validator_node_counts, "us-east-2", 0)}"
-    us_west_1_count      = "${lookup(var.validator_node_counts, "us-west-1", 0)}"
-    us_west_2_count      = "${lookup(var.validator_node_counts, "us-west-2", 0)}"
-  }
-}
-
-data "template_file" "observer_node_count_json" {
-  template = "${file("${path.module}/templates/node-count.json")}"
-
-  vars {
-    ap_northeast_1_count = "${lookup(var.observer_node_counts, "ap-northeast-1", 0)}"
-    ap_northeast_2_count = "${lookup(var.observer_node_counts, "ap-northeast-2", 0)}"
-    ap_south_1_count     = "${lookup(var.observer_node_counts, "ap-south-1", 0)}"
-    ap_southeast_1_count = "${lookup(var.observer_node_counts, "ap-southeast-1", 0)}"
-    ap_southeast_2_count = "${lookup(var.observer_node_counts, "ap-southeast-2", 0)}"
-    ca_central_1_count   = "${lookup(var.observer_node_counts, "ca-central-1", 0)}"
-    eu_central_1_count   = "${lookup(var.observer_node_counts, "eu-central-1", 0)}"
-    eu_west_1_count      = "${lookup(var.observer_node_counts, "eu-west-1", 0)}"
-    eu_west_2_count      = "${lookup(var.observer_node_counts, "eu-west-2", 0)}"
-    sa_east_1_count      = "${lookup(var.observer_node_counts, "sa-east-1", 0)}"
-    us_east_1_count      = "${lookup(var.observer_node_counts, "us-east-1", 0)}"
-    us_east_2_count      = "${lookup(var.observer_node_counts, "us-east-2", 0)}"
-    us_west_1_count      = "${lookup(var.observer_node_counts, "us-west-1", 0)}"
-    us_west_2_count      = "${lookup(var.observer_node_counts, "us-west-2", 0)}"
-  }
-}
-
-data "template_file" "bootnode_count_json" {
-  template = "${file("${path.module}/templates/node-count.json")}"
-
-  vars {
-    ap_northeast_1_count = "${lookup(var.bootnode_counts, "ap-northeast-1", 0)}"
-    ap_northeast_2_count = "${lookup(var.bootnode_counts, "ap-northeast-2", 0)}"
-    ap_south_1_count     = "${lookup(var.bootnode_counts, "ap-south-1", 0)}"
-    ap_southeast_1_count = "${lookup(var.bootnode_counts, "ap-southeast-1", 0)}"
-    ap_southeast_2_count = "${lookup(var.bootnode_counts, "ap-southeast-2", 0)}"
-    ca_central_1_count   = "${lookup(var.bootnode_counts, "ca-central-1", 0)}"
-    eu_central_1_count   = "${lookup(var.bootnode_counts, "eu-central-1", 0)}"
-    eu_west_1_count      = "${lookup(var.bootnode_counts, "eu-west-1", 0)}"
-    eu_west_2_count      = "${lookup(var.bootnode_counts, "eu-west-2", 0)}"
-    sa_east_1_count      = "${lookup(var.bootnode_counts, "sa-east-1", 0)}"
-    us_east_1_count      = "${lookup(var.bootnode_counts, "us-east-1", 0)}"
-    us_east_2_count      = "${lookup(var.bootnode_counts, "us-east-2", 0)}"
-    us_west_1_count      = "${lookup(var.bootnode_counts, "us-west-1", 0)}"
-    us_west_2_count      = "${lookup(var.bootnode_counts, "us-west-2", 0)}"
   }
 }
 
@@ -424,8 +326,6 @@ resource "aws_launch_configuration" "quorum_maker" {
 
   lifecycle {
     create_before_destroy = true
-    # Ignore changes in the number of instances
-    ignore_changes        = ["user_data"]
   }
 }
 
@@ -451,8 +351,6 @@ resource "aws_launch_configuration" "quorum_validator" {
 
   lifecycle {
     create_before_destroy = true
-    # Ignore changes in the number of instances
-    ignore_changes        = ["user_data"]
   }
 }
 
@@ -478,8 +376,6 @@ resource "aws_launch_configuration" "quorum_observer" {
 
   lifecycle {
     create_before_destroy = true
-    # Ignore changes in the number of instances
-    ignore_changes        = ["user_data"]
   }
 }
 

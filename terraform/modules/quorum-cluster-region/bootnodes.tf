@@ -31,8 +31,6 @@ resource "aws_launch_configuration" "bootnodes" {
 
   lifecycle {
     create_before_destroy = true
-    # Ignore changes in the number of instances
-    ignore_changes        = ["user_data"]
   }
 }
 
@@ -106,7 +104,6 @@ data "template_file" "user_data_bootnode" {
   vars {
     constellation_s3_bucket  = "${aws_s3_bucket.quorum_constellation.id}"
     index                    = "${count.index}"
-    bootnode_count_json      = "${data.template_file.bootnode_count_json.rendered}"
     aws_region               = "${var.aws_region}"
     primary_region           = "${var.primary_region}"
     network_id               = "${var.network_id}"
@@ -125,7 +122,8 @@ data "template_file" "user_data_bootnode" {
     consul_cluster_tag_key   = "${var.consul_cluster_tag_key}"
     consul_cluster_tag_value = "${var.consul_cluster_tag_value}"
 
-    vault_cert_bucket = "${var.vault_cert_bucket_name}"
+    vault_cert_bucket  = "${var.vault_cert_bucket_name}"
+    node_count_bucket  = "${var.node_count_bucket_name}"
 
     threatstack_deploy_key = "${var.threatstack_deploy_key}"
 

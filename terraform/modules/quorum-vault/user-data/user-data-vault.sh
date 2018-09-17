@@ -44,13 +44,6 @@ function setup_foxpass_if_specified {
   fi
 }
 
-function populate_counts {
-  echo "${maker_node_count_json}" | sudo tee /opt/vault/data/maker-counts.json
-  echo "${validator_node_count_json}" | sudo tee /opt/vault/data/validator-counts.json
-  echo "${observer_node_count_json}" | sudo tee /opt/vault/data/observer-counts.json
-  echo "${bootnode_count_json}" | sudo tee /opt/vault/data/bootnode-counts.json
-}
-
 function write_okta_api_token {
   echo "${okta_api_token}" | sudo tee /opt/vault/data/okta-api-token.txt > /dev/null
   sudo chown vault:vault /opt/vault/data/okta-api-token.txt
@@ -61,6 +54,8 @@ readonly VAULT_TLS_CERT_DIR="/opt/vault/tls"
 readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 readonly VAULT_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/vault.crt.pem"
 readonly VAULT_TLS_KEY_FILE="$VAULT_TLS_CERT_DIR/vault.key.pem"
+
+readonly NODE_COUNT_DIR="/opt/vault/data/"
 
 # Start Supervisor
 supervisord -c /etc/supervisor/supervisord.conf
@@ -78,13 +73,16 @@ aws s3 cp s3://${vault_cert_bucket}/ca.crt.pem $VAULT_TLS_CERT_DIR
 aws s3 cp s3://${vault_cert_bucket}/vault.crt.pem $VAULT_TLS_CERT_DIR
 aws s3 cp s3://${vault_cert_bucket}/vault.key.pem.encrypted.b64 $VAULT_TLS_CERT_DIR
 
+# Save node counts to files for use by write-node-policies.sh
+aws s3 cp s3://${node_count_bucket}/bootnode-counts.json $NODE_COUNT_DIR
+aws s3 cp s3://${node_count_bucket}/maker-counts.json $NODE_COUNT_DIR
+aws s3 cp s3://${node_count_bucket}/validator-counts.json $NODE_COUNT_DIR
+aws s3 cp s3://${node_count_bucket}/observer-counts.json $NODE_COUNT_DIR
+
 # Decrypt the private key
 aws configure set default.region ${aws_region}
 cat $VAULT_TLS_CERT_DIR/vault.key.pem.encrypted.b64 | base64 --decode > $VAULT_TLS_CERT_DIR/vault.key.pem.encrypted
 aws kms decrypt --ciphertext-blob fileb://$VAULT_TLS_CERT_DIR/vault.key.pem.encrypted --output text --query Plaintext | base64 --decode > $VAULT_TLS_CERT_DIR/vault.key.pem
-
-# Save node counts to files for use by write-node-policies.sh
-populate_counts
 
 # Set ownership and permissions
 sudo chown vault:vault $VAULT_TLS_CERT_DIR/*

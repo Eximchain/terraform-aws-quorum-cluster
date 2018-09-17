@@ -71,14 +71,20 @@ function setup_foxpass_if_specified {
 }
 
 function populate_data_files {
+  local readonly NODE_COUNT_DIR="/opt/quorum/info/"
+
   echo "${index}" | sudo tee /opt/quorum/info/index.txt
-  echo "${bootnode_count_json}" | sudo tee /opt/quorum/info/bootnode-counts.json
-  sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info' --bootnode
   echo "${aws_region}" | sudo tee /opt/quorum/info/aws-region.txt
   echo "${primary_region}" | sudo tee /opt/quorum/info/primary-region.txt
   echo "${use_elastic_bootnode_ips}" | sudo tee /opt/quorum/info/using-eip.txt
   echo "${public_ip}" | sudo tee /opt/quorum/info/public-ip.txt
   echo "${eip_id}" | sudo tee /opt/quorum/info/eip-id.txt
+
+  # Download node counts
+  aws configure set s3.signature_version s3v4
+  aws s3 cp s3://${node_count_bucket}/bootnode-counts.json $NODE_COUNT_DIR
+
+  sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info' --bootnode
 }
 
 # Send the log output from this script to user-data.log, syslog, and the console

@@ -89,12 +89,9 @@ function setup_foxpass_if_specified {
 }
 
 function populate_data_files {
+  local readonly NODE_COUNT_DIR="/opt/quorum/info/"
+
   echo "${index}" | sudo tee /opt/quorum/info/role-index.txt
-  echo "${index + overall_index_base}" | sudo tee /opt/quorum/info/overall-index.txt
-  echo "${maker_node_count_json}" | sudo tee /opt/quorum/info/maker-counts.json
-  echo "${validator_node_count_json}" | sudo tee /opt/quorum/info/validator-counts.json
-  echo "${observer_node_count_json}" | sudo tee /opt/quorum/info/observer-counts.json
-  echo "${bootnode_count_json}" | sudo tee /opt/quorum/info/bootnode-counts.json
   echo "${role}" | sudo tee /opt/quorum/info/role.txt
   echo "${vote_threshold}" | sudo tee /opt/quorum/info/vote-threshold.txt
   echo "${min_block_time}" | sudo tee /opt/quorum/info/min-block-time.txt
@@ -107,6 +104,33 @@ function populate_data_files {
   echo "${network_id}" | sudo tee /opt/quorum/info/network-id.txt
   echo "https://${vault_dns}:${vault_port}" | sudo tee /opt/quorum/info/vault-address.txt
   echo "ipc:$GETH_IPC_PATH_LOCAL" | sudo tee /opt/quorum/info/geth-ipc.txt
+
+  # Download node counts
+  aws configure set s3.signature_version s3v4
+  aws s3 cp s3://${node_count_bucket}/bootnode-counts.json $NODE_COUNT_DIR
+  aws s3 cp s3://${node_count_bucket}/maker-counts.json $NODE_COUNT_DIR
+  aws s3 cp s3://${node_count_bucket}/validator-counts.json $NODE_COUNT_DIR
+  aws s3 cp s3://${node_count_bucket}/observer-counts.json $NODE_COUNT_DIR
+
+  # Calculate Overall Index
+  if [ "${role}" == "maker" ]
+  then
+    local BASE_INDEX=0
+  elif [ "${role}" == "validator" ]
+  then
+    local BASE_INDEX=$(cat $NODE_COUNT_DIR/maker-counts.json | jq -r '.["${aws_region}"]')
+  elif [ "${role}" == "observer" ]
+  then
+    local REGION_MAKER_COUNT=$(cat $NODE_COUNT_DIR/maker-counts.json | jq -r '.["${aws_region}"]')
+    local REGION_VALIDATOR_COUNT=$(cat $NODE_COUNT_DIR/validator-counts.json | jq -r '.["${aws_region}"]')
+    local BASE_INDEX=$((REGION_MAKER_COUNT + REGION_VALIDATOR_COUNT))
+  else
+    echo "Unexpected Role ${role}"
+    exit 1
+  fi
+
+  local OVERALL_INDEX=$((BASE_INDEX + ${index}))
+  echo "$OVERALL_INDEX" | sudo tee /opt/quorum/info/overall-index.txt
 
   sudo python /opt/quorum/bin/fill-node-counts.py --quorum-info-root '/opt/quorum/info'
 }

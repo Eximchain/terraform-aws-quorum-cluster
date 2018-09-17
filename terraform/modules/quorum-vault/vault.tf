@@ -113,10 +113,7 @@ data "template_file" "user_data_vault_cluster" {
     okta_org_name                = "${var.okta_org_name}"
     okta_api_token               = "${var.okta_api_token}"
     okta_access_group            = "${var.okta_access_group}"
-    maker_node_count_json        = "${data.template_file.maker_node_count_json.rendered}"
-    validator_node_count_json    = "${data.template_file.validator_node_count_json.rendered}"
-    observer_node_count_json     = "${data.template_file.observer_node_count_json.rendered}"
-    bootnode_count_json          = "${data.template_file.bootnode_count_json.rendered}"
+    node_count_bucket            = "${var.node_count_bucket_name}"
   }
 }
 

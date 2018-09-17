@@ -131,88 +131,29 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# NODE COUNT JSONS REQUIRED TO CREATE VAULT POLICIES
+# IAM POLICY TO ACCESS NODE COUNT BUCKET
 # ---------------------------------------------------------------------------------------------------------------------
-data "template_file" "maker_node_count_json" {
-  template = "${file("${path.module}/templates/node-count.json")}"
+resource "aws_iam_policy" "node_count_access" {
+  name        = "node-count-access-network-${var.network_id}"
+  description = "Allow read access to the node count bucket"
 
-  vars {
-    ap_northeast_1_count = "${lookup(var.maker_node_counts, "ap-northeast-1", 0)}"
-    ap_northeast_2_count = "${lookup(var.maker_node_counts, "ap-northeast-2", 0)}"
-    ap_south_1_count     = "${lookup(var.maker_node_counts, "ap-south-1", 0)}"
-    ap_southeast_1_count = "${lookup(var.maker_node_counts, "ap-southeast-1", 0)}"
-    ap_southeast_2_count = "${lookup(var.maker_node_counts, "ap-southeast-2", 0)}"
-    ca_central_1_count   = "${lookup(var.maker_node_counts, "ca-central-1", 0)}"
-    eu_central_1_count   = "${lookup(var.maker_node_counts, "eu-central-1", 0)}"
-    eu_west_1_count      = "${lookup(var.maker_node_counts, "eu-west-1", 0)}"
-    eu_west_2_count      = "${lookup(var.maker_node_counts, "eu-west-2", 0)}"
-    sa_east_1_count      = "${lookup(var.maker_node_counts, "sa-east-1", 0)}"
-    us_east_1_count      = "${lookup(var.maker_node_counts, "us-east-1", 0)}"
-    us_east_2_count      = "${lookup(var.maker_node_counts, "us-east-2", 0)}"
-    us_west_1_count      = "${lookup(var.maker_node_counts, "us-west-1", 0)}"
-    us_west_2_count      = "${lookup(var.maker_node_counts, "us-west-2", 0)}"
-  }
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": ["s3:ListBucket"],
+    "Resource": ["${var.node_count_bucket_arn}"]
+  },{
+    "Effect": "Allow",
+    "Action": ["s3:GetObject"],
+    "Resource": ["${var.node_count_bucket_arn}/*"]
+  }]
+}
+EOF
 }
 
-data "template_file" "validator_node_count_json" {
-  template = "${file("${path.module}/templates/node-count.json")}"
-
-  vars {
-    ap_northeast_1_count = "${lookup(var.validator_node_counts, "ap-northeast-1", 0)}"
-    ap_northeast_2_count = "${lookup(var.validator_node_counts, "ap-northeast-2", 0)}"
-    ap_south_1_count     = "${lookup(var.validator_node_counts, "ap-south-1", 0)}"
-    ap_southeast_1_count = "${lookup(var.validator_node_counts, "ap-southeast-1", 0)}"
-    ap_southeast_2_count = "${lookup(var.validator_node_counts, "ap-southeast-2", 0)}"
-    ca_central_1_count   = "${lookup(var.validator_node_counts, "ca-central-1", 0)}"
-    eu_central_1_count   = "${lookup(var.validator_node_counts, "eu-central-1", 0)}"
-    eu_west_1_count      = "${lookup(var.validator_node_counts, "eu-west-1", 0)}"
-    eu_west_2_count      = "${lookup(var.validator_node_counts, "eu-west-2", 0)}"
-    sa_east_1_count      = "${lookup(var.validator_node_counts, "sa-east-1", 0)}"
-    us_east_1_count      = "${lookup(var.validator_node_counts, "us-east-1", 0)}"
-    us_east_2_count      = "${lookup(var.validator_node_counts, "us-east-2", 0)}"
-    us_west_1_count      = "${lookup(var.validator_node_counts, "us-west-1", 0)}"
-    us_west_2_count      = "${lookup(var.validator_node_counts, "us-west-2", 0)}"
-  }
-}
-
-data "template_file" "observer_node_count_json" {
-  template = "${file("${path.module}/templates/node-count.json")}"
-
-  vars {
-    ap_northeast_1_count = "${lookup(var.observer_node_counts, "ap-northeast-1", 0)}"
-    ap_northeast_2_count = "${lookup(var.observer_node_counts, "ap-northeast-2", 0)}"
-    ap_south_1_count     = "${lookup(var.observer_node_counts, "ap-south-1", 0)}"
-    ap_southeast_1_count = "${lookup(var.observer_node_counts, "ap-southeast-1", 0)}"
-    ap_southeast_2_count = "${lookup(var.observer_node_counts, "ap-southeast-2", 0)}"
-    ca_central_1_count   = "${lookup(var.observer_node_counts, "ca-central-1", 0)}"
-    eu_central_1_count   = "${lookup(var.observer_node_counts, "eu-central-1", 0)}"
-    eu_west_1_count      = "${lookup(var.observer_node_counts, "eu-west-1", 0)}"
-    eu_west_2_count      = "${lookup(var.observer_node_counts, "eu-west-2", 0)}"
-    sa_east_1_count      = "${lookup(var.observer_node_counts, "sa-east-1", 0)}"
-    us_east_1_count      = "${lookup(var.observer_node_counts, "us-east-1", 0)}"
-    us_east_2_count      = "${lookup(var.observer_node_counts, "us-east-2", 0)}"
-    us_west_1_count      = "${lookup(var.observer_node_counts, "us-west-1", 0)}"
-    us_west_2_count      = "${lookup(var.observer_node_counts, "us-west-2", 0)}"
-  }
-}
-
-data "template_file" "bootnode_count_json" {
-  template = "${file("${path.module}/templates/node-count.json")}"
-
-  vars {
-    ap_northeast_1_count = "${lookup(var.bootnode_counts, "ap-northeast-1", 0)}"
-    ap_northeast_2_count = "${lookup(var.bootnode_counts, "ap-northeast-2", 0)}"
-    ap_south_1_count     = "${lookup(var.bootnode_counts, "ap-south-1", 0)}"
-    ap_southeast_1_count = "${lookup(var.bootnode_counts, "ap-southeast-1", 0)}"
-    ap_southeast_2_count = "${lookup(var.bootnode_counts, "ap-southeast-2", 0)}"
-    ca_central_1_count   = "${lookup(var.bootnode_counts, "ca-central-1", 0)}"
-    eu_central_1_count   = "${lookup(var.bootnode_counts, "eu-central-1", 0)}"
-    eu_west_1_count      = "${lookup(var.bootnode_counts, "eu-west-1", 0)}"
-    eu_west_2_count      = "${lookup(var.bootnode_counts, "eu-west-2", 0)}"
-    sa_east_1_count      = "${lookup(var.bootnode_counts, "sa-east-1", 0)}"
-    us_east_1_count      = "${lookup(var.bootnode_counts, "us-east-1", 0)}"
-    us_east_2_count      = "${lookup(var.bootnode_counts, "us-east-2", 0)}"
-    us_west_1_count      = "${lookup(var.bootnode_counts, "us-west-1", 0)}"
-    us_west_2_count      = "${lookup(var.bootnode_counts, "us-west-2", 0)}"
-  }
+resource "aws_iam_role_policy_attachment" "node_count_access" {
+  role       = "${aws_iam_role.vault_cluster.id}"
+  policy_arn = "${aws_iam_policy.node_count_access.arn}"
 }

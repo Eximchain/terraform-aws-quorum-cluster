@@ -88,6 +88,7 @@ resource "aws_iam_policy" "quorum" {
     "Action": ["s3:ListBucket"],
     "Resource": [
       "${var.vault_cert_bucket_arn}",
+      "${var.node_count_bucket_arn}",
       "${aws_s3_bucket.quorum_backup.arn}"
     ]
   },{
@@ -95,7 +96,8 @@ resource "aws_iam_policy" "quorum" {
     "Action": ["s3:GetObject"],
     "Resource": [
       "${var.vault_cert_bucket_arn}/ca.crt.pem",
-      "${var.vault_cert_bucket_arn}/vault.crt.pem"
+      "${var.vault_cert_bucket_arn}/vault.crt.pem",
+      "${var.node_count_bucket_arn}/*"
     ]
   },{
     "Effect": "Allow",

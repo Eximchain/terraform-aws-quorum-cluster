@@ -27,6 +27,154 @@ data "local_file" "public_key" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# S3 NODE COUNTS
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_s3_bucket" "quorum_node_counts" {
+  bucket = "quorum-node-counts-network-${var.network_id}"
+
+  force_destroy = "${var.force_destroy_s3_buckets}"
+}
+
+resource "aws_s3_bucket_object" "bootnode_counts" {
+  key                    = "bootnode-counts.json"
+  bucket                 = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  content                = "${data.template_file.bootnode_count_json.rendered}"
+  server_side_encryption = "aws:kms"
+
+  lifecycle {
+    # Ignore changes in the number of instances
+    ignore_changes        = ["content"]
+  }
+}
+
+resource "aws_s3_bucket_object" "maker_counts" {
+  key                    = "maker-counts.json"
+  bucket                 = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  content                = "${data.template_file.maker_node_count_json.rendered}"
+  server_side_encryption = "aws:kms"
+
+  lifecycle {
+    # Ignore changes in the number of instances
+    ignore_changes        = ["content"]
+  }
+}
+
+resource "aws_s3_bucket_object" "validator_counts" {
+  key                    = "validator-counts.json"
+  bucket                 = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  content                = "${data.template_file.validator_node_count_json.rendered}"
+  server_side_encryption = "aws:kms"
+
+  lifecycle {
+    # Ignore changes in the number of instances
+    ignore_changes        = ["content"]
+  }
+}
+
+resource "aws_s3_bucket_object" "observer_counts" {
+  key                    = "observer-counts.json"
+  bucket                 = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  content                = "${data.template_file.observer_node_count_json.rendered}"
+  server_side_encryption = "aws:kms"
+
+  lifecycle {
+    # Ignore changes in the number of instances
+    ignore_changes        = ["content"]
+  }
+}
+
+resource "null_resource" "node_counts_s3_upload" {
+  depends_on = ["aws_s3_bucket_object.bootnode_counts", "aws_s3_bucket_object.maker_counts", "aws_s3_bucket_object.validator_counts", "aws_s3_bucket_object.observer_counts"]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# NODE COUNT JSON
+# ---------------------------------------------------------------------------------------------------------------------
+data "template_file" "maker_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.maker_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.maker_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.maker_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.maker_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.maker_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.maker_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.maker_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.maker_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.maker_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.maker_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.maker_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.maker_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.maker_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.maker_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "validator_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.validator_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.validator_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.validator_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.validator_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.validator_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.validator_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.validator_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.validator_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.validator_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.validator_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.validator_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.validator_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.validator_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.validator_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "observer_node_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.observer_node_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.observer_node_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.observer_node_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.observer_node_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.observer_node_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.observer_node_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.observer_node_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.observer_node_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.observer_node_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.observer_node_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.observer_node_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.observer_node_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.observer_node_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.observer_node_counts, "us-west-2", 0)}"
+  }
+}
+
+data "template_file" "bootnode_count_json" {
+  template = "${file("${path.module}/templates/node-count.json")}"
+
+  vars {
+    ap_northeast_1_count = "${lookup(var.bootnode_counts, "ap-northeast-1", 0)}"
+    ap_northeast_2_count = "${lookup(var.bootnode_counts, "ap-northeast-2", 0)}"
+    ap_south_1_count     = "${lookup(var.bootnode_counts, "ap-south-1", 0)}"
+    ap_southeast_1_count = "${lookup(var.bootnode_counts, "ap-southeast-1", 0)}"
+    ap_southeast_2_count = "${lookup(var.bootnode_counts, "ap-southeast-2", 0)}"
+    ca_central_1_count   = "${lookup(var.bootnode_counts, "ca-central-1", 0)}"
+    eu_central_1_count   = "${lookup(var.bootnode_counts, "eu-central-1", 0)}"
+    eu_west_1_count      = "${lookup(var.bootnode_counts, "eu-west-1", 0)}"
+    eu_west_2_count      = "${lookup(var.bootnode_counts, "eu-west-2", 0)}"
+    sa_east_1_count      = "${lookup(var.bootnode_counts, "sa-east-1", 0)}"
+    us_east_1_count      = "${lookup(var.bootnode_counts, "us-east-1", 0)}"
+    us_east_2_count      = "${lookup(var.bootnode_counts, "us-east-2", 0)}"
+    us_west_1_count      = "${lookup(var.bootnode_counts, "us-west-1", 0)}"
+    us_west_2_count      = "${lookup(var.bootnode_counts, "us-west-2", 0)}"
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # VAULT CLUSTER FOR USE WITH QUORUM
 # ---------------------------------------------------------------------------------------------------------------------
 module "quorum_vault" {
@@ -65,6 +213,9 @@ module "quorum_vault" {
   cert_tool_kms_key_id      = "${var.cert_tool_kms_key_id}"
   cert_tool_server_cert_arn = "${var.cert_tool_server_cert_arn}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   bootnode_counts       = "${var.bootnode_counts}"
   maker_node_counts     = "${var.maker_node_counts}"
   validator_node_counts = "${var.validator_node_counts}"
@@ -82,6 +233,8 @@ module "quorum_vault" {
   foxpass_bind_user = "${var.foxpass_bind_user}"
   foxpass_bind_pw   = "${var.foxpass_bind_pw}"
   foxpass_api_key   = "${var.foxpass_api_key}"
+
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -148,8 +301,12 @@ module "quorum_cluster_us_east_1" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -264,8 +421,12 @@ module "quorum_cluster_us_east_2" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -380,8 +541,12 @@ module "quorum_cluster_us_west_1" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -496,8 +661,12 @@ module "quorum_cluster_us_west_2" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -612,8 +781,12 @@ module "quorum_cluster_eu_central_1" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -728,8 +901,12 @@ module "quorum_cluster_eu_west_1" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -844,8 +1021,12 @@ module "quorum_cluster_eu_west_2" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -960,8 +1141,12 @@ module "quorum_cluster_ap_south_1" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -1076,8 +1261,12 @@ module "quorum_cluster_ap_northeast_1" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -1192,8 +1381,12 @@ module "quorum_cluster_ap_northeast_2" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -1308,8 +1501,12 @@ module "quorum_cluster_ap_southeast_1" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -1424,8 +1621,12 @@ module "quorum_cluster_ap_southeast_2" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -1540,8 +1741,12 @@ module "quorum_cluster_ca_central_1" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
@@ -1656,8 +1861,12 @@ module "quorum_cluster_sa_east_1" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
+  node_count_bucket_name = "${aws_s3_bucket.quorum_node_counts.bucket}"
+  node_count_bucket_arn  = "${aws_s3_bucket.quorum_node_counts.arn}"
+
   # Quorum node user-data needs to download certificates produced by the quorum_vault module
   vault_cert_s3_upload_id = "${module.quorum_vault.vault_cert_s3_upload_id}"
+  node_count_s3_upload_id = "${null_resource.node_counts_s3_upload.id}"
 
   quorum_maker_cidrs = [
     "${module.quorum_cluster_us_east_1.quorum_maker_cidr_block}",
