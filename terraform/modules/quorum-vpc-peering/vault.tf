@@ -32,7 +32,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_us_east_1" {
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in us-east-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "us-east-1"
@@ -67,7 +67,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_us_east_2" {
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in us-east-2"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "us-east-2"
@@ -102,7 +102,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_us_west_1" {
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in us-west-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "us-west-1"
@@ -137,7 +137,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_us_west_2" {
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in us-west-2"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "us-west-2"
@@ -172,7 +172,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_eu_central_1" {
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in eu-central-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "eu-central-1"
@@ -207,7 +207,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_eu_west_1" {
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in eu-west-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "eu-west-1"
@@ -242,7 +242,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_eu_west_2" {
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in eu-west-2"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "eu-west-2"
@@ -277,7 +277,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_ap_south_1" {
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in ap-south-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-south-1"
@@ -312,7 +312,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_ap_northeast_1" 
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in ap-northeast-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-northeast-1"
@@ -347,7 +347,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_ap_northeast_2" 
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in ap-northeast-2"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-northeast-2"
@@ -382,7 +382,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_ap_southeast_1" 
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in ap-southeast-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-southeast-1"
@@ -417,7 +417,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_ap_southeast_2" 
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in ap-southeast-2"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ap-southeast-2"
@@ -452,7 +452,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_ca_central_1" {
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in ca-central-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "ca-central-1"
@@ -487,7 +487,7 @@ resource "aws_vpc_peering_connection_accepter" "vault_to_quorum_sa_east_1" {
   auto_accept               = true
 
   tags {
-    Name       = "Network ${var.network_id} VPC peering to quorum from vault"
+    Name       = "Network ${var.network_id} VPC peering to quorum in sa-east-1"
     NetworkId  = "${var.network_id}"
     FromRegion = "${var.primary_region}"
     ToRegion   = "sa-east-1"
