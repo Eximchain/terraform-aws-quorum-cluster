@@ -80,6 +80,8 @@ resource "aws_launch_configuration" "vault_cluster" {
   # https://terraform.io/docs/configuration/resources.html
   lifecycle {
     create_before_destroy = true
+    # Ignore changes in the number of instances
+    ignore_changes        = ["user_data"]
   }
 
   # user-data needs to download these objects

@@ -424,6 +424,8 @@ resource "aws_launch_configuration" "quorum_maker" {
 
   lifecycle {
     create_before_destroy = true
+    # Ignore changes in the number of instances
+    ignore_changes        = ["user_data"]
   }
 }
 
@@ -449,6 +451,8 @@ resource "aws_launch_configuration" "quorum_validator" {
 
   lifecycle {
     create_before_destroy = true
+    # Ignore changes in the number of instances
+    ignore_changes        = ["user_data"]
   }
 }
 
@@ -474,6 +478,8 @@ resource "aws_launch_configuration" "quorum_observer" {
 
   lifecycle {
     create_before_destroy = true
+    # Ignore changes in the number of instances
+    ignore_changes        = ["user_data"]
   }
 }
 

@@ -31,6 +31,8 @@ resource "aws_launch_configuration" "bootnodes" {
 
   lifecycle {
     create_before_destroy = true
+    # Ignore changes in the number of instances
+    ignore_changes        = ["user_data"]
   }
 }
 
