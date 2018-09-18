@@ -257,6 +257,15 @@ function run_threatstack_agent_if_configured {
   fi
 }
 
+function tag_instance_with_address {
+  local readonly ETH_ADDRESS=$1
+
+  local readonly AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
+  local readonly INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+
+  aws ec2 create-tags --resources $INSTANCE_ID --region $AWS_REGION --tags Key=EthAddress,Value=$ETH_ADDRESS
+}
+
 function wait_for_terraform_provisioners {
     # Ensure terraform has run all provisioners
     while [ ! -e /opt/quorum/info/network-id.txt ]
@@ -323,6 +332,9 @@ CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key
 HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
 PRIV_KEY=$(cat /home/ubuntu/.ethereum/keystore/*$(echo $ADDRESS | cut -d 'x' -f2))
 PRIV_KEY_FILENAME=$(ls /home/ubuntu/.ethereum/keystore/)
+
+# Tag the instance with the ETH Address
+tag_instance_with_address $ADDRESS
 
 # Determine role and advertise as role
 ROLE=$(cat /opt/quorum/info/role.txt)

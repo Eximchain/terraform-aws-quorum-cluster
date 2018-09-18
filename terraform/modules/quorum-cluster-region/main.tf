@@ -71,6 +71,10 @@ resource "aws_iam_policy" "quorum" {
     "Resource": "*"
   },{
     "Effect": "Allow",
+    "Action": ["ec2:CreateTags"],
+    "Resource": "arn:aws:ec2:*:*:instance/*"
+  },{
+    "Effect": "Allow",
     "Action": ["s3:*"],
     "Resource": [
       "${aws_s3_bucket.quorum_constellation.arn}",
