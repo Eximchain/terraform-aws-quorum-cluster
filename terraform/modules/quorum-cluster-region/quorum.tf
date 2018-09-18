@@ -66,7 +66,7 @@ resource "aws_subnet" "quorum_observer" {
 resource "aws_autoscaling_group" "quorum_maker" {
   count = "${aws_launch_configuration.quorum_maker.count}"
 
-  name = "quorum-maker-net-${var.network_id}-node-${count.index}"
+  name = "${substr(element(aws_launch_configuration.quorum_maker.*.name_prefix, count.index), 0, length(element(aws_launch_configuration.quorum_maker.*.name_prefix, count.index)) - 1)}"
 
   launch_configuration = "${element(aws_launch_configuration.quorum_maker.*.name, count.index)}"
 
@@ -81,6 +81,10 @@ resource "aws_autoscaling_group" "quorum_maker" {
 
   tags = [
     {
+      key                 = "Name"
+      value               = "${substr(element(aws_launch_configuration.quorum_maker.*.name_prefix, count.index), 0, length(element(aws_launch_configuration.quorum_maker.*.name_prefix, count.index)) - 1)}"
+      propagate_at_launch = true
+    },{
       key                 = "Role"
       value               = "Maker"
       propagate_at_launch = true
@@ -103,7 +107,7 @@ resource "aws_autoscaling_group" "quorum_maker" {
 resource "aws_autoscaling_group" "quorum_validator" {
   count = "${aws_launch_configuration.quorum_validator.count}"
 
-  name = "quorum-validator-net-${var.network_id}-node-${count.index}"
+  name = "${substr(element(aws_launch_configuration.quorum_validator.*.name_prefix, count.index), 0, length(element(aws_launch_configuration.quorum_validator.*.name_prefix, count.index)) - 1)}"
 
   launch_configuration = "${element(aws_launch_configuration.quorum_validator.*.name, count.index)}"
 
@@ -118,6 +122,10 @@ resource "aws_autoscaling_group" "quorum_validator" {
 
   tags = [
     {
+      key                 = "Name"
+      value               = "${substr(element(aws_launch_configuration.quorum_validator.*.name_prefix, count.index), 0, length(element(aws_launch_configuration.quorum_validator.*.name_prefix, count.index)) - 1)}"
+      propagate_at_launch = true
+    },{
       key                 = "Role"
       value               = "Validator"
       propagate_at_launch = true
@@ -140,7 +148,7 @@ resource "aws_autoscaling_group" "quorum_validator" {
 resource "aws_autoscaling_group" "quorum_observer" {
   count = "${aws_launch_configuration.quorum_observer.count}"
 
-  name = "quorum-observer-net-${var.network_id}-node-${count.index}"
+  name = "${substr(element(aws_launch_configuration.quorum_observer.*.name_prefix, count.index), 0, length(element(aws_launch_configuration.quorum_observer.*.name_prefix, count.index)) - 1)}"
 
   launch_configuration = "${element(aws_launch_configuration.quorum_observer.*.name, count.index)}"
 
@@ -155,6 +163,10 @@ resource "aws_autoscaling_group" "quorum_observer" {
 
   tags = [
     {
+      key                 = "Name"
+      value               = "${substr(element(aws_launch_configuration.quorum_observer.*.name_prefix, count.index), 0, length(element(aws_launch_configuration.quorum_observer.*.name_prefix, count.index)) - 1)}"
+      propagate_at_launch = true
+    },{
       key                 = "Role"
       value               = "Observer"
       propagate_at_launch = true
@@ -307,7 +319,7 @@ data "template_file" "user_data_quorum_observer" {
 resource "aws_launch_configuration" "quorum_maker" {
   count = "${data.template_file.user_data_quorum_maker.count}"
 
-  name_prefix = "quorum-maker-net-${var.network_id}-node-${count.index}"
+  name_prefix = "quorum-network-${var.network_id}-maker-${count.index}-"
 
   image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
   instance_type = "${var.quorum_maker_instance_type}"
@@ -332,7 +344,7 @@ resource "aws_launch_configuration" "quorum_maker" {
 resource "aws_launch_configuration" "quorum_validator" {
   count = "${data.template_file.user_data_quorum_validator.count}"
 
-  name_prefix = "quorum-validator-net-${var.network_id}-node-${count.index}"
+  name_prefix = "quorum-network-${var.network_id}-validator-${count.index}-"
 
   image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
   instance_type = "${var.quorum_validator_instance_type}"
@@ -357,7 +369,7 @@ resource "aws_launch_configuration" "quorum_validator" {
 resource "aws_launch_configuration" "quorum_observer" {
   count = "${data.template_file.user_data_quorum_observer.count}"
 
-  name_prefix = "quorum-observer-net-${var.network_id}-node-${count.index}"
+  name_prefix = "quorum-network-${var.network_id}-observer-${count.index}-"
 
   image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
   instance_type = "${var.quorum_observer_instance_type}"

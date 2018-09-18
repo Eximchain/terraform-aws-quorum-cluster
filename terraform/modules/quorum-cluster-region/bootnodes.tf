@@ -16,7 +16,7 @@ resource "aws_subnet" "bootnodes" {
 resource "aws_launch_configuration" "bootnodes" {
   count = "${lookup(var.bootnode_counts, var.aws_region, 0)}"
 
-  name_prefix = "quorum-bootnode-net-${var.network_id}-node-${count.index}-"
+  name_prefix = "quorum-network-${var.network_id}-bootnode-${count.index}-"
 
   image_id   = "${var.bootnode_ami == "" ? data.aws_ami.bootnode.id : var.bootnode_ami}"
   instance_type = "${var.bootnode_instance_type}"
@@ -40,7 +40,7 @@ resource "aws_launch_configuration" "bootnodes" {
 resource "aws_autoscaling_group" "bootnodes" {
   count = "${aws_launch_configuration.bootnodes.count}"
 
-  name = "bootnode-net-${var.network_id}-node-${count.index}"
+  name = "${substr(element(aws_launch_configuration.bootnodes.*.name_prefix, count.index), 0, length(element(aws_launch_configuration.bootnodes.*.name_prefix, count.index)) - 1)}"
 
   launch_configuration = "${element(aws_launch_configuration.bootnodes.*.name, count.index)}"
 
@@ -55,6 +55,10 @@ resource "aws_autoscaling_group" "bootnodes" {
 
   tags = [
     {
+      key                 = "Name"
+      value               = "${substr(element(aws_launch_configuration.bootnodes.*.name_prefix, count.index), 0, length(element(aws_launch_configuration.bootnodes.*.name_prefix, count.index)) - 1)}"
+      propagate_at_launch = true
+    },{
       key                 = "Role"
       value               = "Bootnode"
       propagate_at_launch = true
