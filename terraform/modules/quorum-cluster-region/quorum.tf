@@ -100,6 +100,10 @@ resource "aws_autoscaling_group" "quorum_maker" {
       key                 = "Region"
       value               = "${var.aws_region}"
       propagate_at_launch = true
+    },{
+      key                 = "FinalRoleNode"
+      value               = "${count.index == aws_launch_configuration.quorum_maker.count - 1 ? "Yes" : "No"}"
+      propagate_at_launch = true
     },
   ]
 }
@@ -141,6 +145,10 @@ resource "aws_autoscaling_group" "quorum_validator" {
       key                 = "Region"
       value               = "${var.aws_region}"
       propagate_at_launch = true
+    },{
+      key                 = "FinalRoleNode"
+      value               = "${count.index == aws_launch_configuration.quorum_validator.count - 1 ? "Yes" : "No"}"
+      propagate_at_launch = true
     },
   ]
 }
@@ -181,6 +189,10 @@ resource "aws_autoscaling_group" "quorum_observer" {
     },{
       key                 = "Region"
       value               = "${var.aws_region}"
+      propagate_at_launch = true
+    },{
+      key                 = "FinalRoleNode"
+      value               = "${count.index == aws_launch_configuration.quorum_observer.count - 1 ? "Yes" : "No"}"
       propagate_at_launch = true
     },
   ]

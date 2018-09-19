@@ -74,6 +74,10 @@ resource "aws_autoscaling_group" "bootnodes" {
       key                 = "Region"
       value               = "${var.aws_region}"
       propagate_at_launch = true
+    },{
+      key                 = "FinalRoleNode"
+      value               = "${count.index == aws_launch_configuration.bootnodes.count - 1 ? "Yes" : "No"}"
+      propagate_at_launch = true
     },
   ]
 }
