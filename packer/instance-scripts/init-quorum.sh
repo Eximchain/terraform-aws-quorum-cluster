@@ -274,21 +274,9 @@ function wait_for_terraform_provisioners {
     done
 }
 
-# Wait for operator to initialize and unseal vault
-wait_for_successful_command 'vault init -check'
-wait_for_successful_command 'vault status'
-
-# Wait for vault to be fully configured by the root user
-wait_for_successful_command 'vault auth -method=aws'
-
-wait_for_terraform_provisioners
-
-# Get the region and overall index for this instance
-CLUSTER_INDEX=$(cat /opt/quorum/info/overall-index.txt)
-AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
-
 # If using EIPs, associate with instance
 USING_EIP=$(cat /opt/quorum/info/using-eip.txt)
+AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
 if [ "$USING_EIP" == "1" ]
 then
     EIP_ID=$(cat /opt/quorum/info/eip-id.txt)
@@ -301,6 +289,18 @@ else
     echo ">> FATAL ERROR: USING_EIP needs to be boolean with value 0 or 1, instead has value $USING_EIP.  Erroring out."
     exit 1
 fi
+
+# Wait for operator to initialize and unseal vault
+wait_for_successful_command 'vault init -check'
+wait_for_successful_command 'vault status'
+
+# Wait for vault to be fully configured by the root user
+wait_for_successful_command 'vault auth -method=aws'
+
+wait_for_terraform_provisioners
+
+# Get the overall index for this instance
+CLUSTER_INDEX=$(cat /opt/quorum/info/overall-index.txt)
 
 # Load Address, Password, and Key if we already generated them or generate new ones if none exist
 ADDRESS=$(vault read -field=address quorum/addresses/$AWS_REGION/$CLUSTER_INDEX)
