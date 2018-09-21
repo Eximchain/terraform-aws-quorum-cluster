@@ -288,7 +288,6 @@ CLUSTER_INDEX=$(cat /opt/quorum/info/overall-index.txt)
 AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
 
 # If using EIPs, associate with instance
-PUBLIC_IP=$(cat /opt/quorum/info/public-ip.txt)
 USING_EIP=$(cat /opt/quorum/info/using-eip.txt)
 if [ "$USING_EIP" == "1" ]
 then
@@ -297,7 +296,7 @@ then
     wait_for_successful_command "aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP_ID --region $AWS_REGION --allow-reassociation"
 elif [ "$USING_EIP"  == "0" ]
 then
-    PUBLIC_IP=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/public-ipv4')
+    # If not using EIPs, then no action required based on this boolean
 else 
     echo ">> FATAL ERROR: USING_EIP needs to be boolean with value 0 or 1, instead has value $USING_EIP.  Erroring out."
     exit 1
@@ -358,7 +357,7 @@ broadcast_role_info $ROLE $AWS_REGION
 
 # Write key and address into the vault
 wait_for_successful_command "vault write quorum/keys/$AWS_REGION/$CLUSTER_INDEX geth_key=$PRIV_KEY geth_key_file=$PRIV_KEY_FILENAME constellation_priv_key=$CONSTELLATION_PRIV_KEY"
-wait_for_successful_command "vault write quorum/addresses/$AWS_REGION/$CLUSTER_INDEX address=$ADDRESS constellation_pub_key=$CONSTELLATION_PUB_KEY hostname=$PUBLIC_IP"
+wait_for_successful_command "vault write quorum/addresses/$AWS_REGION/$CLUSTER_INDEX address=$ADDRESS constellation_pub_key=$CONSTELLATION_PUB_KEY hostname=$HOSTNAME"
 
 # Wait for all nodes to write their address to vault
 wait_for_all_nodes
