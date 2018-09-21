@@ -26,6 +26,7 @@ module "quorum_cluster" {
   use_dedicated_vault_servers       = "${var.use_dedicated_vault_servers}"
   use_dedicated_consul_servers      = "${var.use_dedicated_consul_servers}"
   use_elastic_bootnode_ips          = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips          = "${var.use_elastic_observer_ips}"
   ssh_ips                           = "${var.ssh_ips}"
   other_validator_connection_ips    = "${var.other_validator_connection_ips}"
   quorum_vpc_base_cidr              = "${var.quorum_vpc_base_cidr}"

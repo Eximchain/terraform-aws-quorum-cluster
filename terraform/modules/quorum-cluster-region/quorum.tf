@@ -221,6 +221,11 @@ data "template_file" "user_data_quorum_maker" {
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
 
+    # Must include these vars on non-observers so user-data-quorum.sh doesn't fail
+    use_elastic_observer_ips = "0"
+    public_ip                = "nil"
+    eip_id                   = "nil"
+
     generate_metrics   = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
 
@@ -262,6 +267,11 @@ data "template_file" "user_data_quorum_validator" {
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
 
+    # Must include these vars on non-observers so user-data-quorum.sh doesn't fail
+    use_elastic_observer_ips = "0"
+    public_ip                = "nil"
+    eip_id                   = "nil"
+
     generate_metrics = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
 
@@ -302,6 +312,15 @@ data "template_file" "user_data_quorum_observer" {
     max_block_time   = "${var.max_block_time}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
+
+    use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
+
+    # concat() is called to ensure there is always at least one element in the list,
+    # as element() cannot be called on empty list.  Solution is hacky, but lazy
+    # ternary evaluation will drop in Terraform 0.12: https://www.hashicorp.com/blog/terraform-0-1-2-preview
+    # If you're reading this and it has already released, try dropping the concat hack.
+    public_ip = "${var.use_elastic_observer_ips ? element(concat(aws_eip.quorum_observer.*.public_ip, list("")), count.index) : "nil"}"
+    eip_id    = "${var.use_elastic_observer_ips ? element(concat(aws_eip.quorum_observer.*.id, list("")), count.index) : "nil"}"
 
     generate_metrics = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
@@ -450,6 +469,14 @@ data "aws_instance" "quorum_observer_node" {
   }
 
   depends_on = ["aws_autoscaling_group.quorum_observer"]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# QUORUM OBSERVER ELASTIC IPs
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_eip" "quorum_observer" {
+  count = "${var.use_elastic_observer_ips ? lookup(var.observer_node_counts, var.aws_region, 0) : 0}"
+  vpc = true
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

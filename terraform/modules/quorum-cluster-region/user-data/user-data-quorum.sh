@@ -104,6 +104,9 @@ function populate_data_files {
   echo "${network_id}" | sudo tee /opt/quorum/info/network-id.txt
   echo "https://${vault_dns}:${vault_port}" | sudo tee /opt/quorum/info/vault-address.txt
   echo "ipc:$GETH_IPC_PATH_LOCAL" | sudo tee /opt/quorum/info/geth-ipc.txt
+  echo "${use_elastic_observer_ips}" | sudo tee /opt/quorum/info/using-eip.txt
+  echo "${public_ip}" | sudo tee /opt/quorum/info/public-ip.txt
+  echo "${eip_id}" | sudo tee /opt/quorum/info/eip-id.txt
 
   # Download node counts
   aws configure set s3.signature_version s3v4

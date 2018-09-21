@@ -14,6 +14,7 @@ use_dedicated_observers        = false
 use_dedicated_vault_servers    = false
 use_dedicated_consul_servers   = false
 use_elastic_bootnode_ips       = false
+use_elastic_observer_ips       = false
 vault_cluster_size             = 1
 vault_instance_type            = "t2.small"
 consul_cluster_size            = 1
