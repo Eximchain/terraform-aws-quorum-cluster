@@ -274,6 +274,27 @@ function wait_for_terraform_provisioners {
     done
 }
 
+function associate_elastic_ip {
+    local readonly AWS_REGION=$1
+    local readonly USING_EIP=$(cat /opt/quorum/info/using-eip.txt)
+    if [ "$USING_EIP" == "1" ]
+    then
+        EIP_ID=$(cat /opt/quorum/info/eip-id.txt)
+        INSTANCE_ID=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/instance-id')
+        wait_for_successful_command "aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP_ID --region $AWS_REGION --allow-reassociation"
+    elif [ "$USING_EIP"  == "0" ]
+    then
+        # If not using EIPs, then no action required based on this boolean
+    else 
+        echo ">> FATAL ERROR: USING_EIP needs to be boolean with value 0 or 1, instead has value $USING_EIP.  Erroring out."
+        exit 1
+    fi
+}
+
+# If using EIPs, associate with instance
+AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
+associate_elastic_ip $AWS_REGION
+
 # Wait for operator to initialize and unseal vault
 wait_for_successful_command 'vault init -check'
 wait_for_successful_command 'vault status'
@@ -283,9 +304,8 @@ wait_for_successful_command 'vault auth -method=aws'
 
 wait_for_terraform_provisioners
 
-# Get the region and overall index for this instance
+# Get the overall index for this instance
 CLUSTER_INDEX=$(cat /opt/quorum/info/overall-index.txt)
-AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
 
 # Load Address, Password, and Key if we already generated them or generate new ones if none exist
 ADDRESS=$(vault read -field=address quorum/addresses/$AWS_REGION/$CLUSTER_INDEX)

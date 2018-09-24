@@ -6,8 +6,8 @@ output "quorum_validator_node_dns" {
   value = "${module.quorum_cluster.quorum_validator_node_dns}"
 }
 
-output "quorum_observer_node_dns" {
-  value = "${module.quorum_cluster.quorum_observer_node_dns}"
+output "quorum_observer_node_ips" {
+  value = "${module.quorum_cluster.quorum_observer_node_ips}"
 }
 
 output "bootnode_ips" {

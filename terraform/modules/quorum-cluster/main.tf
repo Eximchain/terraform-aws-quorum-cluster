@@ -279,6 +279,7 @@ module "quorum_cluster_us_east_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -400,6 +401,7 @@ module "quorum_cluster_us_east_2" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -521,6 +523,7 @@ module "quorum_cluster_us_west_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -642,6 +645,7 @@ module "quorum_cluster_us_west_2" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -763,6 +767,7 @@ module "quorum_cluster_eu_central_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -884,6 +889,7 @@ module "quorum_cluster_eu_west_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -1005,6 +1011,7 @@ module "quorum_cluster_eu_west_2" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -1126,6 +1133,7 @@ module "quorum_cluster_ap_south_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -1247,6 +1255,7 @@ module "quorum_cluster_ap_northeast_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -1368,6 +1377,7 @@ module "quorum_cluster_ap_northeast_2" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -1489,6 +1499,7 @@ module "quorum_cluster_ap_southeast_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -1610,6 +1621,7 @@ module "quorum_cluster_ap_southeast_2" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -1731,6 +1743,7 @@ module "quorum_cluster_ca_central_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
@@ -1852,6 +1865,7 @@ module "quorum_cluster_sa_east_1" {
   use_dedicated_observers  = "${var.use_dedicated_observers}"
 
   use_elastic_bootnode_ips = "${var.use_elastic_bootnode_ips}"
+  use_elastic_observer_ips = "${var.use_elastic_observer_ips}"
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
