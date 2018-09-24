@@ -283,6 +283,7 @@ module "quorum_cluster_us_east_1" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 0)}"
 
@@ -405,6 +406,7 @@ module "quorum_cluster_us_east_2" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 1)}"
 
@@ -527,6 +529,7 @@ module "quorum_cluster_us_west_1" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 2)}"
 
@@ -649,6 +652,7 @@ module "quorum_cluster_us_west_2" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 3)}"
 
@@ -771,6 +775,7 @@ module "quorum_cluster_eu_central_1" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 4)}"
 
@@ -893,6 +898,7 @@ module "quorum_cluster_eu_west_1" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 5)}"
 
@@ -1015,6 +1021,7 @@ module "quorum_cluster_eu_west_2" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 6)}"
 
@@ -1137,6 +1144,7 @@ module "quorum_cluster_ap_south_1" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 7)}"
 
@@ -1259,6 +1267,7 @@ module "quorum_cluster_ap_northeast_1" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 8)}"
 
@@ -1381,6 +1390,7 @@ module "quorum_cluster_ap_northeast_2" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 9)}"
 
@@ -1503,6 +1513,7 @@ module "quorum_cluster_ap_southeast_1" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 10)}"
 
@@ -1625,6 +1636,7 @@ module "quorum_cluster_ap_southeast_2" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 11)}"
 
@@ -1747,6 +1759,7 @@ module "quorum_cluster_ca_central_1" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 12)}"
 
@@ -1869,6 +1882,7 @@ module "quorum_cluster_sa_east_1" {
 
   ssh_ips                        = "${var.ssh_ips}"
   other_validator_connection_ips = "${var.other_validator_connection_ips}"
+  az_override                    = "${var.az_override}"
 
   quorum_vpc_cidr   = "${cidrsubnet(var.quorum_vpc_base_cidr, 5, 13)}"
 

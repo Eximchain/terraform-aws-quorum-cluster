@@ -228,6 +228,11 @@ variable "foxpass_api_key" {
   default     = ""
 }
 
+variable "az_override" {
+  description = "A Mapping from AWS region to a comma-separated string of AZs to use for that region. Overrides dynamically reading available AZs."
+  default     = {}
+}
+
 variable "bootnode_counts" {
   description = "A mapping from region to the number of bootnodes to launch in that region"
   type        = "map"
