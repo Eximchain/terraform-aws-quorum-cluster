@@ -55,6 +55,10 @@ resource "aws_autoscaling_group" "consul_cluster" {
       propagate_at_launch = true
     },
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

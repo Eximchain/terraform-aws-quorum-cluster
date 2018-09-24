@@ -106,6 +106,10 @@ resource "aws_autoscaling_group" "quorum_maker" {
       propagate_at_launch = true
     },
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_autoscaling_group" "quorum_validator" {
@@ -151,6 +155,10 @@ resource "aws_autoscaling_group" "quorum_validator" {
       propagate_at_launch = true
     },
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_autoscaling_group" "quorum_observer" {
@@ -196,6 +204,10 @@ resource "aws_autoscaling_group" "quorum_observer" {
       propagate_at_launch = true
     },
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

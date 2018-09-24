@@ -80,6 +80,10 @@ resource "aws_autoscaling_group" "bootnodes" {
       propagate_at_launch = true
     },
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_eip" "bootnodes" {
