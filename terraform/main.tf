@@ -11,6 +11,7 @@ module "quorum_cluster" {
   gas_limit                         = "${var.gas_limit}"
   force_destroy_s3_buckets          = "${var.force_destroy_s3_buckets}"
   generate_metrics                  = "${var.generate_metrics}"
+  create_alarms                     = "${var.create_alarms}"
   vault_cluster_size                = "${var.vault_cluster_size}"
   vault_instance_type               = "${var.vault_instance_type}"
   consul_cluster_size               = "${var.consul_cluster_size}"

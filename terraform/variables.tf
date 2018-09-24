@@ -86,6 +86,11 @@ variable "generate_metrics" {
   default     = true
 }
 
+variable "create_alarms" {
+  description = "Whether or not to create CloudWatch alarms. They will not function if generate_metrics is false."
+  default     = false
+}
+
 variable "use_dedicated_bootnodes" {
   description = "Whether or not to use dedicated instances for bootnodes."
   default     = false

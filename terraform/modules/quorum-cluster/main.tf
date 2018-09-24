@@ -249,6 +249,7 @@ module "quorum_cluster_us_east_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -369,6 +370,7 @@ module "quorum_cluster_us_east_2" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -489,6 +491,7 @@ module "quorum_cluster_us_west_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -609,6 +612,7 @@ module "quorum_cluster_us_west_2" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -729,6 +733,7 @@ module "quorum_cluster_eu_central_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -849,6 +854,7 @@ module "quorum_cluster_eu_west_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -969,6 +975,7 @@ module "quorum_cluster_eu_west_2" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -1089,6 +1096,7 @@ module "quorum_cluster_ap_south_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -1209,6 +1217,7 @@ module "quorum_cluster_ap_northeast_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -1329,6 +1338,7 @@ module "quorum_cluster_ap_northeast_2" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -1449,6 +1459,7 @@ module "quorum_cluster_ap_southeast_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -1569,6 +1580,7 @@ module "quorum_cluster_ap_southeast_2" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -1689,6 +1701,7 @@ module "quorum_cluster_ca_central_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
@@ -1809,6 +1822,7 @@ module "quorum_cluster_sa_east_1" {
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
   generate_metrics         = "${var.generate_metrics}"
+  create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
   private_key = "${var.private_key}"
