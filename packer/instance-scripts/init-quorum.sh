@@ -275,8 +275,8 @@ function wait_for_terraform_provisioners {
 }
 
 function associate_elastic_ip {
-    load readonly AWS_REGION=$1
-    USING_EIP=$(cat /opt/quorum/info/using-eip.txt)
+    local readonly AWS_REGION=$1
+    local readonly USING_EIP=$(cat /opt/quorum/info/using-eip.txt)
     if [ "$USING_EIP" == "1" ]
     then
         EIP_ID=$(cat /opt/quorum/info/eip-id.txt)
