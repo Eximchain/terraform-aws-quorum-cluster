@@ -147,3 +147,33 @@ resource "aws_sns_topic" "block_creation_halted" {
 
   name = "network-${var.network_id}-block-creation-halted"
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# LOW DISK SPACE
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_cloudwatch_metric_alarm" "low_disk_space" {
+  count = "${var.create_alarms ? 1 : 0}"
+
+  alarm_name           = "${aws_sns_topic.low_disk_space.name}"
+  comparison_operator  = "LessThanOrEqualToThreshold"
+  evaluation_periods   = "3"
+  metric_name          = "DiskSpaceRemaining"
+  namespace            = "Quorum"
+  period               = "300"
+  statistic            = "Minimum"
+  threshold            = "1500000"
+  treat_missing_data   = "notBreaching"
+  alarm_description    = "This alarm alerts us when a node is running short on disk space."
+
+  alarm_actions = ["${aws_sns_topic.low_disk_space.arn}"]
+
+  dimensions {
+    NetworkId = "${var.network_id}"
+  }
+}
+
+resource "aws_sns_topic" "low_disk_space" {
+  count = "${var.create_alarms ? 1 : 0}"
+
+  name = "network-${var.network_id}-low-disk-space"
+}
