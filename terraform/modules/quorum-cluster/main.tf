@@ -224,6 +224,8 @@ module "quorum_vault" {
   threatstack_deploy_key       = "${var.threatstack_deploy_key}"
   vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
 
+  az_override = "${var.az_override}"
+
   okta_base_url     = "${var.okta_base_url}"
   okta_org_name     = "${var.okta_org_name}"
   okta_api_token    = "${var.okta_api_token}"

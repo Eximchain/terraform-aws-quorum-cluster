@@ -71,9 +71,10 @@ resource "aws_route" "vault_consul" {
 }
 
 resource "aws_subnet" "vault_consul" {
+  count = "${lookup(var.az_override, var.aws_region, "") == "" ? length(data.aws_availability_zones.available.names) : length(split(",", lookup(var.az_override, var.aws_region, "")))}"
+
   vpc_id                  = "${aws_vpc.vault_consul.id}"
-  count                   = "${length(data.aws_availability_zones.available.names)}"
-  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
+  availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
   cidr_block              = "192.168.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
 }

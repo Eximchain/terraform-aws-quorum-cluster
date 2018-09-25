@@ -2,10 +2,10 @@
 # BOOTNODE NETWORKING
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_subnet" "bootnodes" {
-  count                   = "${lookup(var.bootnode_counts, var.aws_region, 0) > 0 ? length(data.aws_availability_zones.available.names) : 0}"
+  count = "${lookup(var.bootnode_counts, var.aws_region, 0) > 0 ? lookup(var.az_override, var.aws_region, "") == "" ? length(data.aws_availability_zones.available.names) : length(split(",", lookup(var.az_override, var.aws_region, ""))) : 0}"
 
   vpc_id                  = "${aws_vpc.quorum_cluster.id}"
-  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
+  availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
   cidr_block              = "${cidrsubnet(data.template_file.bootnode_cidr_block.rendered, 3, count.index)}"
   map_public_ip_on_launch = true
 }
