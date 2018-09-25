@@ -91,16 +91,23 @@ function emit_block_skew_metrics {
   local readonly LARGE_SKEW_METRIC="LargeBlockSkew"
   local readonly LARGE_SKEW_LIMIT="100"
   local readonly BLOCK_NUM_METRIC="BlockNumber"
+  local readonly BLOCK_CREATION_HALTED_METRIC="BlockCreationHalted"
   local readonly PERIOD="600"
 
   local readonly START_TIME=$(date -Im -u --date='5 minutes ago')
   local readonly END_TIME=$(date -Im -u)
+
+  local readonly FIFTEEN_MINUTES_AGO=$(date -Im -u --date='15 minutes ago')
+  local readonly TWENTY_MINUTES_AGO=$(date -Im -u --date='20 minutes ago')
 
   local readonly RESPONSE_JSON_GLOBAL=$(aws cloudwatch get-metric-statistics --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $BLOCK_NUM_METRIC --start-time $START_TIME --end-time $END_TIME --dimensions Name=NetworkID,Value=$NETWORK_ID --period $PERIOD --statistics Maximum)
   local readonly MAX_BLOCK=$(echo $RESPONSE_JSON_GLOBAL | jq -r .Datapoints[0].Maximum | cut -d. -f1)
 
   local readonly RESPONSE_JSON_LOCAL=$(curl -X POST --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' $RPC_ADDR:$RPC_PORT)
   local readonly LOCAL_BLOCK=$(printf "%d" $(echo $RESPONSE_JSON_LOCAL | jq -r .result))
+
+  local readonly RESPONSE_JSON_PAST=$(aws cloudwatch get-metric-statistics --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $BLOCK_NUM_METRIC --start-time $TWENTY_MINUTES_AGO --end-time $FIFTEEN_MINUTES_AGO --dimensions Name=NetworkID,Value=$NETWORK_ID --period $PERIOD --statistics Maximum)
+  local readonly NUM_PAST_DATAPOINTS=$(echo $RESPONSE_JSON_PAST | jq -r '.Datapoints | length')
 
   local readonly SKEW=$(expr $MAX_BLOCK - $LOCAL_BLOCK)
 
@@ -113,6 +120,20 @@ function emit_block_skew_metrics {
 
   aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $SKEW_METRIC --value $SKEW --dimensions NetworkID=$NETWORK_ID
   aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $LARGE_SKEW_METRIC --value $LARGE_SKEW --dimensions NetworkID=$NETWORK_ID
+
+  if [ $NUM_PAST_DATAPOINTS -gt 0 ]
+  then
+    local readonly PAST_BLOCK=$(echo $RESPONSE_JSON_PAST | jq -r .Datapoints[0].Maximum | cut -d. -f1)
+
+    if [ $PAST_BLOCK -eq $MAX_BLOCK ]
+    then
+      local BLOCK_CREATION_HALTED="1"
+    else
+      local BLOCK_CREATION_HALTED="0"
+    fi
+
+    aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $BLOCK_CREATION_HALTED_METRIC --value $BLOCK_CREATION_HALTED --dimensions NetworkID=$NETWORK_ID
+  fi
 
   if [ $MAX_BLOCK -eq $LOCAL_BLOCK ]
   then
