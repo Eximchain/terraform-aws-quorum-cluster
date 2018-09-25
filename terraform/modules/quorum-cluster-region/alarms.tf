@@ -117,3 +117,33 @@ resource "aws_sns_topic" "too_many_nodes_no_peers" {
 
   name = "network-${var.network_id}-too-many-nodes-no-peers"
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# BLOCK CREATION HALTED
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_cloudwatch_metric_alarm" "block_creation_halted" {
+  count = "${var.create_alarms ? 1 : 0}"
+
+  alarm_name           = "${aws_sns_topic.block_creation_halted.name}"
+  comparison_operator  = "GreaterThanOrEqualToThreshold"
+  evaluation_periods   = "3"
+  metric_name          = "BlockCreationHalted"
+  namespace            = "Quorum"
+  period               = "300"
+  statistic            = "Sum"
+  threshold            = "0.8"
+  treat_missing_data   = "notBreaching"
+  alarm_description    = "This alarm alerts us when it seems like new blocks are not being created."
+
+  alarm_actions = ["${aws_sns_topic.block_creation_halted.arn}"]
+
+  dimensions {
+    NetworkId = "${var.network_id}"
+  }
+}
+
+resource "aws_sns_topic" "block_creation_halted" {
+  count = "${var.create_alarms ? 1 : 0}"
+
+  name = "network-${var.network_id}-block-creation-halted"
+}
