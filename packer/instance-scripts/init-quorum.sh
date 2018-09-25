@@ -285,7 +285,8 @@ function associate_elastic_ip {
     elif [ "$USING_EIP"  == "0" ]
     then
         # If not using EIPs, then no action required based on this boolean
-    else 
+        echo "Not using EIP"
+    else
         echo ">> FATAL ERROR: USING_EIP needs to be boolean with value 0 or 1, instead has value $USING_EIP.  Erroring out."
         exit 1
     fi
