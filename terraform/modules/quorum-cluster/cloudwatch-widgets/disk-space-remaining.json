@@ -1,0 +1,29 @@
+{
+  "type": "metric",
+  "x": 0,
+  "y": 25,
+  "width": 12,
+  "height": 6,
+  "properties": {
+    "metrics": [
+      [
+        "Quorum",
+        "DiskSpaceRemaining",
+        "NetworkID",
+        "${network_id}"
+      ]
+    ],
+    "period": 60,
+    "stat": "Minimum",
+    "region": "${primary_region}",
+    "title": "Minimum disk space (in bytes) remaining on any node",
+    "yAxis": {
+        "left": {
+            "min": 0
+        },
+        "right": {
+            "min": 0
+        }
+    }
+  }
+}

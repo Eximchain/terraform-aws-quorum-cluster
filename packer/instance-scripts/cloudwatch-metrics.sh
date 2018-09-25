@@ -142,11 +142,24 @@ function emit_block_skew_metrics {
   fi
 }
 
+function emit_disk_space_remaining_metric {
+  local readonly AVAILABLE_SPACE_METRIC="DiskSpaceRemaining"
+
+  local DF_ARR=()
+
+  local readonly DF_RESULT=$(df | grep /dev/xvda1)
+  read -ra DF_ARR <<< "$DF_RESULT"
+  local readonly AVAILABLE_SPACE="${DF_ARR[3]}"
+
+  aws cloudwatch put-metric-data --region $PRIMARY_REGION --namespace $NAMESPACE --metric-name $AVAILABLE_SPACE_METRIC --value $AVAILABLE_SPACE --dimensions NetworkID=$NETWORK_ID
+}
+
 while true
 do
     emit_pending_transactions_metric
     emit_block_number_metric
     emit_block_skew_metrics
     emit_peer_count_metrics
+    emit_disk_space_remaining_metric
     sleep $SLEEP_SECONDS
 done

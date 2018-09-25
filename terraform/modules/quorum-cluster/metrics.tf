@@ -16,7 +16,8 @@ resource "aws_cloudwatch_dashboard" "metrics" {
     ${data.template_file.gas.rendered},
     ${data.template_file.blocks_by_region.rendered},
     ${data.template_file.peer_count.rendered},
-    ${data.template_file.low_peers.rendered}
+    ${data.template_file.low_peers.rendered},
+    ${data.template_file.disk_space_remaining.rendered}
   ]
 }
 EOF
@@ -148,11 +149,25 @@ data "template_file" "low_peers" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# WIDGET FOR DISK SPACE REMAINING
+# ---------------------------------------------------------------------------------------------------------------------
+data "template_file" "disk_space_remaining" {
+  count = "${var.generate_metrics ? 1 : 0}"
+
+  template = "${file("${path.module}/cloudwatch-widgets/disk-space-remaining.json")}"
+
+  vars {
+    network_id     = "${var.network_id}"
+    primary_region = "${var.primary_region}"
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # DynamoDB Table for blocks by region
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_dynamodb_table" "blocks_by_region" {
   count = "${var.generate_metrics ? 1 : 0}"
-  
+
   name           = "quorum-net-${var.network_id}-blocks-by-region"
   read_capacity  = 10
   write_capacity = 10
