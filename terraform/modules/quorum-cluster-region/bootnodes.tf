@@ -8,6 +8,13 @@ resource "aws_subnet" "bootnodes" {
   availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
   cidr_block              = "${cidrsubnet(data.template_file.bootnode_cidr_block.rendered, 3, count.index)}"
   map_public_ip_on_launch = true
+
+  tags {
+    Name      = "quorum-network-${var.network_id}-bootnodes"
+    NodeType  = "Bootnode"
+    NetworkId = "${var.network_id}"
+    Region    = "${var.aws_region}"
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

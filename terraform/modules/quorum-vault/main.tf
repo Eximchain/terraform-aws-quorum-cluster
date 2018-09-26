@@ -52,6 +52,13 @@ data "aws_availability_zones" "available" {
 resource "aws_vpc" "vault_consul" {
   cidr_block           = "${var.vault_consul_vpc_cidr}"
   enable_dns_hostnames = true
+
+  tags {
+    Name      = "quorum-network-${var.network_id}-vault-consul"
+    VpcType   = "VaultConsul"
+    NetworkId = "${var.network_id}"
+    Region    = "${var.aws_region}"
+  }
 }
 
 resource "aws_default_security_group" "vault_consul" {
@@ -77,6 +84,13 @@ resource "aws_subnet" "vault_consul" {
   availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
   cidr_block              = "192.168.${count.index + 1}.0/24"
   map_public_ip_on_launch = true
+
+  tags {
+    Name      = "quorum-network-${var.network_id}-vault-consul"
+    NodeType  = "VaultConsul"
+    NetworkId = "${var.network_id}"
+    Region    = "${var.aws_region}"
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -6,6 +6,13 @@ resource "aws_vpc" "quorum_cluster" {
 
   cidr_block           = "${var.quorum_vpc_cidr}"
   enable_dns_hostnames = true
+
+  tags {
+    Name      = "quorum-network-${var.network_id}-nodes"
+    VpcType   = "QuorumNodes"
+    NetworkId = "${var.network_id}"
+    Region    = "${var.aws_region}"
+  }
 }
 
 resource "aws_default_security_group" "quorum_cluster" {
@@ -40,6 +47,13 @@ resource "aws_subnet" "quorum_maker" {
   availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
   cidr_block              = "${cidrsubnet(data.template_file.quorum_maker_cidr_block.rendered, 3, count.index)}"
   map_public_ip_on_launch = true
+
+  tags {
+    Name      = "quorum-network-${var.network_id}-makers"
+    NodeType  = "Maker"
+    NetworkId = "${var.network_id}"
+    Region    = "${var.aws_region}"
+  }
 }
 
 resource "aws_subnet" "quorum_validator" {
@@ -49,6 +63,13 @@ resource "aws_subnet" "quorum_validator" {
   availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
   cidr_block              = "${cidrsubnet(data.template_file.quorum_validator_cidr_block.rendered, 3, count.index)}"
   map_public_ip_on_launch = true
+
+  tags {
+    Name      = "quorum-network-${var.network_id}-validators"
+    NodeType  = "Validator"
+    NetworkId = "${var.network_id}"
+    Region    = "${var.aws_region}"
+  }
 }
 
 resource "aws_subnet" "quorum_observer" {
@@ -58,6 +79,13 @@ resource "aws_subnet" "quorum_observer" {
   availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
   cidr_block              = "${cidrsubnet(data.template_file.quorum_observer_cidr_block.rendered, 3, count.index)}"
   map_public_ip_on_launch = true
+
+  tags {
+    Name      = "quorum-network-${var.network_id}-observers"
+    NodeType  = "Observer"
+    NetworkId = "${var.network_id}"
+    Region    = "${var.aws_region}"
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
