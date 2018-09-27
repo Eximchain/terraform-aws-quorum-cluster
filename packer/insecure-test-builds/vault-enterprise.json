@@ -57,7 +57,7 @@
     "type": "shell",
     "scripts": [
       "../provisioning-scripts/supervisor.sh",
-      "../provisioning-scripts/install-vault-enterprise",
+      "../provisioning-scripts/install-vault-enterprise-prebake",
       "../provisioning-scripts/install-consul",
       "../provisioning-scripts/install-dnsmasq"
     ]

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu -o pipefail
 
-RELEASE="v1.2.1-modified"
+RELEASE="eximchain-integration"
 
 source /etc/profile.d/quorum-custom.sh
 git clone https://github.com/Eximchain/quorum.git
