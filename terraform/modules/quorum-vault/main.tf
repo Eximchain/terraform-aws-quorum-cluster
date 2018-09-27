@@ -24,7 +24,7 @@ resource "aws_key_pair" "auth" {
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_kms_key" "vault_unseal" {
   # Create only if we're using vault enterprise
-  count = "${var.vault_enterprise_license_key == "" ? 0 : 1}"
+  count = "${var.pre_baked_vault_enterprise_license ? 1 : var.vault_enterprise_license_key == "" ? 0 : 1}"
 
   description = "Key to unseal vault for quorum network ${var.network_id}"
 
@@ -34,7 +34,7 @@ resource "aws_kms_key" "vault_unseal" {
 
 resource "aws_kms_grant" "vault_unseal" {
   # Create only if we're using vault enterprise
-  count = "${var.vault_enterprise_license_key == "" ? 0 : 1}"
+  count = "${var.pre_baked_vault_enterprise_license ? 1 : var.vault_enterprise_license_key == "" ? 0 : 1}"
 
   key_id            = "${aws_kms_key.vault_unseal.key_id}"
   grantee_principal = "${aws_iam_role.vault_cluster.arn}"

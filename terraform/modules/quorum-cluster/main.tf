@@ -221,8 +221,9 @@ module "quorum_vault" {
   validator_node_counts = "${var.validator_node_counts}"
   observer_node_counts  = "${var.observer_node_counts}"
 
-  threatstack_deploy_key       = "${var.threatstack_deploy_key}"
-  vault_enterprise_license_key = "${var.vault_enterprise_license_key}"
+  threatstack_deploy_key             = "${var.threatstack_deploy_key}"
+  vault_enterprise_license_key       = "${var.vault_enterprise_license_key}"
+  pre_baked_vault_enterprise_license = "${var.pre_baked_vault_enterprise_license}"
 
   az_override = "${var.az_override}"
 

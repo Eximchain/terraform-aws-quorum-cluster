@@ -149,6 +149,11 @@ variable "vault_enterprise_license_key" {
   default     = ""
 }
 
+variable "pre_baked_vault_enterprise_license" {
+  description = "Set to true if using a vault enterprise binary with the license key pre-baked in."
+  default     = false
+}
+
 variable "threatstack_deploy_key" {
   description = "Deploy key to use to activate threatstack agents, if using one"
   default     = ""

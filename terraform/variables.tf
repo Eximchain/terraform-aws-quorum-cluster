@@ -281,6 +281,11 @@ variable "vault_enterprise_license_key" {
   default     = ""
 }
 
+variable "pre_baked_vault_enterprise_license" {
+  description = "Set to true if using a vault enterprise binary with the license key pre-baked in."
+  default     = false
+}
+
 variable "okta_base_url" {
   description = "The base URL to configure Okta access to vault with."
   default     = "okta.com"
