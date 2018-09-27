@@ -211,6 +211,11 @@ variable "node_volume_size" {
   default     = 20
 }
 
+variable "max_peers" {
+  description = "The number of peers each node will accept."
+  default     = 25
+}
+
 variable "internal_dns_root_domain" {
   description = "The base domain for the hosted zone"
   default     = "exim"

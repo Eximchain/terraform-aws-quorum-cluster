@@ -23,11 +23,12 @@ function generate_quorum_supervisor_config {
     local REGIONS=$(cat /opt/quorum/info/regions.txt)
     local MIN_BLOCK_TIME=$(cat /opt/quorum/info/min-block-time.txt)
     local MAX_BLOCK_TIME=$(cat /opt/quorum/info/max-block-time.txt)
+    local MAX_PEERS=$(cat /opt/quorum/info/max-peers.txt)
     local NODE_INDEX=$(cat /opt/quorum/info/overall-index.txt)
     local THIS_REGION=$(cat /opt/quorum/info/aws-region.txt)
 
     local VERBOSITY=2
-    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --verbosity $VERBOSITY --jitvm=false --privateconfigpath $CONSTELLATION_CONFIG"
+    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --jitvm=false --privateconfigpath $CONSTELLATION_CONFIG"
 
     # Assemble list of bootnodes
     local BOOTNODES=""

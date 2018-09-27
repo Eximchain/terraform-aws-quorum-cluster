@@ -203,6 +203,11 @@ variable "node_volume_size" {
   default     = 20
 }
 
+variable "max_peers" {
+  description = "The number of peers each node will accept."
+  default     = 25
+}
+
 variable "threatstack_deploy_key" {
   description = "Deploy key to use to activate threatstack agents, if using one"
   default     = ""

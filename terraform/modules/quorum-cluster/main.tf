@@ -262,6 +262,7 @@ module "quorum_cluster_us_east_1" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -385,6 +386,7 @@ module "quorum_cluster_us_east_2" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -508,6 +510,7 @@ module "quorum_cluster_us_west_1" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -631,6 +634,7 @@ module "quorum_cluster_us_west_2" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -754,6 +758,7 @@ module "quorum_cluster_eu_central_1" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -877,6 +882,7 @@ module "quorum_cluster_eu_west_1" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -1000,6 +1006,7 @@ module "quorum_cluster_eu_west_2" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -1123,6 +1130,7 @@ module "quorum_cluster_ap_south_1" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -1246,6 +1254,7 @@ module "quorum_cluster_ap_northeast_1" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -1369,6 +1378,7 @@ module "quorum_cluster_ap_northeast_2" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -1492,6 +1502,7 @@ module "quorum_cluster_ap_southeast_1" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -1615,6 +1626,7 @@ module "quorum_cluster_ap_southeast_2" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -1738,6 +1750,7 @@ module "quorum_cluster_ca_central_1" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"
@@ -1861,6 +1874,7 @@ module "quorum_cluster_sa_east_1" {
   vote_threshold = "${var.vote_threshold}"
   min_block_time = "${var.min_block_time}"
   max_block_time = "${var.max_block_time}"
+  max_peers      = "${var.max_peers}"
 
   vault_port = "${var.vault_port}"
   vault_dns  = "${module.internal_dns.vault_lb_fqdn}"

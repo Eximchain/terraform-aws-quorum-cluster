@@ -57,6 +57,7 @@ module "quorum_cluster" {
   vote_threshold                     = "${var.vote_threshold}"
   min_block_time                     = "${var.min_block_time}"
   max_block_time                     = "${var.max_block_time}"
+  max_peers                          = "${var.max_peers}"
   az_override                        = "${var.az_override}"
   bootnode_counts                    = "${var.bootnode_counts}"
   maker_node_counts                  = "${var.maker_node_counts}"
