@@ -3,8 +3,8 @@
   "variables": {
     "aws_region": "us-east-1",
     "extra_regions": "",
-    "ami_groups": "",
-    "encrypted": "true",
+    "ami_groups": "all",
+    "encrypted": "false",
     "ca_public_key_path": "certs/ca-cert.pub",
     "tls_public_key_path": "certs/cert.pub",
     "tls_private_key_path": "certs/cert.pem"
@@ -57,7 +57,7 @@
     "type": "shell",
     "scripts": [
       "provisioning-scripts/supervisor.sh",
-      "provisioning-scripts/install-vault-enterprise-prebake",
+      "provisioning-scripts/install-vault-enterprise",
       "provisioning-scripts/install-consul",
       "provisioning-scripts/install-dnsmasq"
     ]

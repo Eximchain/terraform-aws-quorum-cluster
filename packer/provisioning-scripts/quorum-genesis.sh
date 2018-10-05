@@ -1,9 +1,9 @@
 #!/bin/bash
 set -eu -o pipefail
 
-BRANCH="eximchain"
+VERSION=v1.5.2
 
 git clone https://github.com/Eximchain/quorum-genesis.git /opt/quorum/lib/quorum-genesis
 cd /opt/quorum/lib/quorum-genesis
-git checkout $BRANCH
+git checkout tags/$VERSION
 sudo npm install -g -y
