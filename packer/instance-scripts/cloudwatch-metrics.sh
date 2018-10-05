@@ -147,7 +147,7 @@ function emit_disk_space_remaining_metric {
 
   local DF_ARR=()
 
-  local readonly DF_RESULT=$(df | grep /dev/xvda1)
+  local readonly DF_RESULT=$(df | grep -E /$)
   read -ra DF_ARR <<< "$DF_RESULT"
   local readonly AVAILABLE_SPACE="${DF_ARR[3]}"
 
