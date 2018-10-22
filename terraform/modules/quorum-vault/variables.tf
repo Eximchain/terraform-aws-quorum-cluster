@@ -45,6 +45,11 @@ variable "force_destroy_s3_bucket" {
   default     = false
 }
 
+variable "s3_bucket_suffix" {
+  description = "A suffix to add to the end of deterministic s3 bucket names."
+  default     = ""
+}
+
 variable "vault_consul_ami" {
   description = "AMI ID to use for vault and consul servers. Defaults to getting the most recently built version from Eximchain"
   default     = ""
