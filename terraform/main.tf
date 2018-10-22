@@ -10,6 +10,7 @@ module "quorum_cluster" {
   network_id                         = "${var.network_id}"
   gas_limit                          = "${var.gas_limit}"
   force_destroy_s3_buckets           = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix                   = "${var.s3_bucket_suffix}"
   generate_metrics                   = "${var.generate_metrics}"
   create_alarms                      = "${var.create_alarms}"
   vault_cluster_size                 = "${var.vault_cluster_size}"

@@ -107,7 +107,7 @@
     "destination": "/tmp/generate-setup-vault.sh"
   },{
     "type": "file",
-    "source": "../instance-scripts/move-vault-data.sh",
+    "source": "instance-scripts/move-vault-data.sh",
     "destination": "/tmp/move-vault-data.sh"
   },{
     "type": "shell",
