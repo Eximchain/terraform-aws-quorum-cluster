@@ -30,7 +30,7 @@ data "local_file" "public_key" {
 # S3 NODE COUNTS
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_s3_bucket" "quorum_node_counts" {
-  bucket = "quorum-node-counts-network-${var.network_id}"
+  bucket = "quorum-node-counts-network-${var.network_id}${var.s3_bucket_suffix}"
 
   force_destroy = "${var.force_destroy_s3_buckets}"
 }
@@ -187,6 +187,7 @@ module "quorum_vault" {
   network_id    = "${var.network_id}"
 
   force_destroy_s3_bucket = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix        = "${var.s3_bucket_suffix}"
 
   ssh_ips = "${var.ssh_ips}"
 
@@ -251,6 +252,7 @@ module "quorum_cluster_us_east_1" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -375,6 +377,7 @@ module "quorum_cluster_us_east_2" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -499,6 +502,7 @@ module "quorum_cluster_us_west_1" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -623,6 +627,7 @@ module "quorum_cluster_us_west_2" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -747,6 +752,7 @@ module "quorum_cluster_eu_central_1" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -871,6 +877,7 @@ module "quorum_cluster_eu_west_1" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -995,6 +1002,7 @@ module "quorum_cluster_eu_west_2" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -1119,6 +1127,7 @@ module "quorum_cluster_ap_south_1" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -1243,6 +1252,7 @@ module "quorum_cluster_ap_northeast_1" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -1367,6 +1377,7 @@ module "quorum_cluster_ap_northeast_2" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -1491,6 +1502,7 @@ module "quorum_cluster_ap_southeast_1" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -1615,6 +1627,7 @@ module "quorum_cluster_ap_southeast_2" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -1739,6 +1752,7 @@ module "quorum_cluster_ca_central_1" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 
@@ -1863,6 +1877,7 @@ module "quorum_cluster_sa_east_1" {
   primary_region = "${var.primary_region}"
 
   force_destroy_s3_buckets = "${var.force_destroy_s3_buckets}"
+  s3_bucket_suffix         = "${var.s3_bucket_suffix}"
   generate_metrics         = "${var.generate_metrics}"
   create_alarms            = "${var.create_alarms}"
 

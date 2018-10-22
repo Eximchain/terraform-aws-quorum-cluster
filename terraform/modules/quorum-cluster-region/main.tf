@@ -34,7 +34,7 @@ resource "aws_key_pair" "auth" {
 resource "aws_s3_bucket" "quorum_constellation" {
   count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0) + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
 
-  bucket        = "constellation-${var.aws_region}-net-${var.network_id}"
+  bucket        = "constellation-${var.aws_region}-net-${var.network_id}${var.s3_bucket_suffix}"
   force_destroy = "${var.force_destroy_s3_buckets}"
 }
 
@@ -44,7 +44,7 @@ resource "aws_s3_bucket" "quorum_constellation" {
 resource "aws_s3_bucket" "quorum_backup" {
   count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0) + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
 
-  bucket        = "quorum-backup-${var.aws_region}-network-${var.network_id}"
+  bucket        = "quorum-backup-${var.aws_region}-network-${var.network_id}${var.s3_bucket_suffix}"
   force_destroy = "${var.force_destroy_s3_buckets}"
 }
 

@@ -96,6 +96,11 @@ variable "force_destroy_s3_buckets" {
   default     = false
 }
 
+variable "s3_bucket_suffix" {
+  description = "A suffix to add to the end of deterministic s3 bucket names."
+  default     = ""
+}
+
 variable "generate_metrics" {
   description = "Whether or not to generate CloudWatch metrics from the cluster. Set to false to disable for cost savings."
   default     = true
