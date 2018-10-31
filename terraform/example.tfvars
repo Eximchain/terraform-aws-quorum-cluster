@@ -1,4 +1,7 @@
 public_key_path                = "/Users/$USER/.ssh/quorum.pub"
+private_key_path               = "/Users/$USER/.ssh/quorum"
+backup_interval                = "cron(30 13 ? * WED *)"
+BackupLambda_source_file       = "/Users/$USER/Documents/GitHub/AWSBackupLambda/BackupLambda"
 primary_region                 = "us-east-1"
 cert_owner                     = "$USER"
 key_name                       = "quorum-cluster"

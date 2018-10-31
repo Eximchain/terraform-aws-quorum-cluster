@@ -4,6 +4,13 @@ module "quorum_cluster" {
 
   # Variables sourced from terraform.tfvars
   public_key_path                    = "${var.public_key_path}"
+  private_key_path                   = "${var.private_key_path}"
+  backup_interval                    = "${var.backup_interval}"
+  BackupLambda_source_file           = "${var.BackupLambda_source_file}"
+  BackupLambda_output_path           = "${var.BackupLambda_output_path}"
+  enc_ssh_path                       = "${var.enc_ssh_path}"
+  enc_ssh_key                        = "${var.enc_ssh_key}"
+
   public_key                         = "${var.public_key}"
   private_key                        = "${var.private_key}"
   primary_region                     = "${var.primary_region}"

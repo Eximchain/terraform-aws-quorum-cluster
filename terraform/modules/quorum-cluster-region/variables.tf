@@ -382,3 +382,51 @@ variable "observer_node_counts" {
     sa-east-1      = 0
   }
 }
+
+variable "BackupLambda_source_file" {
+    default = ""
+    description = "Full path to the binary for the BackupLambda"
+}
+
+# this is the lambda zip, must be a relative path
+# eg "BackupLambda.zip"
+variable "BackupLambda_output_path" {
+    default = "BackupLambda.zip"
+    description = "Relative path to the BackupLambda zip"
+}
+
+# This is the full path to the private key 
+# eg "/Users/xxxx/.ssh/cert"
+variable "private_key_path" {
+    default = ""
+    description = "Full path to the private key to access Quorum nodes"
+}
+
+# This is the public key path
+# eg "/Users/xxxx/.ssh/cert.pub"
+variable "public_key_path" {
+    default = ""
+    description = "Full path to the public key for Quorum nodes"
+}
+
+# output prefix of encrypted SSH key, region will be appended to the filename
+variable "enc_ssh_path" {
+    default = ""
+    description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
+}
+
+# key on S3 bucket
+variable "enc_ssh_key" {
+    default = ""
+    description = "The key to access the encrypted SSH key on the S3 bucket"
+}
+
+# If singular, it's 1 hour, 1 minute, 1 week, 1 day, etc.
+variable "backup_interval" {
+    default = ""
+    description = "The scheduled expression for the backup interval"
+}
+
+// this creates an AWS test instance for the Lambda to SSH into
+// with the KMS encrypted key, which it will decrypt within memory
+variable "debug" {default=""}

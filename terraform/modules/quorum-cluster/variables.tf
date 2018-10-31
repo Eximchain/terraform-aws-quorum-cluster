@@ -58,6 +58,16 @@ DESCRIPTION
   default     = ""
 }
 
+variable "private_key_path" {
+  description = <<DESCRIPTION
+Path to the SSH public key to be used for authentication.
+Ensure this keypair is added to your local SSH agent so provisioners can
+connect.
+Example: ~/.ssh/terraform.pub
+DESCRIPTION
+  default     = ""
+}
+
 variable "private_key" {
   description = <<DESCRIPTION
 SSH private key to be used for authentication.
@@ -459,4 +469,34 @@ variable "observer_node_counts" {
     # South America
     sa-east-1      = 0
   }
+}
+
+# Backup Lambda related variables
+variable "backup_interval" {
+  description = "Schedule expression for backup"
+  default = ""
+}
+
+variable "BackupLambda_source_file" {
+  default = ""
+  description = "Full path to Backup Lambda binary"
+}
+
+# this is the lambda zip, must be a relative path
+# eg "BackupLambda.zip"
+variable "BackupLambda_output_path" {
+    default = ""
+    description = "Relative path to the BackupLambda zip"
+}
+
+# output prefix of encrypted SSH key, region will be appended to the filename
+variable "enc_ssh_path" {
+    default = ""
+    description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
+}
+
+# key on S3 bucket
+variable "enc_ssh_key" {
+    default = "enc_ssh"
+    description = "The key to access the encrypted SSH key on the S3 bucket"
 }
