@@ -21,7 +21,6 @@ Table of Contents
             * [Deploy the private contract](#deploy-the-private-contract)
          * [Destroy the Network](#destroy-the-network)
    * [Using as a Terraform Module](#using-as-a-terraform-module)
-   * [Roadmap](#roadmap)
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
@@ -411,24 +410,3 @@ module "quorum_cluster" {
   bootnode_amis = "${var.bootnode_amis}"
 }
 ```
-
-# Roadmap
-
-The master list of desired features for this tool. Feel free to contribute feature requests via pull requests editing this section. Items here may correspond with open issues.
-
-- [x] Dedicated Boot Nodes for Geth and Constellation
-- [x] Replaceable Boot Nodes
-- [x] Auto-starting geth and constellation processes
-- [x] Private transaction test case
-- [x] Multi AZ Network
-- [x] Isolate different AWS users in the same account
-- [x] New Constellation Configuration Format
-- [x] Terraform Module
-- [x] Multi Region Network
-- [x] Network with External Participants
-- [x] Quorum Node health checking and replacement
-- [x] Fine-grained Permissions for Private Keys in Vault
-- [ ] Full initial documentation
-- [ ] Secure handling of TLS Certificate
-- [ ] Anti-Fraglie Everything
-- [ ] Tighten security parameters
