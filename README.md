@@ -446,7 +446,7 @@ The `quorum-cluster-region` module contains all infrastructure which exists inde
 
 The following major components are included in a `quorum-cluster-region`:
 
-* For the whole cluster
+* For the whole region
   * A key pair to SSH the instances in the cluster
   * An S3 bucket for constellation payloads
   * An S3 bucket for chain backups
