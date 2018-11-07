@@ -500,7 +500,17 @@ This creates peering connections between the vault VPC and each quorum VPC, as w
 
 This has desirable properties. One is that the vault load balancer can be kept internal, reducing the attack surface for the vault server. Another is that geth processes establish connections using their private IPs, which allows us to set cross-region security group rules based on private IP CIDR ranges. This is important in enforcing the [Network Topology](#network-topology).
 
-## Network Topology
+## Diagrams
+
+Note that for simplicity, these diagrams depict a three region network. The primary region is `us-east-1` and the network also has nodes in `us-west-2` and `eu-west-1`. Additional regions used that may be used in your network have the same architecture as the non-primary regions depicted.
+
+### Full network at a high level
+
+![Full Cluster Architecture](images/full-cluster-overview.png "Full Cluster Architecture")
+
+This diagram shows the breakdown of the architecture into regions and VPCs, including components that are exclusive to the primary region. The components common to all regions will be expanded upon in another diagram. Note that connections between components are omitted to avoid clutter.
+
+### Network Topology
 
 ![Network Topology](images/network-topology.png "Network Topology")
 
