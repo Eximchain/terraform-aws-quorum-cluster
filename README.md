@@ -516,6 +516,12 @@ This diagram shows the breakdown of the architecture into regions and VPCs, incl
 
 This diagram shows the VPC Peering Connections between VPCs. The Vault VPC and the Quorum Node VPCs are all directly connected to each other. Bootnode VPCs are not connected to any other VPCs.  Also pictured is the Internal DNS system, consisting of a single Route53 private hosted zone associated with all VPCs including bootnode VPCs.
 
+### Quorum Cluster Region
+
+![Quorum Cluster Region](images/quorum-cluster-region.png "Quorum Cluster Region")
+
+This diagram shows a more detailed view of a non-primary region. The primary region has additional components as detailed in the full network diagram. This infrastructure is managed by the `quorum-cluster-region` module and exists in every region with nodes in them. For simplicity, connections between components are omitted and only two Availability Zones and two nodes per AZ are shown.
+
 ### Network Topology
 
 ![Network Topology](images/network-topology.png "Network Topology")
