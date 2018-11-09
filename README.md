@@ -510,6 +510,12 @@ Note that for simplicity, these diagrams depict a three region network. The prim
 
 This diagram shows the breakdown of the architecture into regions and VPCs, including components that are exclusive to the primary region. The components common to all regions will be expanded upon in another diagram. Note that connections between components are omitted to avoid clutter.
 
+### VPC Peering Connections
+
+![VPC Peering Connections](images/vpc-peering-connections.png "VPC Peering Connections")
+
+This diagram shows the VPC Peering Connections between VPCs. The Vault VPC and the Quorum Node VPCs are all directly connected to each other. Bootnode VPCs are not connected to any other VPCs.  Also pictured is the Internal DNS system, consisting of a single Route53 private hosted zone associated with all VPCs including bootnode VPCs.
+
 ### Network Topology
 
 ![Network Topology](images/network-topology.png "Network Topology")
