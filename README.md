@@ -1,9 +1,6 @@
 Table of Contents
 =================
 
-Table of Contents
-=================
-
    * [Warning](#warning)
    * [Work In Progress](#work-in-progress)
    * [Quick Start Guide](#quick-start-guide)
@@ -33,7 +30,11 @@ Table of Contents
          * [consul-security-group-rule](#consul-security-group-rule)
          * [internal-dns](#internal-dns)
          * [quorum-vpc-peering](#quorum-vpc-peering)
-      * [Network Topology](#network-topology)
+      * [Diagrams](#diagrams)
+         * [Full network at a high level](#full-network-at-a-high-level)
+         * [VPC Peering Connections](#vpc-peering-connections)
+         * [Quorum Cluster Region](#quorum-cluster-region-1)
+         * [Network Topology](#network-topology)
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
