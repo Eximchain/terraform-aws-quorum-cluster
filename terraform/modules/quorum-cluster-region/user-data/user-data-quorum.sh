@@ -108,6 +108,7 @@ function populate_data_files {
   echo "${use_elastic_observer_ips}" | sudo tee /opt/quorum/info/using-eip.txt
   echo "${public_ip}" | sudo tee /opt/quorum/info/public-ip.txt
   echo "${eip_id}" | sudo tee /opt/quorum/info/eip-id.txt
+  echo "${efs_mt_dns}" | sudo tee /opt/quorum/info/efs-dns.txt
 
   # Download node counts
   aws configure set s3.signature_version s3v4

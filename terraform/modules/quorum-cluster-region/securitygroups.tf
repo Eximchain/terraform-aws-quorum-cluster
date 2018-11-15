@@ -478,3 +478,70 @@ resource "aws_security_group_rule" "bootnode_egress" {
 
   cidr_blocks = ["0.0.0.0/0"]
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# EFS Security Group
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_security_group" "efs" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  name        = "efs"
+  description = "Used for efs file system with chain data"
+  vpc_id      = "${aws_vpc.quorum_cluster.id}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_security_group_rule" "efs_ingress_makers" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.efs.id}"
+  type              = "ingress"
+
+  from_port = 2049
+  to_port   = 2049
+  protocol  = "tcp"
+
+  source_security_group_id = "${aws_security_group.quorum_maker.id}"
+}
+
+resource "aws_security_group_rule" "efs_ingress_validators" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.efs.id}"
+  type              = "ingress"
+
+  from_port = 2049
+  to_port   = 2049
+  protocol  = "tcp"
+
+  source_security_group_id = "${aws_security_group.quorum_validator.id}"
+}
+
+resource "aws_security_group_rule" "efs_ingress_observers" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.efs.id}"
+  type              = "ingress"
+
+  from_port = 2049
+  to_port   = 2049
+  protocol  = "tcp"
+
+  source_security_group_id = "${aws_security_group.quorum_observer.id}"
+}
+
+resource "aws_security_group_rule" "efs_egress" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+
+  security_group_id = "${aws_security_group.efs.id}"
+  type              = "egress"
+
+  from_port = 0
+  to_port   = 0
+  protocol  = "-1"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
