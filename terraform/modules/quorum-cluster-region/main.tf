@@ -179,7 +179,7 @@ data "template_file" "efs_mt_cidr_block" {
 # EFS File System
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_subnet" "efs" {
-  count = "${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? lookup(var.az_override, var.aws_region, "") == "" ? length(data.aws_availability_zones.available.names) : length(split(",", lookup(var.az_override, var.aws_region, ""))) : 0}"
+  count = "${var.use_efs ? lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? lookup(var.az_override, var.aws_region, "") == "" ? length(data.aws_availability_zones.available.names) : length(split(",", lookup(var.az_override, var.aws_region, ""))) : 0 : 0}"
 
   vpc_id            = "${aws_vpc.quorum_cluster.id}"
   availability_zone = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(coalescelist(split("," ,lookup(var.az_override, var.aws_region, "")), list("")), count.index)}"
@@ -187,8 +187,8 @@ resource "aws_subnet" "efs" {
 }
 
 resource "aws_efs_file_system" "chain_data" {
-  count = "${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? 1 : 0}"
-  
+  count = "${var.use_efs ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
   performance_mode = "generalPurpose"
   throughput_mode  = "bursting"
 
@@ -199,7 +199,7 @@ resource "aws_efs_file_system" "chain_data" {
 
 resource "aws_efs_mount_target" "chain_data" {
   # One mount target per subnet
-  count = "${lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? lookup(var.az_override, var.aws_region, "") == "" ? length(data.aws_availability_zones.available.names) : length(split(",", lookup(var.az_override, var.aws_region, ""))) : 0}"
+  count = "${var.use_efs ? lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? lookup(var.az_override, var.aws_region, "") == "" ? length(data.aws_availability_zones.available.names) : length(split(",", lookup(var.az_override, var.aws_region, ""))) : 0 : 0}"
 
   file_system_id  = "${aws_efs_file_system.chain_data.id}"
   subnet_id       = "${element(aws_subnet.efs.*.id, count.index)}"

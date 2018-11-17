@@ -483,7 +483,7 @@ resource "aws_security_group_rule" "bootnode_egress" {
 # EFS Security Group
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_security_group" "efs" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+  count = "${var.use_efs ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
 
   name        = "efs"
   description = "Used for efs file system with chain data"
@@ -495,7 +495,7 @@ resource "aws_security_group" "efs" {
 }
 
 resource "aws_security_group_rule" "efs_ingress_makers" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+  count = "${var.use_efs ? signum(lookup(var.maker_node_counts, var.aws_region, 0)) : 0}"
 
   security_group_id = "${aws_security_group.efs.id}"
   type              = "ingress"
@@ -508,7 +508,7 @@ resource "aws_security_group_rule" "efs_ingress_makers" {
 }
 
 resource "aws_security_group_rule" "efs_ingress_validators" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+  count = "${var.use_efs ? signum(lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
   security_group_id = "${aws_security_group.efs.id}"
   type              = "ingress"
@@ -521,7 +521,7 @@ resource "aws_security_group_rule" "efs_ingress_validators" {
 }
 
 resource "aws_security_group_rule" "efs_ingress_observers" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+  count = "${var.use_efs ? signum(lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
 
   security_group_id = "${aws_security_group.efs.id}"
   type              = "ingress"
@@ -534,7 +534,7 @@ resource "aws_security_group_rule" "efs_ingress_observers" {
 }
 
 resource "aws_security_group_rule" "efs_egress" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0))}"
+  count = "${var.use_efs ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
 
   security_group_id = "${aws_security_group.efs.id}"
   type              = "egress"

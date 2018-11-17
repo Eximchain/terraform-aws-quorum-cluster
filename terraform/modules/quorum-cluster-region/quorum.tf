@@ -270,7 +270,7 @@ data "template_file" "user_data_quorum_maker" {
     generate_metrics   = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
 
-    efs_mt_dns = "${element(aws_efs_mount_target.chain_data.*.dns_name, count.index)}"
+    efs_mt_dns = "${var.use_efs ? element(coalescelist(aws_efs_mount_target.chain_data.*.dns_name, list("")), count.index) : ""}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
@@ -319,7 +319,7 @@ data "template_file" "user_data_quorum_validator" {
     generate_metrics = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
 
-    efs_mt_dns = "${element(aws_efs_mount_target.chain_data.*.dns_name, count.index)}"
+    efs_mt_dns = "${var.use_efs ? element(coalescelist(aws_efs_mount_target.chain_data.*.dns_name, list("")), count.index) : ""}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
@@ -372,7 +372,7 @@ data "template_file" "user_data_quorum_observer" {
     generate_metrics = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
 
-    efs_mt_dns = "${element(aws_efs_mount_target.chain_data.*.dns_name, count.index)}"
+    efs_mt_dns = "${var.use_efs ? element(coalescelist(aws_efs_mount_target.chain_data.*.dns_name, list("")), count.index) : ""}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
