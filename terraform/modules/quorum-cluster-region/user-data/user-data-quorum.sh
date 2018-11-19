@@ -49,9 +49,13 @@ function download_vault_certs {
   sudo /opt/vault/bin/update-certificate-store --cert-file-path $CA_TLS_CERT_FILE
 }
 
-function setup_s3fs {
+function setup_mounts {
   echo "${constellation_s3_bucket} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0" | sudo tee /etc/fstab
+  echo "${efs_fs_id}:/ /opt/quorum/mnt/efs efs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
   sudo mount -a
+
+  # Give ownership back to the user running geth
+  sudo chown ubuntu /opt/quorum/mnt/efs
 }
 
 function configure_threatstack_agent_if_key_provided {
@@ -154,8 +158,8 @@ sudo apt-get -y update
 sudo ntpd
 
 download_vault_certs
-setup_s3fs
 populate_data_files
+setup_mounts
 
 # These variables are passed in via Terraform template interpolation
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"
