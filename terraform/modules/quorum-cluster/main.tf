@@ -279,7 +279,7 @@ module "quorum_cluster_us_east_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
-  use_efs = true
+  use_efs = "${var.use_efs}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -406,7 +406,7 @@ module "quorum_cluster_us_east_2" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
-  use_efs = true
+  use_efs = "${var.use_efs}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -533,7 +533,7 @@ module "quorum_cluster_us_west_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
-  use_efs = true
+  use_efs = "${var.use_efs}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -660,7 +660,7 @@ module "quorum_cluster_us_west_2" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
-  use_efs = true
+  use_efs = "${var.use_efs}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -787,7 +787,7 @@ module "quorum_cluster_eu_central_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
-  use_efs = true
+  use_efs = "${var.use_efs}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -914,7 +914,7 @@ module "quorum_cluster_eu_west_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
-  use_efs = true
+  use_efs = "${var.use_efs}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -1297,7 +1297,7 @@ module "quorum_cluster_ap_northeast_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
-  use_efs = true
+  use_efs = "${var.use_efs}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -1424,7 +1424,7 @@ module "quorum_cluster_ap_northeast_2" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
-  use_efs = true
+  use_efs = "${var.use_efs}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -1551,7 +1551,7 @@ module "quorum_cluster_ap_southeast_1" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
-  use_efs = true
+  use_efs = "${var.use_efs}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -1678,7 +1678,7 @@ module "quorum_cluster_ap_southeast_2" {
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
   quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
 
-  use_efs = true
+  use_efs = "${var.use_efs}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
