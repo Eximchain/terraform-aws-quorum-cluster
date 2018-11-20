@@ -51,7 +51,10 @@ function download_vault_certs {
 
 function setup_mounts {
   echo "${constellation_s3_bucket} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0" | sudo tee /etc/fstab
-  echo "${efs_fs_id}:/ /opt/quorum/mnt/efs efs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+  if [ "${efs_fs_id}" != "" ]
+  then
+    echo "${efs_fs_id}:/ /opt/quorum/mnt/efs efs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+  fi
   sudo mount -a
 
   # Give ownership back to the user running geth
