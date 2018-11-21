@@ -66,16 +66,6 @@ DESCRIPTION
   default     = ""
 }
 
-variable "private_key_path" {
-  description = <<DESCRIPTION
-Path to the SSH private key to be used for authentication.
-Ensure this keypair is added to your local SSH agent so provisioners can
-connect.
-Example: ~/.ssh/terraform
-DESCRIPTION
-  default     = ""
-}
-
 variable "primary_region" {
   description = "The AWS region that single-region resources like the vault and consul clusters will be placed in."
   default     = "us-east-1"
@@ -471,21 +461,50 @@ variable "observer_node_counts" {
   }
 }
 
-variable "BackupLambda_source_file" {
-    default = ""
+variable "backup_lambda_binary" {
+  default = "BackupLamba"
+  description = "The BackupLambda binary"
+}
+
+variable "backup_lambda_binary_path" {
+    default = "BackupLambda"
     description = "Full path to the binary for the BackupLambda"
+}
+
+variable "backup_lambda_binary_url" {
+  description = <<DESCRIPTION
+URL to retrieve the Backup Lambda binary from.
+DESCRIPTION
+  default    = "https://github.com/Eximchain/BackupLambda/releases/download/0.1/BackupLambda"
+}
+
+variable "backup_lambda_ssh_private_key" {
+  description = <<DESCRIPTION
+SSH private key to be used for authentication.
+DESCRIPTION
+  default     = ""
+}
+
+variable "backup_lambda_ssh_private_key_path" {
+  description = <<DESCRIPTION
+Path to the SSH private key to be used for authentication.
+Ensure this keypair is added to your local SSH agent so provisioners can
+connect.
+Example: ~/.ssh/terraform
+DESCRIPTION
+  default     = ""
 }
 
 # this is the lambda zip, must be a relative path
 # eg "BackupLambda.zip"
-variable "BackupLambda_output_path" {
+variable "backup_lambda_output_path" {
     default = "BackupLambda.zip"
     description = "Relative path to the BackupLambda zip, which will be generated from the backup binary"
 }
 
 # output prefix of encrypted SSH key, region will be appended to the filename
 variable "enc_ssh_path" {
-    default = ""
+    default = "enc_ssh"
     description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
 }
 
@@ -497,5 +516,5 @@ variable "enc_ssh_key" {
 
 variable "backup_interval" {
     default     = ""
-    description = "Scheduled express for backup event"
+    description = "Schedule expression for backup event, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html for examples"
 }

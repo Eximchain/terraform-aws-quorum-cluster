@@ -38,6 +38,6 @@ output "quorum_observer_cidr_block" {
   value = "${lookup(var.observer_node_counts, var.aws_region, 0) > 0 ? data.template_file.quorum_observer_cidr_block.rendered : ""}"
 }
 
-output "quorum_cluster_main_route_table_id" {
+output "quorum_vpc_main_route_table_id" {
   value = "${length(aws_vpc.quorum_cluster.*.id) != 0 ? element(concat(aws_vpc.quorum_cluster.*.main_route_table_id, list("")), 0) : ""}"
 }

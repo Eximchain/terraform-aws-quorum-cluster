@@ -98,6 +98,20 @@ DESCRIPTION
   default     = ""
 }
 
+variable "backup_lambda_ssh_private_key_path" {
+  description = <<DESCRIPTION
+SSH private key to be used for authentication.
+DESCRIPTION
+  default     = ""
+}
+
+variable "backup_lambda_ssh_private_key" {
+  description = <<DESCRIPTION
+SSH private key to be used for authentication.
+DESCRIPTION
+  default     = ""
+}
+
 variable "gas_limit" {
   description = "The limit on gas that can be used in a single block"
   default     = 804247552
@@ -383,14 +397,26 @@ variable "observer_node_counts" {
   }
 }
 
-variable "BackupLambda_source_file" {
-    default = ""
+variable "backup_lambda_binary" {
+    default = "BackupLambda"
+    description = "Name of BackupLambda binary"
+}
+
+variable "backup_lambda_binary_path" {
+    default = "BackupLambda"
     description = "Full path to the binary for the BackupLambda"
+}
+
+variable "backup_lambda_binary_url" {
+  description = <<DESCRIPTION
+URL to retrieve the backup lambda binary.
+DESCRIPTION
+  default     = "https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda"
 }
 
 # this is the lambda zip, must be a relative path
 # eg "BackupLambda.zip"
-variable "BackupLambda_output_path" {
+variable "backup_lambda_output_path" {
     default = "BackupLambda.zip"
     description = "Relative path to the BackupLambda zip"
 }
@@ -411,22 +437,18 @@ variable "public_key_path" {
 
 # output prefix of encrypted SSH key, region will be appended to the filename
 variable "enc_ssh_path" {
-    default = ""
+    default = "enc-ssh"
     description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
 }
 
 # key on S3 bucket
 variable "enc_ssh_key" {
-    default = ""
+    default = "enc-ssh"
     description = "The key to access the encrypted SSH key on the S3 bucket"
 }
 
 # If singular, it's 1 hour, 1 minute, 1 week, 1 day, etc.
 variable "backup_interval" {
     default = ""
-    description = "The scheduled expression for the backup interval"
+    description = "The schedule expression for the backup interval, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html for examples"
 }
-
-// this creates an AWS test instance for the Lambda to SSH into
-// with the KMS encrypted key, which it will decrypt within memory
-variable "debug" {default=""}

@@ -4,13 +4,6 @@ module "quorum_cluster" {
 
   # Variables sourced from terraform.tfvars
   public_key_path                    = "${var.public_key_path}"
-  private_key_path                   = "${var.private_key_path}"
-  backup_interval                    = "${var.backup_interval}"
-  BackupLambda_source_file           = "${var.BackupLambda_source_file}"
-  BackupLambda_output_path           = "${var.BackupLambda_output_path}"
-  enc_ssh_path                       = "${var.enc_ssh_path}"
-  enc_ssh_key                        = "${var.enc_ssh_key}"
-
   public_key                         = "${var.public_key}"
   private_key                        = "${var.private_key}"
   primary_region                     = "${var.primary_region}"
@@ -75,4 +68,14 @@ module "quorum_cluster" {
   vault_consul_ami = "${var.vault_consul_ami}"
   quorum_amis      = "${var.quorum_amis}"
   bootnode_amis    = "${var.bootnode_amis}"
+
+  backup_lambda_ssh_private_key_path = "${var.backup_lambda_ssh_private_key_path}"
+  backup_lambda_ssh_private_key      = "${var.backup_lambda_ssh_private_key}"
+  backup_interval                    = "${var.backup_interval}"
+  backup_lambda_binary               = "${var.backup_lambda_binary}"
+  backup_lambda_binary_url           = "${var.backup_lambda_binary_url}" 
+  backup_lambda_binary_path          = "${var.backup_lambda_binary_path}"
+  backup_lambda_output_path          = "${var.backup_lambda_output_path}"
+  enc_ssh_path                       = "${var.enc_ssh_path}"
+  enc_ssh_key                        = "${var.enc_ssh_key}"
 }

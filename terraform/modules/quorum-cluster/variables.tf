@@ -58,20 +58,26 @@ DESCRIPTION
   default     = ""
 }
 
-variable "private_key_path" {
+variable "private_key" {
   description = <<DESCRIPTION
-Path to the SSH public key to be used for authentication.
-Ensure this keypair is added to your local SSH agent so provisioners can
-connect.
-Example: ~/.ssh/terraform.pub
+SSH public key to be used for authentication.
 DESCRIPTION
   default     = ""
 }
 
-variable "private_key" {
+variable "backup_lambda_ssh_private_key_path" {
+  description = <<DESCRIPTION
+Path to the SSH private key to be used for authentication.
+Ensure this keypair is added to your local SSH agent so provisioners can
+connect.
+Example: ~/.ssh/terraform
+DESCRIPTION
+  default     = ""
+}
+
+variable "backup_lambda_ssh_private_key" {
   description = <<DESCRIPTION
 SSH private key to be used for authentication.
-Will use the agent if none is provided.
 DESCRIPTION
   default     = ""
 }
@@ -477,14 +483,24 @@ variable "backup_interval" {
   default = ""
 }
 
-variable "BackupLambda_source_file" {
+variable "backup_lambda_binary" {
+  default = ""
+  description = "Name of BackupLambda binary"
+}
+
+variable "backup_lambda_binary_url" {
+  default = ""
+  description = "Full URL path to Backup Lambda binary"
+}
+
+variable "backup_lambda_binary_path" {
   default = ""
   description = "Full path to Backup Lambda binary"
 }
 
 # this is the lambda zip, must be a relative path
 # eg "BackupLambda.zip"
-variable "BackupLambda_output_path" {
+variable "backup_lambda_output_path" {
     default = ""
     description = "Relative path to the BackupLambda zip"
 }

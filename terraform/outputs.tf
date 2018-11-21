@@ -17,11 +17,3 @@ output "bootnode_ips" {
 output "vault_server_ips" {
   value = "${module.quorum_cluster.vault_server_ips}"
 }
-
-output "private_key_path" {
-   value = "${var.private_key_path}"
-}
-
-output "quorum_cluster_private_key_path" {
-   value = "${var.private_key_path}"
-}

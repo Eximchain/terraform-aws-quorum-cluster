@@ -1,7 +1,4 @@
 public_key_path                = "/Users/$USER/.ssh/quorum.pub"
-private_key_path               = "/Users/$USER/.ssh/quorum"
-backup_interval                = "cron(30 13 ? * WED *)"
-BackupLambda_source_file       = "/Users/$USER/Documents/GitHub/AWSBackupLambda/BackupLambda"
 primary_region                 = "us-east-1"
 cert_owner                     = "$USER"
 key_name                       = "quorum-cluster"
@@ -98,3 +95,11 @@ observer_node_counts           = {
   ca-central-1   = 0
   sa-east-1      = 0
 }
+
+backup_lambda_ssh_private_key_path = ""
+backup_lambda_ssh_private_key      = ""
+backup_interval                = "cron(45 08 ? * TUE *)"
+backup_lambda_binary           = "BackupLambda"
+backup_lambda_binary_path      = "/Users/$USER/...../BackupLambda"
+backup_lambda_output_path      = "BackupLambda.zip"
+backup_lambda_binary_url       = "https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda"
