@@ -192,9 +192,8 @@ resource "null_resource" "fetch_backup_lambda_zip" {
   triggers { always="${uuid()}"}
   provisioner "local-exec" {
      command = <<EOT
- if [ ! -d ${var.aws_region} ] || [ ! -e ${var.aws_region}/backup_lambda.zip ]; then 
-   mkdir ${var.aws_region}   
-   wget -O ${var.aws_region}/backup_lambda.zip https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda.zip
+ if [ ! -e ${var.aws_region}-${var.backup_lambda_output_path} ]; then 
+   wget -O ${var.aws_region}-${var.backup_lambda_output_path} https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda.zip
 fi
 EOT
   }
