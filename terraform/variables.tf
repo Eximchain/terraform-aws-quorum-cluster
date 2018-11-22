@@ -516,5 +516,10 @@ variable "enc_ssh_key" {
 
 variable "backup_interval" {
     default     = ""
-    description = "Schedule expression for backup event, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html for examples"
+    description = <<DESCRIPTION
+Schedule expression for backup event, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html for examples
+cron(45 08 ? * WED *) will trigger every WED at 8 45 am GMT
+cron(05 13 ? * MON *) will trigger every MON at 1 05 pm GMT
+rate(3 mins) will trigger every 3 minutes
+DESCRIPTION
 }

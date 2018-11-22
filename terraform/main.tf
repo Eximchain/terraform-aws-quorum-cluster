@@ -79,5 +79,3 @@ module "quorum_cluster" {
   enc_ssh_path                       = "${var.enc_ssh_path}"
   enc_ssh_key                        = "${var.enc_ssh_key}"
 }
-
-// forced apply

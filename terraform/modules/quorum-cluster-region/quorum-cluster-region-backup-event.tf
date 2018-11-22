@@ -80,7 +80,7 @@ data "aws_iam_policy_document" "sns_topic_policy" {
 resource "aws_lambda_function" "backup_lambda" {
     count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
     depends_on = ["aws_s3_bucket.quorum_backup", "aws_nat_gateway.backup_lambda",
-    "data.archive_file.backup_lambda"]
+    "null_resource.zip_backup_lambda"]
     filename         = "${var.aws_region}-${var.backup_lambda_output_path}"
     function_name    = "BackupLambda-${var.network_id}-${var.aws_region}"
     handler          = "BackupLambda" # Name of Go package after unzipping the filename above
@@ -228,12 +228,17 @@ resource "null_resource" "make_executable_permission" {
   depends_on = ["null_resource.fetch_backup_lambda"]
 }
 
-data "archive_file" "backup_lambda" {
-  count        = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
-  type         = "zip"
-  source_file  = "${var.aws_region}/${var.backup_lambda_binary}"
-  output_path  = "${var.aws_region}-${var.backup_lambda_output_path}"
-  depends_on   = ["null_resource.fetch_backup_lambda", "null_resource.make_executable_permission"]
+resource "null_resource" "zip_backup_lambda" {
+  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
+  provisioner "local-exec" {
+    command = "zip -j BackupLambda ${var.aws_region}/${var.backup_lambda_binary}"
+  }
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "rm BackupLambda.zip"
+    on_failure = "continue"
+  }
+  depends_on = ["null_resource.fetch_backup_lambda", "null_resource.make_executable_permission"]
 }
 
 resource "aws_kms_key" "ssh_encryption_key" {
