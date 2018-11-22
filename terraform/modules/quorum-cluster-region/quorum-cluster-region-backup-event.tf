@@ -3,8 +3,6 @@ provider "local" {version = "~> 1.1"}
 provider "null" {version = "~> 1.0"}
 provider "random" {version = "~> 2.0"}
 
-resource "random_id" "force_download" {byte_length=12}
-
 data "local_file" "backup_lambda_ssh_private_key" {
   count = "${var.backup_lambda_ssh_private_key == "" ? 1 : 0}"
 
@@ -80,7 +78,7 @@ data "aws_iam_policy_document" "sns_topic_policy" {
 resource "aws_lambda_function" "backup_lambda" {
     count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
     depends_on = ["aws_s3_bucket.quorum_backup", "aws_nat_gateway.backup_lambda",
-    "null_resource.zip_backup_lambda"]
+    "null_resource.fetch_backup_lambda_zip"]
     filename         = "${var.aws_region}-${var.backup_lambda_output_path}"
     function_name    = "BackupLambda-${var.network_id}-${var.aws_region}"
     handler          = "BackupLambda" # Name of Go package after unzipping the filename above
@@ -190,55 +188,16 @@ resource "aws_iam_role_policy_attachment" "allow_backup_lambda_logging" {
    policy_arn = "${aws_iam_policy.allow_backup_lambda_logging.arn}"
 }
 
-resource "null_resource" "makedir" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
+resource "null_resource" "fetch_backup_lambda_zip" {
+  triggers { always="${uuid()}"}
   provisioner "local-exec" {
-    command = "mkdir ${var.aws_region}"
+     command = <<EOT
+ if [ ! -d ${var.aws_region} ] || [ ! -e ${var.aws_region}/backup_lambda.zip ]; then 
+   mkdir ${var.aws_region}   
+   wget -O ${var.aws_region}/backup_lambda.zip https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda.zip
+fi
+EOT
   }
-  provisioner "local-exec" {
-    when = "destroy"
-    command = "rm -rf ${var.aws_region}"
-    on_failure = "continue"
-  }
-}
-
-resource "null_resource" "fetch_backup_lambda" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
-  provisioner "local-exec" {
-    command = "wget -O ${var.aws_region}/${var.backup_lambda_binary} ${var.backup_lambda_binary_url}"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    command = "rm ${var.aws_region}/${var.backup_lambda_binary}"
-    on_failure = "continue"
-  }
-  depends_on = ["null_resource.makedir"]
-}
-
-resource "null_resource" "make_executable_permission" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
-  provisioner "local-exec" {
-    command = "chmod a+x ${var.aws_region}/${var.backup_lambda_binary}"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    command = "chmod a-x ${var.aws_region}/${var.backup_lambda_binary}"
-    on_failure = "continue"
-  }
-  depends_on = ["null_resource.fetch_backup_lambda"]
-}
-
-resource "null_resource" "zip_backup_lambda" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
-  provisioner "local-exec" {
-    command = "zip -j BackupLambda ${var.aws_region}/${var.backup_lambda_binary}"
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    command = "rm BackupLambda.zip"
-    on_failure = "continue"
-  }
-  depends_on = ["null_resource.fetch_backup_lambda", "null_resource.make_executable_permission"]
 }
 
 resource "aws_kms_key" "ssh_encryption_key" {
