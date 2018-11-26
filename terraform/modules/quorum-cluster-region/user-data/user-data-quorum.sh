@@ -117,6 +117,7 @@ function populate_data_files {
   echo "${eip_id}" | sudo tee /opt/quorum/info/eip-id.txt
   echo "${efs_mt_dns}" | sudo tee /opt/quorum/info/efs-dns.txt
   echo "${efs_fs_id}" | sudo tee /opt/quorum/info/efs-fsid.txt
+  echo "${chain_data_dir}" | sudo tee /opt/quorum/info/chain-data-dir.txt
 
   # Download node counts
   aws configure set s3.signature_version s3v4
