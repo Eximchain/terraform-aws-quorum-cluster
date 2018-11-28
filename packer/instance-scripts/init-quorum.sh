@@ -27,11 +27,11 @@ function generate_quorum_supervisor_config {
     local NODE_INDEX=$(cat /opt/quorum/info/overall-index.txt)
     local THIS_REGION=$(cat /opt/quorum/info/aws-region.txt)
     local CHAIN_DATA_DIR=$(cat /opt/quorum/info/chain-data-dir.txt)
+    local VERBOSITY=$(cat /opt/quorum/info/geth-verbosity.txt)
 
     local LOCAL_DATA_DIR="/home/ubuntu/.ethereum"
     local KEYSTORE="$LOCAL_DATA_DIR/keystore/"
     local IPC_PATH="$LOCAL_DATA_DIR/geth.ipc"
-    local VERBOSITY=2
     local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --jitvm=false --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE --ipcpath $IPC_PATH --privateconfigpath $CONSTELLATION_CONFIG"
 
     # Assemble list of bootnodes

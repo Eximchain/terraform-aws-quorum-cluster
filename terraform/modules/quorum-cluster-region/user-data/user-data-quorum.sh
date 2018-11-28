@@ -118,6 +118,7 @@ function populate_data_files {
   echo "${efs_mt_dns}" | sudo tee /opt/quorum/info/efs-dns.txt
   echo "${efs_fs_id}" | sudo tee /opt/quorum/info/efs-fsid.txt
   echo "${chain_data_dir}" | sudo tee /opt/quorum/info/chain-data-dir.txt
+  echo "${geth_verbosity}" | sudo tee /opt/quorum/info/geth-verbosity.txt
 
   # Download node counts
   aws configure set s3.signature_version s3v4

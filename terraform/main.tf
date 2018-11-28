@@ -30,6 +30,7 @@ module "quorum_cluster" {
   use_elastic_bootnode_ips           = "${var.use_elastic_bootnode_ips}"
   use_elastic_observer_ips           = "${var.use_elastic_observer_ips}"
   use_efs                            = "${var.use_efs}"
+  geth_verbosity                     = "${var.geth_verbosity}"
   ssh_ips                            = "${var.ssh_ips}"
   other_validator_connection_ips     = "${var.other_validator_connection_ips}"
   quorum_vpc_base_cidr               = "${var.quorum_vpc_base_cidr}"

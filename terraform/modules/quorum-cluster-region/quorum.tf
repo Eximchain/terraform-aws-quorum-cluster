@@ -275,6 +275,8 @@ data "template_file" "user_data_quorum_maker" {
 
     chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/makers/${count.index}/ethereum/" : "/home/ubuntu/.ethereum/"}"
 
+    geth_verbosity = "${var.geth_verbosity}"
+
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
 
@@ -326,6 +328,8 @@ data "template_file" "user_data_quorum_validator" {
     efs_mt_dns = "${var.use_efs ? element(coalescelist(aws_efs_mount_target.chain_data.*.dns_name, list("")), count.index) : ""}"
 
     chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/validators/${count.index}/ethereum/" : "/home/ubuntu/.ethereum/"}"
+
+    geth_verbosity = "${var.geth_verbosity}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
@@ -382,6 +386,8 @@ data "template_file" "user_data_quorum_observer" {
     efs_mt_dns = "${var.use_efs ? element(coalescelist(aws_efs_mount_target.chain_data.*.dns_name, list("")), count.index) : ""}"
 
     chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/observers/${count.index}/ethereum/" : "/home/ubuntu/.ethereum/"}"
+
+    geth_verbosity = "${var.geth_verbosity}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
