@@ -97,7 +97,7 @@ resource "aws_lambda_function" "backup_lambda" {
 
     vpc_config {
        subnet_ids         = ["${aws_subnet.backup_lambda.id}"]
-       security_group_ids = ["${aws_security_group.allow_all.*.id}"]
+       security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
     }
 
     environment {
@@ -254,30 +254,28 @@ resource "aws_kms_grant" "backup_lambda" {
   operations        = ["Encrypt", "Decrypt"]
 }
 
-resource "aws_security_group" "allow_all" {
-    count       = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
+resource "aws_security_group" "allow_all_for_backup_lambda" {
+  count       = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
-    name        = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-allow_all"
-    description = "Allow all outgoing traffic"
-    vpc_id      = "${aws_vpc.quorum_cluster.id}"
+  name        = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-allow_all"
+  description = "Allow all outgoing traffic for BackupLambda"
+  vpc_id      = "${aws_vpc.quorum_cluster.id}"
 
-    egress {
-        from_port   = 0
-        to_port     = 0
-        protocol    = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-        description = "Allow all traffic"
-    }
-    ingress {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-      description = "Allow all SSH traffic"
-    }
   tags {
      name = "BackupLambda-${var.network_id}-${var.aws_region}-SG"
   }
+}
+
+resource "aws_security_group_rule" "allow_ssh_for_backup_lambda" {
+  count       = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
+
+  type            = "egress"
+  from_port       = 22
+  to_port         = 22
+  protocol        = "tcp"
+  cidr_blocks     = ["0.0.0.0/0"]
+
+  security_group_id = "${aws_security_group.allow_all_for_backup_lambda.*.id}"
 }
 
 // use the next value after data.template_file.quorum_observer_cidr_block
