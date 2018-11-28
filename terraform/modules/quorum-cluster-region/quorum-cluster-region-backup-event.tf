@@ -209,7 +209,7 @@ resource "null_resource" "fetch_backup_lambda_zip" {
   provisioner "local-exec" {
      command = <<EOT
 if [ ! -e ${var.aws_region}-${var.backup_lambda_output_path} ]; then 
-   wget -O ${var.aws_region}-${var.backup_lambda_output_path} ${backup_lambda_binary_url}
+   wget -O ${var.aws_region}-${var.backup_lambda_output_path} ${var.backup_lambda_binary_url}
 fi
 EOT
   }
