@@ -493,11 +493,6 @@ variable "backup_lambda_binary_url" {
   description = "Full URL path to Backup Lambda binary"
 }
 
-variable "backup_lambda_binary_path" {
-  default = ""
-  description = "Full path to Backup Lambda binary"
-}
-
 # this is the lambda zip, must be a relative path
 # eg "BackupLambda.zip"
 variable "backup_lambda_output_path" {

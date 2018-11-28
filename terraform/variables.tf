@@ -466,11 +466,6 @@ variable "backup_lambda_binary" {
     description = "Name of BackupLambda binary"
 }
 
-variable "backup_lambda_binary_path" {
-    default = "BackupLambda.zip"
-    description = "Full path to the zipped binary for the BackupLambda"
-}
-
 variable "backup_lambda_binary_url" {
   description = <<DESCRIPTION
 URL to retrieve the Backup Lambda binary from.

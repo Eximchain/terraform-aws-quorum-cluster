@@ -402,16 +402,11 @@ variable "backup_lambda_binary" {
     description = "Name of BackupLambda binary"
 }
 
-variable "backup_lambda_binary_path" {
-    default = "BackupLambda"
-    description = "Full path to the binary for the BackupLambda"
-}
-
 variable "backup_lambda_binary_url" {
   description = <<DESCRIPTION
 URL to retrieve the backup lambda binary.
 DESCRIPTION
-  default     = "https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda"
+  default     = "https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda.zip"
 }
 
 # this is the lambda zip, must be a relative path
