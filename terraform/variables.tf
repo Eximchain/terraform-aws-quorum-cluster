@@ -93,7 +93,7 @@ variable "generate_metrics" {
 
 variable "create_alarms" {
   description = "Whether or not to create CloudWatch alarms. They will not function if generate_metrics is false."
-  default     = false
+  default     = true
 }
 
 variable "use_dedicated_bootnodes" {
@@ -183,22 +183,22 @@ variable "vault_consul_ami" {
 
 variable "vault_cluster_size" {
   description = "The number of instances to use in the vault cluster"
-  default     = 3
+  default     = 1
 }
 
 variable "vault_instance_type" {
   description = "The EC2 instance type to use for vault nodes"
-  default     = "t2.micro"
+  default     = "t2.medium"
 }
 
 variable "consul_cluster_size" {
   description = "The number of instances to use in the consul cluster"
-  default     = 3
+  default     = 1
 }
 
 variable "consul_instance_type" {
   description = "The EC2 instance type to use for consul nodes"
-  default     = "t2.micro"
+  default     = "t2.medium"
 }
 
 variable "quorum_vpc_base_cidr" {
@@ -213,7 +213,7 @@ variable "bootnode_vpc_base_cidr" {
 
 variable "node_volume_size" {
   description = "The size of the EBS volume for a quorum node in GB"
-  default     = 20
+  default     = 100
 }
 
 variable "max_peers" {
@@ -326,33 +326,33 @@ variable "bootnode_counts" {
   type        = "map"
   default     = {
     # Virginia
-    us-east-1      = 0
+    us-east-1      = 1
     # Ohio
-    us-east-2      = 0
+    us-east-2      = 1
     # California
-    us-west-1      = 0
+    us-west-1      = 1
     # Oregon
-    us-west-2      = 0
+    us-west-2      = 1
     # Frankfurt
-    eu-central-1   = 0
+    eu-central-1   = 1
     # Ireland
-    eu-west-1      = 0
+    eu-west-1      = 1
     # London
-    eu-west-2      = 0
+    eu-west-2      = 1
     # Mumbai
-    ap-south-1     = 0
+    ap-south-1     = 1
     # Tokyo
-    ap-northeast-1 = 0
+    ap-northeast-1 = 1
     # Seoul
-    ap-northeast-2 = 0
+    ap-northeast-2 = 1
     # Singapore
-    ap-southeast-1 = 0
+    ap-southeast-1 = 1
     # Sydney
-    ap-southeast-2 = 0
+    ap-southeast-2 = 1
     # Canada
-    ca-central-1   = 0
+    ca-central-1   = 1
     # South America
-    sa-east-1      = 0
+    sa-east-1      = 1
   }
 }
 
@@ -361,33 +361,33 @@ variable "maker_node_counts" {
   type        = "map"
   default     = {
     # Virginia
-    us-east-1      = 0
+    us-east-1      = 1
     # Ohio
-    us-east-2      = 0
+    us-east-2      = 1
     # California
-    us-west-1      = 0
+    us-west-1      = 1
     # Oregon
-    us-west-2      = 0
+    us-west-2      = 1
     # Frankfurt
-    eu-central-1   = 0
+    eu-central-1   = 1
     # Ireland
-    eu-west-1      = 0
+    eu-west-1      = 1
     # London
-    eu-west-2      = 0
+    eu-west-2      = 1
     # Mumbai
-    ap-south-1     = 0
+    ap-south-1     = 1
     # Tokyo
-    ap-northeast-1 = 0
+    ap-northeast-1 = 1
     # Seoul
-    ap-northeast-2 = 0
+    ap-northeast-2 = 1
     # Singapore
-    ap-southeast-1 = 0
+    ap-southeast-1 = 1
     # Sydney
-    ap-southeast-2 = 0
+    ap-southeast-2 = 1
     # Canada
-    ca-central-1   = 0
+    ca-central-1   = 1
     # South America
-    sa-east-1      = 0
+    sa-east-1      = 1
   }
 }
 
@@ -396,33 +396,33 @@ variable "validator_node_counts" {
   type        = "map"
   default     = {
     # Virginia
-    us-east-1      = 0
+    us-east-1      = 1
     # Ohio
-    us-east-2      = 0
+    us-east-2      = 1
     # California
-    us-west-1      = 0
+    us-west-1      = 1
     # Oregon
-    us-west-2      = 0
+    us-west-2      = 1
     # Frankfurt
-    eu-central-1   = 0
+    eu-central-1   = 1
     # Ireland
-    eu-west-1      = 0
+    eu-west-1      = 1
     # London
-    eu-west-2      = 0
+    eu-west-2      = 1
     # Mumbai
-    ap-south-1     = 0
+    ap-south-1     = 1
     # Tokyo
-    ap-northeast-1 = 0
+    ap-northeast-1 = 1
     # Seoul
-    ap-northeast-2 = 0
+    ap-northeast-2 = 1
     # Singapore
-    ap-southeast-1 = 0
+    ap-southeast-1 = 1
     # Sydney
-    ap-southeast-2 = 0
+    ap-southeast-2 = 1
     # Canada
-    ca-central-1   = 0
+    ca-central-1   = 1
     # South America
-    sa-east-1      = 0
+    sa-east-1      = 1
   }
 }
 
@@ -431,51 +431,51 @@ variable "observer_node_counts" {
   type        = "map"
   default     = {
     # Virginia
-    us-east-1      = 0
+    us-east-1      = 1
     # Ohio
-    us-east-2      = 0
+    us-east-2      = 1
     # California
-    us-west-1      = 0
+    us-west-1      = 1
     # Oregon
-    us-west-2      = 0
+    us-west-2      = 1
     # Frankfurt
-    eu-central-1   = 0
+    eu-central-1   = 1
     # Ireland
-    eu-west-1      = 0
+    eu-west-1      = 1
     # London
-    eu-west-2      = 0
+    eu-west-2      = 1
     # Mumbai
-    ap-south-1     = 0
+    ap-south-1     = 1
     # Tokyo
-    ap-northeast-1 = 0
+    ap-northeast-1 = 1
     # Seoul
-    ap-northeast-2 = 0
+    ap-northeast-2 = 1
     # Singapore
-    ap-southeast-1 = 0
+    ap-southeast-1 = 1
     # Sydney
-    ap-southeast-2 = 0
+    ap-southeast-2 = 1
     # Canada
-    ca-central-1   = 0
+    ca-central-1   = 1
     # South America
-    sa-east-1      = 0
+    sa-east-1      = 1
   }
 }
 
 variable "backup_lambda_binary" {
-  default = "BackupLamba"
-  description = "The BackupLambda binary"
+    default = "BackupLambda"
+    description = "Name of BackupLambda binary"
 }
 
 variable "backup_lambda_binary_path" {
-    default = "BackupLambda"
-    description = "Full path to the binary for the BackupLambda"
+    default = "BackupLambda.zip"
+    description = "Full path to the zipped binary for the BackupLambda"
 }
 
 variable "backup_lambda_binary_url" {
   description = <<DESCRIPTION
 URL to retrieve the Backup Lambda binary from.
 DESCRIPTION
-  default    = "https://github.com/Eximchain/BackupLambda/releases/download/0.1/BackupLambda"
+  default    = "https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda.zip"
 }
 
 variable "backup_lambda_ssh_private_key" {
@@ -515,11 +515,12 @@ variable "enc_ssh_key" {
 }
 
 variable "backup_interval" {
-    default     = ""
+    default     = "rate(4 hours)"
     description = <<DESCRIPTION
-Schedule expression for backup event, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html for examples
+Schedule expression for backup event, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html for examples.
 cron(45 08 ? * WED *) will trigger every WED at 8 45 am GMT
 cron(05 13 ? * MON *) will trigger every MON at 1 05 pm GMT
 rate(3 mins) will trigger every 3 minutes
+rate(7 hours) will trigger every 7 hours
 DESCRIPTION
 }

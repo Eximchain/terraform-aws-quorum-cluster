@@ -67,7 +67,7 @@ DESCRIPTION
 
 variable "backup_lambda_ssh_private_key_path" {
   description = <<DESCRIPTION
-Path to the SSH private key to be used for authentication.
+Path to SSH private key to be used for authentication by the BackupLambda function.
 Ensure this keypair is added to your local SSH agent so provisioners can
 connect.
 Example: ~/.ssh/terraform
@@ -77,7 +77,7 @@ DESCRIPTION
 
 variable "backup_lambda_ssh_private_key" {
   description = <<DESCRIPTION
-SSH private key to be used for authentication.
+SSH private key to be used for authentication by the BackupLambda function.
 DESCRIPTION
   default     = ""
 }

@@ -50,3 +50,4 @@ terraform/us-east-1/BackupLambda
 terraform/us-east-2/BackupLambda
 terraform/us-west-1/BackupLambda
 terraform/us-west-2/BackupLambda
+workingterraformvars.txt

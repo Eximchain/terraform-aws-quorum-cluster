@@ -98,16 +98,21 @@ DESCRIPTION
   default     = ""
 }
 
+variable "backup_lambda_binary" {
+  description = "BackupLambda binary name"
+  default = "BackupLambda"
+}
+
 variable "backup_lambda_ssh_private_key_path" {
   description = <<DESCRIPTION
-SSH private key to be used for authentication.
+Path to SSH private key to be used for authentication by the BackupLambda function.
 DESCRIPTION
   default     = ""
 }
 
 variable "backup_lambda_ssh_private_key" {
   description = <<DESCRIPTION
-SSH private key to be used for authentication.
+SSH private key to be used for authentication by the BackupLambda function.
 DESCRIPTION
   default     = ""
 }
