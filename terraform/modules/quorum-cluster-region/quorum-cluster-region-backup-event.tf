@@ -215,7 +215,7 @@ EOT
   }
   provisioner "local-exec" {
     when = "destroy"
-    command = "rm ${var.aws_region}-${var.backupLambda_output_path}"
+    command = "rm ${var.aws_region}-${var.backup_lambda_output_path}"
     on_failure = "continue"
   }
 }
