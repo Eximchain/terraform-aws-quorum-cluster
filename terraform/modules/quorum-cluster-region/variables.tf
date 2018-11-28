@@ -158,6 +158,11 @@ variable "use_elastic_observer_ips" {
   default     = false
 }
 
+variable "use_efs" {
+  description = "Whether or not to use an EFS file system to store the chain data in this region."
+  default     = false
+}
+
 variable "ssh_ips" {
   description = "List of IP addresses allowed to SSH nodes in this network. If empty, will allow SSH from anywhere."
   default     = []

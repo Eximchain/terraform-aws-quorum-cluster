@@ -136,6 +136,11 @@ variable "use_elastic_observer_ips" {
   default     = false
 }
 
+variable "use_efs" {
+  description = "Whether or not to use an EFS file system to store the chain data in this cluster. Will always be disabled in eu-west-2, ap-south-1, ca-central-1, and sa-east-1."
+  default     = false
+}
+
 variable "ssh_ips" {
   description = "List of IP addresses allowed to SSH nodes in this network. If empty, will allow SSH from anywhere."
   default     = []
