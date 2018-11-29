@@ -7,11 +7,11 @@ output "quorum_maker_node_dns" {
 }
 
 output "quorum_validator_node_dns" {
-  value = "${coalescelist(data.aws_instance.quorum_validator_node.*.public_dns, list(""))}"
+  value = "${data.aws_instance.quorum_validator_node.*.public_dns}"
 }
 
 output "quorum_observer_node_ips" {
-  value = "${coalescelist(aws_eip.quorum_observer.*.public_ip, data.aws_instances.quorum_observer_node.*.public_ips)}"
+  value = "${coalescelist(aws_eip.quorum_observer.*.public_ip, data.aws_instance.quorum_observer_node.*.public_ip)}"
 }
 
 output "bootnode_ips" {
