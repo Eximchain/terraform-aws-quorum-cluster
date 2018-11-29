@@ -3,11 +3,11 @@ output "quorum_vpc_id" {
 }
 
 output "quorum_maker_node_dns" {
-  value = "${data.aws_instances.quorum_maker_node.*.public_ips}"
+  value = "${data.aws_instance.quorum_maker_node.*.public_dns}"
 }
 
 output "quorum_validator_node_dns" {
-  value = "${data.aws_instances.quorum_validator_node.*.public_ips}"
+  value = "${data.aws_instance.quorum_validator_node.*.public_dns}"
 }
 
 output "quorum_observer_node_ips" {
