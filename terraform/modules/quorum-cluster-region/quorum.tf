@@ -489,8 +489,12 @@ data "aws_instances" "quorum_maker_node" {
   depends_on = ["aws_autoscaling_group.quorum_maker"]
 }
 
+locals {
+  quorum_maker_count = "${length(data.aws_instances.quorum_maker_node.ids)}"
+}
+
 data "aws_instance" "quorum_maker_node" {
-  count = "${length(data.aws_instances.quorum_maker_node.ids)}"
+  count = "${local.quorum_maker_count}"
   instance_id = "${data.aws_instances.quorum_maker_node.ids[count.index]}"
 
   depends_on = ["aws_autoscaling_group.quorum_maker", "data.aws_instances.quorum_maker_node"]
