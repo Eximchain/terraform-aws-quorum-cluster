@@ -482,6 +482,8 @@ data "aws_ami" "quorum" {
 # OUTPUT INSTANCES
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_instances" "quorum_maker_dns" {
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0)>0 ? 1 : 0}"
+
   instance_tags {
     Name = "quorum-network-${var.network_id}-maker-*"
   }
