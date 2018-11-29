@@ -485,13 +485,15 @@ data "aws_instances" "quorum_maker_dns" {
   instance_tags {
     Name = "quorum-network-${var.network_id}-maker-*"
   }
+
+  depends_on = ["aws_autoscaling_group.quorum_maker"]
 }
 
 data "aws_instance" "quorum_maker_node" {
   count = "${length(data.aws_instances.quorum_maker_dns.ids)}"
 
   instance_tags {
-    Name = "quorum-network-84913-maker-*"
+    Name = "quorum-network-${var.network_id}-maker-*"
   }
   instance_id = "${data.aws_instances.quorum_maker_dns.ids[count.index]}"
 
