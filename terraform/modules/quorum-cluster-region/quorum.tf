@@ -491,9 +491,6 @@ data "aws_instances" "quorum_maker_node" {
 
 data "aws_instance" "quorum_maker_node" {
   count = "${length(data.aws_instances.quorum_maker_node.ids)}"
-  instance_tags {
-    Name = "quorum-network-${var.network_id}-maker-*"
-  }
   instance_id = "${element(data.aws_instances.quorum_maker_node.ids, count.index)}"
 
   depends_on = ["aws_autoscaling_group.quorum_maker", "data.aws_instances.quorum_maker_node"]
