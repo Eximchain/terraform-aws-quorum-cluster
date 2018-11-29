@@ -513,12 +513,8 @@ data "aws_instances" "quorum_validator_dns" {
 }
 
 data "aws_instance" "quorum_validator_node" {
-  count = "${aws_autoscaling_group.quorum_validator.count}"
+  count = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
 
-  // filter {
-  //   name   = "tag:aws:autoscaling:groupName"
-  //   values = ["${element(aws_autoscaling_group.quorum_validator.*.name, count.index)}"]
-  // }
   instance_tags {
     Name = "quorum-network-${var.network_id}-validator-*"
   }
@@ -527,15 +523,25 @@ data "aws_instance" "quorum_validator_node" {
   depends_on = ["aws_autoscaling_group.quorum_validator", "data.aws_instances.quorum_validator_dns"]
 }
 
-data "aws_instance" "quorum_observer_node" {
-  count = "${aws_autoscaling_group.quorum_observer.count}"
+data "aws_instances" "quorum_observer_dns" {
+  count = "${lookup(var.observer_node_counts, var.aws_region, 0)>0 ? 1 : 0}"
 
-  filter {
-    name   = "tag:aws:autoscaling:groupName"
-    values = ["${element(aws_autoscaling_group.quorum_observer.*.name, count.index)}"]
+  instance_tags {
+    Name = "quorum-network-${var.network_id}-observer-*"
   }
 
   depends_on = ["aws_autoscaling_group.quorum_observer"]
+}
+
+data "aws_instance" "quorum_observer_node" {
+  count = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
+
+  instance_tags {
+    Name = "quorum-network-${var.network_id}-observer-*"
+  }
+  instance_id = "${data.aws_instances.quorum_observer_dns.ids[count.index]}"
+
+  depends_on = ["aws_autoscaling_group.quorum_observer", "data.aws_instances.quorum_observer_dns"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
