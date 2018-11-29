@@ -481,10 +481,19 @@ data "aws_ami" "quorum" {
 # ---------------------------------------------------------------------------------------------------------------------
 # OUTPUT INSTANCES
 # ---------------------------------------------------------------------------------------------------------------------
-data "aws_instance" "quorum_maker_node" {
-  count = "${aws_autoscaling_group.quorum_maker.count}"
+data "aws_instances" "quorum_maker_dns" {
+  instance_tags {
+    Name = "quorum-network-${var.network_id}-maker-*"
+  }
+}
 
-  instance_id = "${aws_autoscaling_group.quorum_maker.*.name[count.index]}"
+data "aws_instance" "quorum_maker_node" {
+  count = "${length(data.aws_instances.quorum_maker_dns.ids)}"
+
+  instance_tags {
+    Name = "quorum-network-84913-maker-*"
+  }
+  instance_id = "${data.aws_instances.quorum_maker_dns.ids[count.index]}"
 
   depends_on = ["aws_autoscaling_group.quorum_maker"]
 }
