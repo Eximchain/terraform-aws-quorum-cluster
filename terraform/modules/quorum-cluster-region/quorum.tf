@@ -490,7 +490,7 @@ data "aws_instances" "quorum_maker_dns" {
 }
 
 data "aws_instance" "quorum_maker_node" {
-  count = "${lookup(var.quorum_maker_counts, var.aws_region, 0)}"
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
   instance_tags {
     Name = "quorum-network-${var.network_id}-maker-*"
