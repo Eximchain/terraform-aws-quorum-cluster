@@ -490,7 +490,7 @@ data "aws_instances" "quorum_maker_node" {
 }
 
 data "aws_instance" "quorum_maker_node" {
-  count = "${var.maker_node_counts}"
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
   instance_id = "${data.aws_instances.quorum_maker_node.ids[count.index]}"
 
   depends_on = ["aws_autoscaling_group.quorum_maker", "data.aws_instances.quorum_maker_node"]
