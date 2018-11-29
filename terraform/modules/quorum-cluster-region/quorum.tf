@@ -484,10 +484,7 @@ data "aws_ami" "quorum" {
 data "aws_instance" "quorum_maker_node" {
   count = "${aws_autoscaling_group.quorum_maker.count}"
 
-  filter {
-    name   = "tag:aws:autoscaling:groupName"
-    values = ["${element(aws_autoscaling_group.quorum_maker.*.name, count.index)}"]
-  }
+  instance_id = "${aws_autoscaling_group.quorum_maker.*.name[count.index]}"
 
   depends_on = ["aws_autoscaling_group.quorum_maker"]
 }
