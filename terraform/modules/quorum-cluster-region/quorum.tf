@@ -481,36 +481,15 @@ data "aws_ami" "quorum" {
 # ---------------------------------------------------------------------------------------------------------------------
 # OUTPUT INSTANCES
 # ---------------------------------------------------------------------------------------------------------------------
-data "aws_instances" "quorum_maker_node" {
-  instance_tags {
-    Name = "quorum-network-${var.network_id}-maker-*"
-  }
-
-  depends_on = ["aws_autoscaling_group.quorum_maker"]
-}
-
-data "aws_instances" "quorum_observer_node" {
-  instance_tags {
-    Name = "quorum-network-${var.network_id}-observer-*"
-  }
-
-  depends_on = ["aws_autoscaling_group.quorum_observer"]
-}
-
-data "aws_instances" "quorum_validator_node" {
-  instance_tags {
-    Name = "quorum-network-${var.network_id}-validator-*"
-  }
-
-  depends_on = ["aws_autoscaling_group.quorum_validator"]
-}
-
 data "aws_instance" "quorum_maker_node" {
   count = "${aws_autoscaling_group.quorum_maker.count}"
 
-  instance_id = "${data.aws_instances.quorum_maker_node.ids[count.index]}"
+  filter {
+    name   = "tag:aws:autoscaling:groupName"
+    values = ["${element(aws_autoscaling_group.quorum_maker.*.name, count.index)}"]
+  }
 
-  depends_on = ["aws_autoscaling_group.quorum_maker", "data.aws_instances.quorum_maker_node"]
+  depends_on = ["aws_autoscaling_group.quorum_maker"]
 }
 
 data "aws_instance" "quorum_validator_node" {
