@@ -442,13 +442,8 @@ variable "enc_ssh_key" {
     description = "The key to access the encrypted SSH key on the S3 bucket"
 }
 
+# If singular, it's 1 hour, 1 minute, 1 week, 1 day, etc.
 variable "backup_interval" {
-    default     = "rate(5 hours)"
-    description = <<DESCRIPTION
-Schedule expression for backup event, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html for examples.
-cron(45 08 ? * WED *) will trigger every WED at 8 45 am GMT
-cron(05 13 ? * MON *) will trigger every MON at 1 05 pm GMT
-rate(3 mins) will trigger every 3 minutes
-rate(7 hours) will trigger every 7 hours
-DESCRIPTION
+    default = ""
+    description = "The schedule expression for the backup interval, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html for examples"
 }

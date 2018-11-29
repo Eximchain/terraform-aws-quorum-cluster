@@ -8,5 +8,4 @@ terraform/cert-tool/terraform.tfstate*
 terraform/cert-tool/.terraform*
 
 .vscode/
-terraform/temp/*
-workingterraformvars.txt
+terraform/temp
