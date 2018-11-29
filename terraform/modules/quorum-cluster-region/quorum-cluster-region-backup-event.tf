@@ -224,6 +224,7 @@ resource "aws_kms_key" "ssh_encryption_key" {
   count       = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
   description = "Used for encrypting SSH keys on S3"
+
   tags {
      name = "BackupLambda-${var.network_id}-${var.aws_region}-KMS"
   }
@@ -294,6 +295,7 @@ resource "aws_subnet" "backup_lambda" {
   vpc_id             = "${aws_vpc.quorum_cluster.id}"
   availability_zone  = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
   cidr_block         = "${cidrsubnet(data.template_file.quorum_maker_cidr_block_lambda.rendered, 3, count.index)}"
+
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"
     NodeType  = "BackupLambda"
@@ -306,6 +308,7 @@ resource "aws_eip" "gateway_ip" {
   count      = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
   vpc        = true
+
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda"
     NodeType  = "BackupLambda-EIP"
@@ -321,6 +324,7 @@ resource "aws_nat_gateway" "backup_lambda" {
 
   allocation_id = "${aws_eip.gateway_ip.0.id}"
   subnet_id     = "${aws_subnet.quorum_maker.0.id}"
+
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"
     NodeType  = "NAT"
@@ -335,9 +339,11 @@ resource "aws_route_table" "backup_lambda" {
   count  = "${signum(lookup(var.maker_node_counts, var.aws_region, 0))}"
 
   vpc_id = "${aws_vpc.quorum_cluster.id}"
+
   tags {
      Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable"
   }
+
   route {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = "${aws_nat_gateway.backup_lambda.0.id}"
