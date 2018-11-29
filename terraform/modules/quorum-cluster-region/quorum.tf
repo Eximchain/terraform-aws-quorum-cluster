@@ -496,7 +496,7 @@ data "aws_instance" "quorum_maker_node" {
   }
   instance_id = "${element(data.aws_instances.quorum_maker_node.ids, count.index)}"
 
-  depends_on = ["aws_autoscaling_group.quorum_maker"]
+  depends_on = ["aws_autoscaling_group.quorum_maker", "aws_instances.quorum_maker_node"]
 }
 
 data "aws_instance" "quorum_validator_node" {
