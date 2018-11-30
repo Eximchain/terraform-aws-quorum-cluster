@@ -58,8 +58,6 @@ module "quorum_cluster" {
   okta_api_token                     = "${var.okta_api_token}"
   okta_access_group                  = "${var.okta_access_group}"
   vote_threshold                     = "${var.vote_threshold}"
-  min_block_time                     = "${var.min_block_time}"
-  max_block_time                     = "${var.max_block_time}"
   max_peers                          = "${var.max_peers}"
   az_override                        = "${var.az_override}"
   bootnode_counts                    = "${var.bootnode_counts}"

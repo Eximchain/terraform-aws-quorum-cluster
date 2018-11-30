@@ -256,8 +256,6 @@ data "template_file" "user_data_quorum_maker" {
     primary_region = "${var.primary_region}"
 
     vote_threshold   = "${var.vote_threshold}"
-    min_block_time   = "${var.min_block_time}"
-    max_block_time   = "${var.max_block_time}"
     max_peers        = "${var.max_peers}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
@@ -310,8 +308,6 @@ data "template_file" "user_data_quorum_validator" {
     primary_region = "${var.primary_region}"
 
     vote_threshold   = "${var.vote_threshold}"
-    min_block_time   = "${var.min_block_time}"
-    max_block_time   = "${var.max_block_time}"
     max_peers        = "${var.max_peers}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
@@ -364,8 +360,6 @@ data "template_file" "user_data_quorum_observer" {
     primary_region = "${var.primary_region}"
 
     vote_threshold   = "${var.vote_threshold}"
-    min_block_time   = "${var.min_block_time}"
-    max_block_time   = "${var.max_block_time}"
     max_peers        = "${var.max_peers}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
