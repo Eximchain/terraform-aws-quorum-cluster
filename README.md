@@ -21,7 +21,20 @@ Table of Contents
             * [Deploy the private contract](#deploy-the-private-contract)
          * [Destroy the Network](#destroy-the-network)
    * [Using as a Terraform Module](#using-as-a-terraform-module)
-   * [Roadmap](#roadmap)
+   * [Architecture](#architecture)
+      * [Terraform Modules](#terraform-modules)
+         * [quorum-cluster](#quorum-cluster)
+         * [quorum-vault](#quorum-vault)
+         * [quorum-cluster-region](#quorum-cluster-region)
+         * [cert-tool](#cert-tool)
+         * [consul-security-group-rule](#consul-security-group-rule)
+         * [internal-dns](#internal-dns)
+         * [quorum-vpc-peering](#quorum-vpc-peering)
+      * [Diagrams](#diagrams)
+         * [Full network at a high level](#full-network-at-a-high-level)
+         * [VPC Peering Connections](#vpc-peering-connections)
+         * [Quorum Cluster Region](#quorum-cluster-region-1)
+         * [Network Topology](#network-topology)
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
@@ -412,23 +425,110 @@ module "quorum_cluster" {
 }
 ```
 
-# Roadmap
+# Architecture
 
-The master list of desired features for this tool. Feel free to contribute feature requests via pull requests editing this section. Items here may correspond with open issues.
+## Terraform Modules
 
-- [x] Dedicated Boot Nodes for Geth and Constellation
-- [x] Replaceable Boot Nodes
-- [x] Auto-starting geth and constellation processes
-- [x] Private transaction test case
-- [x] Multi AZ Network
-- [x] Isolate different AWS users in the same account
-- [x] New Constellation Configuration Format
-- [x] Terraform Module
-- [x] Multi Region Network
-- [x] Network with External Participants
-- [x] Quorum Node health checking and replacement
-- [x] Fine-grained Permissions for Private Keys in Vault
-- [ ] Full initial documentation
-- [ ] Secure handling of TLS Certificate
-- [ ] Anti-Fraglie Everything
-- [ ] Tighten security parameters
+The following modules can be found in the `terraform/modules` directory. The root quorum configuration in `terraform` is simply a wrapper for the `quorum-cluster` module.
+
+These modules contain the core functionality to run the infrastructure for a quorum cluster:
+
+### quorum-cluster
+
+The top-level module, suitable for being used directly by another terraform configuration. The `quorum-cluster` module consists primarily of a single `quorum-vault` in the primary region, and 14 `quorum-cluster-region` modules which contain the bulk of the infrastructure (since most of it is regionalized). Additionally, it contains some resources to create a cloudwatch dashboard and alarms in the default region.
+
+### quorum-vault
+
+The `quorum-vault` module provides a durable and secure [Hashicorp Vault](https://www.vaultproject.io/) cluster for use by the whole cluster. This module is used only in the primary region. It maintains a vault cluster, a consul cluster to support it, and an Elastic Load Balancer through which the vault cluster can be accessed. This module is not intended to be used outside a `quorum-cluster` module.
+
+### quorum-cluster-region
+
+The `quorum-cluster-region` module contains all infrastructure which exists independently in all regions, which is most of it. Note that no infrastructure is created in a region with all node counts set to `0`.
+
+The following major components are included in a `quorum-cluster-region`:
+
+* For the whole region
+  * A key pair to SSH the instances in the cluster
+  * An S3 bucket for constellation payloads
+  * An S3 bucket for chain backups
+  * An IAM policy allowing access to AWS dependencies
+* For Bootnodes
+  * A VPC
+  * One subnet per AZ
+  * User data scripts
+  * One Autoscaling group per bootnode
+  * One IAM role per bootnode
+  * One security group and rules for it allowing:
+    * SSH access which may be limited to specified IPs
+    * Access to the constellation port from anywhere
+    * Access to the quorum port from anywhere
+    * Access to the bootnode discovery port from anywhere
+    * Local access to the RPC port
+* For Quorum Nodes
+  * A VPC
+  * Three subnets per AZ, one for each network role
+  * User data scripts
+  * One Autoscaling group per node
+  * One IAM role per node
+  * One security group and rules for it allowing:
+    * SSH access which may be limited to specified IPs
+    * Access to the constellation port from anywhere
+    * Access to the quorum port from specified other roles (see [Network Topology](#network-topology) for more details)
+    * Access to the bootnode discovery port from anywhere
+    * Local access to the RPC port
+    * Local access to the supervisor RPC port
+  * Network ACL rules preventing makers and supervisors from communicating on their geth ports (see [Network Topology](#network-topology) for more details)
+
+The following modules contain supporting functionality
+
+### cert-tool
+
+The `cert-tool` module is used in the Quick Start Guide to generate certificates for vault. This needs to be done outside the main module to avoid having unencrypted private keys persisted in the terraform state.
+
+### consul-security-group-rule
+
+This module is originally sourced from a Hashicorp module. It provides security group rules for the consul cluster used in the `quorum-vault` module.
+
+### internal-dns
+
+This module provides a shared private DNS system for the whole cluster by creating a Route53 private hosted zone and associating it with all VPCs in the cluster.
+
+Currently this provides a fixed well-known DNS for the vault load balancer so that the certificates can be generated before the load balancer is created.
+
+### quorum-vpc-peering
+
+This creates peering connections between the vault VPC and each quorum VPC, as well as between each pair of quorum VPCs. The result is that all VPCs except the bootnode VPCs are connected to each other via peering connections, and can communicate over them.
+
+This has desirable properties. One is that the vault load balancer can be kept internal, reducing the attack surface for the vault server. Another is that geth processes establish connections using their private IPs, which allows us to set cross-region security group rules based on private IP CIDR ranges. This is important in enforcing the [Network Topology](#network-topology).
+
+## Diagrams
+
+Note that for simplicity, these diagrams depict a three region network. The primary region is `us-east-1` and the network also has nodes in `us-west-2` and `eu-west-1`. Additional regions used that may be used in your network have the same architecture as the non-primary regions depicted.
+
+### Full network at a high level
+
+![Full Cluster Architecture](images/full-cluster-overview.png "Full Cluster Architecture")
+
+This diagram shows the breakdown of the architecture into regions and VPCs, including components that are exclusive to the primary region. The components common to all regions will be expanded upon in another diagram. Note that connections between components are omitted to avoid clutter.
+
+### VPC Peering Connections
+
+![VPC Peering Connections](images/vpc-peering-connections.png "VPC Peering Connections")
+
+This diagram shows the VPC Peering Connections between VPCs. The Vault VPC and the Quorum Node VPCs are all directly connected to each other. Bootnode VPCs are not connected to any other VPCs.  Also pictured is the Internal DNS system, consisting of a single Route53 private hosted zone associated with all VPCs including bootnode VPCs.
+
+### Quorum Cluster Region
+
+![Quorum Cluster Region](images/quorum-cluster-region.png "Quorum Cluster Region")
+
+This diagram shows a more detailed view of a non-primary region. The primary region has additional components as detailed in the full network diagram. This infrastructure is managed by the `quorum-cluster-region` module and exists in every region with nodes in them. For simplicity, connections between components are omitted and only two Availability Zones and two nodes per AZ are shown.
+
+### Network Topology
+
+![Network Topology](images/network-topology.png "Network Topology")
+
+The network topology is enforced via the AWS control plane and attempts to obtain a fully connected network ensuring the best possible connectivity between makers and validators. Towards this end, all non-maker connections to the network go through observer nodes. To allow connections to your network, users should use the observer nodes as bootnodes.
+
+Incoming network connections through other nodes are prevented by security group rules. Since connections can be opened in either direction, Makers and Observers are specifically kept from connecting to each other by ACL rules at the subnet level.
+
+Through clever choice of `max_peers` and the number of nodes in your network, it is possible to ensure that your initial network is strongly connected.

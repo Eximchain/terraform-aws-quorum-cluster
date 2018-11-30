@@ -49,9 +49,16 @@ function download_vault_certs {
   sudo /opt/vault/bin/update-certificate-store --cert-file-path $CA_TLS_CERT_FILE
 }
 
-function setup_s3fs {
+function setup_mounts {
   echo "${constellation_s3_bucket} /opt/quorum/constellation/private/s3fs fuse.s3fs _netdev,allow_other,iam_role 0 0" | sudo tee /etc/fstab
+  if [ "${efs_fs_id}" != "" ]
+  then
+    echo "${efs_fs_id}:/ /opt/quorum/mnt/efs efs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+  fi
   sudo mount -a
+
+  # Give ownership back to the user running geth
+  sudo chown ubuntu /opt/quorum/mnt/efs
 }
 
 function configure_threatstack_agent_if_key_provided {
@@ -108,6 +115,9 @@ function populate_data_files {
   echo "${use_elastic_observer_ips}" | sudo tee /opt/quorum/info/using-eip.txt
   echo "${public_ip}" | sudo tee /opt/quorum/info/public-ip.txt
   echo "${eip_id}" | sudo tee /opt/quorum/info/eip-id.txt
+  echo "${efs_mt_dns}" | sudo tee /opt/quorum/info/efs-dns.txt
+  echo "${efs_fs_id}" | sudo tee /opt/quorum/info/efs-fsid.txt
+  echo "${chain_data_dir}" | sudo tee /opt/quorum/info/chain-data-dir.txt
 
   # Download node counts
   aws configure set s3.signature_version s3v4
@@ -152,8 +162,8 @@ sudo apt-get -y update
 sudo ntpd
 
 download_vault_certs
-setup_s3fs
 populate_data_files
+setup_mounts
 
 # These variables are passed in via Terraform template interpolation
 /opt/consul/bin/run-consul --client --cluster-tag-key "${consul_cluster_tag_key}" --cluster-tag-value "${consul_cluster_tag_value}"

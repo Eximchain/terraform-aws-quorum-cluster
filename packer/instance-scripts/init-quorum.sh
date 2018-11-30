@@ -26,9 +26,13 @@ function generate_quorum_supervisor_config {
     local MAX_PEERS=$(cat /opt/quorum/info/max-peers.txt)
     local NODE_INDEX=$(cat /opt/quorum/info/overall-index.txt)
     local THIS_REGION=$(cat /opt/quorum/info/aws-region.txt)
+    local CHAIN_DATA_DIR=$(cat /opt/quorum/info/chain-data-dir.txt)
 
+    local LOCAL_DATA_DIR="/home/ubuntu/.ethereum"
+    local KEYSTORE="$LOCAL_DATA_DIR/keystore/"
+    local IPC_PATH="$LOCAL_DATA_DIR/geth.ipc"
     local VERBOSITY=2
-    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --jitvm=false --privateconfigpath $CONSTELLATION_CONFIG"
+    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --jitvm=false --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE --ipcpath $IPC_PATH --privateconfigpath $CONSTELLATION_CONFIG"
 
     # Assemble list of bootnodes
     local BOOTNODES=""
@@ -68,6 +72,15 @@ autorestart=unexpected
 stopsignal=INT
 exitcodes=0,1,2
 user=ubuntu" | sudo tee /etc/supervisor/conf.d/quorum-supervisor.conf
+}
+
+function init_geth {
+  local readonly CHAIN_DATA_DIR=$(cat /opt/quorum/info/chain-data-dir.txt)
+
+  local readonly KEYSTORE="/home/ubuntu/.ethereum/keystore/"
+  local readonly GENESIS_BLOCK="/opt/quorum/private/quorum-genesis.json"
+
+  geth --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE init $GENESIS_BLOCK
 }
 
 function generate_quorum_crash_listener {
@@ -375,8 +388,7 @@ complete_constellation_config $HOSTNAME /opt/quorum/constellation/config.conf
 # Generate the genesis file
 generate_genesis_file
 
-# Initialize geth to run on the quorum network
-geth init /opt/quorum/private/quorum-genesis.json
+init_geth
 
 # Sleep to let constellation bootnodes start first
 sleep 30

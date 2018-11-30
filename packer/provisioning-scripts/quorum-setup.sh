@@ -9,6 +9,8 @@ sudo mkdir $QUOR_ROOT/info
 sudo mkdir $QUOR_ROOT/private
 sudo mkdir $QUOR_ROOT/log
 sudo mkdir $QUOR_ROOT/lib
+sudo mkdir $QUOR_ROOT/mnt
+sudo mkdir $QUOR_ROOT/mnt/efs
 sudo mkdir $QUOR_ROOT/info/node-counts
 sudo mkdir $QUOR_ROOT/info/bootnode-counts
 sudo mkdir $QUOR_ROOT/info/maker-counts

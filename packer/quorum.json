@@ -88,6 +88,7 @@
       "provisioning-scripts/porosity.sh",
       "provisioning-scripts/quorum-genesis.sh",
       "provisioning-scripts/s3fs.sh",
+      "provisioning-scripts/efs-utils.sh",
       "provisioning-scripts/swapfile.sh",
       "provisioning-scripts/rsync-update.sh",
       "provisioning-scripts/git-update.sh",
