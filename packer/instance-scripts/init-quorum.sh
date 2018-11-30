@@ -21,8 +21,6 @@ function generate_quorum_supervisor_config {
 
     local NETID=$(cat /opt/quorum/info/network-id.txt)
     local REGIONS=$(cat /opt/quorum/info/regions.txt)
-    local MIN_BLOCK_TIME=$(cat /opt/quorum/info/min-block-time.txt)
-    local MAX_BLOCK_TIME=$(cat /opt/quorum/info/max-block-time.txt)
     local MAX_PEERS=$(cat /opt/quorum/info/max-peers.txt)
     local NODE_INDEX=$(cat /opt/quorum/info/overall-index.txt)
     local THIS_REGION=$(cat /opt/quorum/info/aws-region.txt)
@@ -32,7 +30,9 @@ function generate_quorum_supervisor_config {
     local LOCAL_DATA_DIR="/home/ubuntu/.ethereum"
     local KEYSTORE="$LOCAL_DATA_DIR/keystore/"
     local IPC_PATH="$LOCAL_DATA_DIR/geth.ipc"
-    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --jitvm=false --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE --ipcpath $IPC_PATH --privateconfigpath $CONSTELLATION_CONFIG"
+
+    # TODO: Add --privateconfigpath once private transactions are pulled into geth
+    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE --ipcpath $IPC_PATH"
 
     # Assemble list of bootnodes
     local BOOTNODES=""
@@ -46,17 +46,22 @@ function generate_quorum_supervisor_config {
     done
     BOOTNODES=${BOOTNODES:1}
 
+    # TODO: Remove plaintext passwords once vault-related changes are pulled into geth
+    local PW_FILE="/tmp/geth-pw"
+    echo "$PASSWORD" > $PW_FILE
+
     if [ "$ROLE" == "maker" ]
     then
-        ARGS="$GLOBAL_ARGS --blockmakeraccount \"$ADDRESS\" --minblocktime $MIN_BLOCK_TIME --maxblocktime $MAX_BLOCK_TIME"
+        ARGS="$GLOBAL_ARGS --mine --minerthreads 1 --metrics --unlock \"$ADDRESS\" --password \"$PW_FILE\""
     elif [ "$ROLE" == "validator" ]
     then
-        ARGS="$GLOBAL_ARGS --voteaccount \"$ADDRESS\""
+        ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\" --password \"$PW_FILE\""
     else # observer node
-        ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\""
+        ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\" --password \"$PW_FILE\""
     fi
 
-    ARGS="$ARGS --vaultaddr \"$VAULT_ADDR\"  --vaultpasswordpath \"passwords/$THIS_REGION/$NODE_INDEX\""
+    # TODO: Reenable vault passwords once related changes are pulled into geth
+    #ARGS="$ARGS --vaultaddr \"$VAULT_ADDR\"  --vaultpasswordpath \"passwords/$THIS_REGION/$NODE_INDEX\""
 
     ARGS="$ARGS --bootnodes $BOOTNODES"
 

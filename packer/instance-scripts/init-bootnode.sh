@@ -140,7 +140,8 @@ else
     # TODO: Make work with nonempty passwords
     CONSTELLATION_PW=""
     wait_for_successful_command "vault write quorum/bootnodes/passwords/$AWS_REGION/$INDEX constellation_pw=$CONSTELLATION_PW"
-    BOOT_PUB=$(bootnode --genkey=$BOOT_KEY_FILE --writeaddress)
+    bootnode -genkey=$BOOT_KEY_FILE
+    BOOT_PUB=$(bootnode -nodekey=$BOOT_KEY_FILE -writeaddress)
     BOOT_KEY=$(cat $BOOT_KEY_FILE)
     BOOT_ADDR="enode://$BOOT_PUB@$IP_ADDR:$BOOT_PORT"
     echo $BOOT_ADDR > $BOOT_ADDR_FILE
