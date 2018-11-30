@@ -27,7 +27,7 @@ data "local_file" "public_key" {
 }
 
 data "local_file" "backup_lambda_ssh_private_key" {
-  count = "${var.backup_lambda_ssh_private_key == "" ? 1 : 0}"
+  count = "${var.backup_enabled && var.backup_lambda_ssh_private_key == "" ? 1 : 0}"
   
   filename = "${var.backup_lambda_ssh_private_key_path}"
 }
@@ -263,8 +263,9 @@ module "quorum_cluster_us_east_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
 
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -398,7 +399,9 @@ module "quorum_cluster_us_east_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
+  
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -532,8 +535,9 @@ module "quorum_cluster_us_west_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-
+  
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -667,8 +671,9 @@ module "quorum_cluster_us_west_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-
+  
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -802,8 +807,9 @@ module "quorum_cluster_eu_central_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
 
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -937,8 +943,9 @@ module "quorum_cluster_eu_west_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
 
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -1072,8 +1079,9 @@ module "quorum_cluster_eu_west_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
 
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -1208,8 +1216,9 @@ module "quorum_cluster_ap_south_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
 
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -1344,8 +1353,9 @@ module "quorum_cluster_ap_northeast_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
 
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -1479,8 +1489,9 @@ module "quorum_cluster_ap_northeast_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
 
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -1614,8 +1625,9 @@ module "quorum_cluster_ap_southeast_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
 
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -1749,8 +1761,9 @@ module "quorum_cluster_ap_southeast_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
 
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -1884,8 +1897,9 @@ module "quorum_cluster_ca_central_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
 
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
@@ -2020,8 +2034,9 @@ module "quorum_cluster_sa_east_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  backup_lambda_ssh_private_key = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
 
+  backup_enabled                      = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"

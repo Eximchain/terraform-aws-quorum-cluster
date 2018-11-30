@@ -70,6 +70,7 @@ module "quorum_cluster" {
   quorum_amis      = "${var.quorum_amis}"
   bootnode_amis    = "${var.bootnode_amis}"
 
+  backup_enabled                     = "${var.backup_enabled}"
   backup_lambda_ssh_private_key_path = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_private_key      = "${var.backup_lambda_ssh_private_key}"
   backup_interval                    = "${var.backup_interval}"

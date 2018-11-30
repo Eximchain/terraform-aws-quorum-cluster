@@ -483,6 +483,13 @@ variable "observer_node_counts" {
 }
 
 # Backup Lambda related variables
+variable "backup_enabled" {
+  description = <<DESCRIPTION
+Enable backup of chain data.
+DESCRIPTION
+  default = "true"
+}
+
 variable "backup_interval" {
   description = "Schedule expression for backup"
   default = ""

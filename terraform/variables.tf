@@ -506,13 +506,13 @@ variable "backup_lambda_output_path" {
 # output prefix of encrypted SSH key, region will be appended to the filename
 variable "enc_ssh_path" {
   description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
-  default = "enc_ssh"
+  default = "enc-ssh"
 }
 
 # key on S3 bucket
 variable "enc_ssh_key" {
   description = "The key to access the encrypted SSH key on the S3 bucket"
-  default = "enc_ssh"
+  default = "enc-ssh"
 }
 
 variable "backup_interval" {
@@ -524,4 +524,11 @@ rate(3 mins) will trigger every 3 minutes
 rate(7 hours) will trigger every 7 hours
 DESCRIPTION
   default     = "rate(4 hours)"
+}
+
+variable "backup_enabled" {
+  description = <<DESCRIPTION
+Enable backup of chain data.
+DESCRIPTION
+  default = "true"
 }
