@@ -93,7 +93,7 @@ variable "generate_metrics" {
 
 variable "create_alarms" {
   description = "Whether or not to create CloudWatch alarms. They will not function if generate_metrics is false."
-  default     = true
+  default     = false
 }
 
 variable "use_dedicated_bootnodes" {
@@ -133,6 +133,11 @@ variable "use_elastic_bootnode_ips" {
 
 variable "use_elastic_observer_ips" {
   description = "Whether or not to give observers elastic IPs, maintaining one static IP forever. Disabled by default because clusters with more than 5 nodes in one region using elastic IPs will require personally requesting more EIPs from AWS."
+  default     = false
+}
+
+variable "use_efs" {
+  description = "Whether or not to use an EFS file system to store the chain data in this cluster. Will always be disabled in eu-west-2, ap-south-1, ca-central-1, and sa-east-1."
   default     = false
 }
 
@@ -183,22 +188,22 @@ variable "vault_consul_ami" {
 
 variable "vault_cluster_size" {
   description = "The number of instances to use in the vault cluster"
-  default     = 1
+  default     = 3
 }
 
 variable "vault_instance_type" {
   description = "The EC2 instance type to use for vault nodes"
-  default     = "t2.medium"
+  default     = "t2.micro"
 }
 
 variable "consul_cluster_size" {
   description = "The number of instances to use in the consul cluster"
-  default     = 1
+  default     = 3
 }
 
 variable "consul_instance_type" {
   description = "The EC2 instance type to use for consul nodes"
-  default     = "t2.medium"
+  default     = "t2.micro"
 }
 
 variable "quorum_vpc_base_cidr" {
@@ -213,7 +218,7 @@ variable "bootnode_vpc_base_cidr" {
 
 variable "node_volume_size" {
   description = "The size of the EBS volume for a quorum node in GB"
-  default     = 100
+  default     = 20
 }
 
 variable "max_peers" {
@@ -326,33 +331,33 @@ variable "bootnode_counts" {
   type        = "map"
   default     = {
     # Virginia
-    us-east-1      = 1
+    us-east-1      = 0
     # Ohio
-    us-east-2      = 1
+    us-east-2      = 0
     # California
-    us-west-1      = 1
+    us-west-1      = 0
     # Oregon
-    us-west-2      = 1
+    us-west-2      = 0
     # Frankfurt
-    eu-central-1   = 1
+    eu-central-1   = 0
     # Ireland
-    eu-west-1      = 1
+    eu-west-1      = 0
     # London
-    eu-west-2      = 1
+    eu-west-2      = 0
     # Mumbai
-    ap-south-1     = 1
+    ap-south-1     = 0
     # Tokyo
-    ap-northeast-1 = 1
+    ap-northeast-1 = 0
     # Seoul
-    ap-northeast-2 = 1
+    ap-northeast-2 = 0
     # Singapore
-    ap-southeast-1 = 1
+    ap-southeast-1 = 0
     # Sydney
-    ap-southeast-2 = 1
+    ap-southeast-2 = 0
     # Canada
-    ca-central-1   = 1
+    ca-central-1   = 0
     # South America
-    sa-east-1      = 1
+    sa-east-1      = 0
   }
 }
 
@@ -361,33 +366,33 @@ variable "maker_node_counts" {
   type        = "map"
   default     = {
     # Virginia
-    us-east-1      = 1
+    us-east-1      = 0
     # Ohio
-    us-east-2      = 1
+    us-east-2      = 0
     # California
-    us-west-1      = 1
+    us-west-1      = 0
     # Oregon
-    us-west-2      = 1
+    us-west-2      = 0
     # Frankfurt
-    eu-central-1   = 1
+    eu-central-1   = 0
     # Ireland
-    eu-west-1      = 1
+    eu-west-1      = 0
     # London
-    eu-west-2      = 1
+    eu-west-2      = 0
     # Mumbai
-    ap-south-1     = 1
+    ap-south-1     = 0
     # Tokyo
-    ap-northeast-1 = 1
+    ap-northeast-1 = 0
     # Seoul
-    ap-northeast-2 = 1
+    ap-northeast-2 = 0
     # Singapore
-    ap-southeast-1 = 1
+    ap-southeast-1 = 0
     # Sydney
-    ap-southeast-2 = 1
+    ap-southeast-2 = 0
     # Canada
-    ca-central-1   = 1
+    ca-central-1   = 0
     # South America
-    sa-east-1      = 1
+    sa-east-1      = 0
   }
 }
 
@@ -396,33 +401,33 @@ variable "validator_node_counts" {
   type        = "map"
   default     = {
     # Virginia
-    us-east-1      = 1
+    us-east-1      = 0
     # Ohio
-    us-east-2      = 1
+    us-east-2      = 0
     # California
-    us-west-1      = 1
+    us-west-1      = 0
     # Oregon
-    us-west-2      = 1
+    us-west-2      = 0
     # Frankfurt
-    eu-central-1   = 1
+    eu-central-1   = 0
     # Ireland
-    eu-west-1      = 1
+    eu-west-1      = 0
     # London
-    eu-west-2      = 1
+    eu-west-2      = 0
     # Mumbai
-    ap-south-1     = 1
+    ap-south-1     = 0
     # Tokyo
-    ap-northeast-1 = 1
+    ap-northeast-1 = 0
     # Seoul
-    ap-northeast-2 = 1
+    ap-northeast-2 = 0
     # Singapore
-    ap-southeast-1 = 1
+    ap-southeast-1 = 0
     # Sydney
-    ap-southeast-2 = 1
+    ap-southeast-2 = 0
     # Canada
-    ca-central-1   = 1
+    ca-central-1   = 0
     # South America
-    sa-east-1      = 1
+    sa-east-1      = 0
   }
 }
 
@@ -431,39 +436,40 @@ variable "observer_node_counts" {
   type        = "map"
   default     = {
     # Virginia
-    us-east-1      = 1
+    us-east-1      = 0
     # Ohio
-    us-east-2      = 1
+    us-east-2      = 0
     # California
-    us-west-1      = 1
+    us-west-1      = 0
     # Oregon
-    us-west-2      = 1
+    us-west-2      = 0
     # Frankfurt
-    eu-central-1   = 1
+    eu-central-1   = 0
     # Ireland
-    eu-west-1      = 1
+    eu-west-1      = 0
     # London
-    eu-west-2      = 1
+    eu-west-2      = 0
     # Mumbai
-    ap-south-1     = 1
+    ap-south-1     = 0
     # Tokyo
-    ap-northeast-1 = 1
+    ap-northeast-1 = 0
     # Seoul
-    ap-northeast-2 = 1
+    ap-northeast-2 = 0
     # Singapore
-    ap-southeast-1 = 1
+    ap-southeast-1 = 0
     # Sydney
-    ap-southeast-2 = 1
+    ap-southeast-2 = 0
     # Canada
-    ca-central-1   = 1
+    ca-central-1   = 0
     # South America
-    sa-east-1      = 1
+    sa-east-1      = 0
   }
 }
 
+
 variable "backup_lambda_binary" {
-    default = "BackupLambda"
-    description = "Name of BackupLambda binary"
+  default = "BackupLambda"
+  description = "Name of BackupLambda binary"
 }
 
 variable "backup_lambda_binary_url" {
@@ -493,29 +499,29 @@ DESCRIPTION
 # this is the lambda zip, must be a relative path
 # eg "BackupLambda.zip"
 variable "backup_lambda_output_path" {
-    default = "BackupLambda.zip"
-    description = "Relative path to the BackupLambda zip, which will be generated from the backup binary"
+  description = "Relative path to the BackupLambda zip, which will be generated from the backup binary"
+  default = "BackupLambda.zip"
 }
 
 # output prefix of encrypted SSH key, region will be appended to the filename
 variable "enc_ssh_path" {
-    default = "enc_ssh"
-    description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
+  description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
+  default = "enc_ssh"
 }
 
 # key on S3 bucket
 variable "enc_ssh_key" {
-    default = "enc_ssh"
-    description = "The key to access the encrypted SSH key on the S3 bucket"
+  description = "The key to access the encrypted SSH key on the S3 bucket"
+  default = "enc_ssh"
 }
 
 variable "backup_interval" {
-    default     = "rate(4 hours)"
-    description = <<DESCRIPTION
+  description = <<DESCRIPTION
 Schedule expression for backup event, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html for examples.
 cron(45 08 ? * WED *) will trigger every WED at 8 45 am GMT
 cron(05 13 ? * MON *) will trigger every MON at 1 05 pm GMT
 rate(3 mins) will trigger every 3 minutes
 rate(7 hours) will trigger every 7 hours
 DESCRIPTION
+  default     = "rate(4 hours)"
 }
