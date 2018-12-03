@@ -468,8 +468,8 @@ variable "observer_node_counts" {
 
 
 variable "backup_lambda_binary" {
-  default = "BackupLambda"
   description = "Name of BackupLambda binary"
+  default = "BackupLambda"
 }
 
 variable "backup_lambda_binary_url" {

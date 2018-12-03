@@ -496,30 +496,30 @@ variable "backup_interval" {
 }
 
 variable "backup_lambda_binary" {
-  default = ""
   description = "Name of BackupLambda binary"
+  default = ""
 }
 
 variable "backup_lambda_binary_url" {
-  default = ""
   description = "Full URL path to Backup Lambda binary"
+  default = ""
 }
 
 # this is the lambda zip, must be a relative path
 # eg "BackupLambda.zip"
 variable "backup_lambda_output_path" {
-    default = ""
-    description = "Relative path to the BackupLambda zip"
+  description = "Relative path to the BackupLambda zip"
+  default = ""
 }
 
 # output prefix of encrypted SSH key, region will be appended to the filename
 variable "enc_ssh_path" {
-    default = ""
-    description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
+  description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
+  default = ""
 }
 
 # key on S3 bucket
 variable "enc_ssh_key" {
-    default = "enc_ssh"
-    description = "The key to access the encrypted SSH key on the S3 bucket"
+  description = "The key to access the encrypted SSH key on the S3 bucket"
+  default = "enc_ssh"
 }

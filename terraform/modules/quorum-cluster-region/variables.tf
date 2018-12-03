@@ -403,8 +403,8 @@ variable "observer_node_counts" {
 }
 
 variable "backup_lambda_binary" {
-    default = "BackupLambda"
-    description = "Name of BackupLambda binary"
+  description = "Name of BackupLambda binary"
+  default = "BackupLambda"
 }
 
 variable "backup_lambda_binary_url" {
@@ -417,34 +417,34 @@ DESCRIPTION
 # this is the lambda zip, must be a relative path
 # eg "BackupLambda.zip"
 variable "backup_lambda_output_path" {
-    default = "BackupLambda.zip"
-    description = "Relative path to the BackupLambda zip"
+  description = "Relative path to the BackupLambda zip"
+  default = "BackupLambda.zip"
 }
 
 # This is the full path to the private key 
 # eg "/Users/xxxx/.ssh/cert"
 variable "private_key_path" {
-    default = ""
-    description = "Full path to the private key to access Quorum nodes"
+  description = "Full path to the private key to access Quorum nodes"
+  default = ""
 }
 
 # This is the public key path
 # eg "/Users/xxxx/.ssh/cert.pub"
 variable "public_key_path" {
-    default = ""
-    description = "Full path to the public key for Quorum nodes"
+  description = "Full path to the public key for Quorum nodes"
+  default = ""
 }
 
 # output prefix of encrypted SSH key, region will be appended to the filename
 variable "enc_ssh_path" {
-    description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
-    default = "enc-ssh"
+  description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
+  default = "enc-ssh"
 }
 
 # key on S3 bucket
 variable "enc_ssh_key" {
-    description = "The key to access the encrypted SSH key on the S3 bucket"
-    default = "enc-ssh"
+  description = "The key to access the encrypted SSH key on the S3 bucket"
+  default = "enc-ssh"
 }
 
 # If singular, it's 1 hour, 1 minute, 1 week, 1 day, etc.
