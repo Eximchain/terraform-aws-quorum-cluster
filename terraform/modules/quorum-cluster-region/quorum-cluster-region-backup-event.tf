@@ -96,7 +96,8 @@ resource "aws_lambda_function" "backup_lambda" {
     timeout          = 300
 
     vpc_config {
-       subnet_ids         = ["${aws_subnet.backup_lambda.id}"]
+       subnet_ids         = ["${aws_subnet.backup_lambda.id}", "${aws_subnet.quorum_maker.*.id}", 
+         "${aws_subnet.quorum_validator.*.id}", "${aws_subnet.quorum_observer.*.id}"]
        security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
     }
 
@@ -317,8 +318,7 @@ resource "aws_subnet" "backup_lambda" {
 
   vpc_id             = "${aws_vpc.quorum_cluster.id}"
   availability_zone  = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
-  cidr_block         = "${cidrsubnet(data.template_file.system_cidr_block.rendered, 0, 0)}"
-
+  cidr_block         = "${cidrsubnet(data.template_file.quorum_maker_cidr_block_lambda.rendered, 3, count.index)}"
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"
     NodeType  = "BackupLambda"
