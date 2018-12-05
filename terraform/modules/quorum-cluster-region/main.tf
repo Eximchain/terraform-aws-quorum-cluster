@@ -127,6 +127,14 @@ EOF
 # ---------------------------------------------------------------------------------------------------------------------
 # NETWORKING CIDR RANGES
 # ---------------------------------------------------------------------------------------------------------------------
+data "template_file" "system_cidr_block" {
+  template = "$${cidr_block}"
+
+  vars {
+    cidr_block = "${cidrsubnet(var.quorum_vpc_cidr, 0, 0)}"
+  }
+}
+
 data "template_file" "quorum_cidr_block" {
   template = "$${cidr_block}"
 
