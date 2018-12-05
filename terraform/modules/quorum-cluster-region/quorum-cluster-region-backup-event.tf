@@ -346,7 +346,7 @@ resource "aws_nat_gateway" "backup_lambda" {
   count         = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0)+lookup(var.observer_node_counts, var.aws_region, 0)+lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
   allocation_id = "${aws_eip.gateway_ip.0.id}"
-  subnet_id     = "${aws_subnet.system.0.id}"
+  subnet_id     = "${lookup(var.maker_node_counts, var.aws_region, 0)>0?aws_subnet.quorum_maker.0.id:lookup(var.observer_node_counts, var.aws_region, 0)?aws_subnet.quorum_observer.0.id:lookup(var.validator_node_counts, var.aws_region, 0)?aws_subnet.quorum_validator.0.id:aws_subnet.quorum_maker.0.id}"
 
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"

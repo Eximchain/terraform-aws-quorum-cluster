@@ -40,22 +40,6 @@ resource "aws_route" "quorum_cluster" {
 # ---------------------------------------------------------------------------------------------------------------------
 # SUBNETS
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_subnet" "system" {
-  count = "${signum(lookup(var.maker_node_counts, var.aws_region, 0)+lookup(var.validator_node_counts, var.aws_region, 0)+lookup(var.observer_node_counts, var.aws_region, 0))}"
-
-  vpc_id                  = "${aws_vpc.quorum_cluster.id}"
-  availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
-  cidr_block              = "${cidrsubnet(var.quorum_vpc_cidr, 0, 0)}"
-  map_public_ip_on_launch = true
-
-  tags {
-    Name      = "quorum-network-${var.network_id}-Subnet"
-    NodeType  = "Subnet"
-    NetworkId = "${var.network_id}"
-    Region    = "${var.aws_region}"
-  }
-}
-
 resource "aws_subnet" "quorum_maker" {
   count = "${lookup(var.maker_node_counts, var.aws_region, 0) > 0 ? lookup(var.az_override, var.aws_region, "") == "" ? length(data.aws_availability_zones.available.names) : length(split(",", lookup(var.az_override, var.aws_region, ""))) : 0}"
 
