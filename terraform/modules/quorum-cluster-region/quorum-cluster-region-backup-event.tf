@@ -14,9 +14,9 @@ resource "aws_s3_bucket_object" "encrypted_ssh_key" {
   
   bucket     = "${aws_s3_bucket.quorum_backup.id}"
   key        = "${var.enc_ssh_key}"
-  source     = "${var.enc_ssh_path}-${var.aws_region}"
 
-  depends_on = ["data.aws_kms_ciphertext.encrypt_ssh_operation", "local_file.EncryptedSSHKey"]
+  content_base64 = "${data.aws_kms_ciphertext.encrypt_ssh_operation.ciphertext_blob}"
+
 }
 
 resource "aws_sns_topic" "backup_event" {
@@ -201,7 +201,7 @@ resource "null_resource" "mkdir_temp" {
   triggers { always="${uuid()}" }
   provisioner "local-exec" {
     command = <<EOT
-  mkdir -p ${path.module}/tmp/
+  mkdir -p ${path.module}/tmp
 EOT
   }
   provisioner "local-exec" {
@@ -219,7 +219,7 @@ resource "aws_iam_role_policy_attachment" "allow_backup_lambda_logging" {
 }
 
 locals {
-  temp_lambda_zip_path = "${path.module}/tmp-${var.aws_region}-${var.backup_lambda_output_path}"
+  temp_lambda_zip_path = "${path.module}/tmp/${var.aws_region}-${var.backup_lambda_output_path}"
 }
 
 resource "null_resource" "fetch_backup_lambda_zip" {
@@ -258,14 +258,6 @@ data "aws_kms_ciphertext" "encrypt_ssh_operation" {
 
   key_id    = "${aws_kms_key.ssh_encryption_key.id}"  
   plaintext = "${var.backup_lambda_ssh_private_key}"
-}
-
-# Save the encrypted contents to the file specified at filename
-resource "local_file" "EncryptedSSHKey" {
-  count    = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0)+lookup(var.observer_node_counts, var.aws_region, 0)+lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
-
-  content  = "${base64decode("${data.aws_kms_ciphertext.encrypt_ssh_operation.ciphertext_blob}")}"
-  filename = "${var.enc_ssh_path}-${var.aws_region}"
 }
 
 resource "aws_kms_grant" "backup_lambda" {
