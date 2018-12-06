@@ -139,21 +139,21 @@ resource "aws_route_table" "quorum_observer" {
 resource "aws_route_table_association" "quorum_validator" {
   count  = "${var.backup_enabled ? signum(lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
-  subnet_id      = "${aws_subnet.quorum_validator.id}"
+  subnet_id      = "${aws_subnet.quorum_validator.0.id}"
   route_table_id = "${aws_route_table.quorum_validator.id}"
 }
 
 resource "aws_route_table_association" "quorum_maker" {
   count  = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0)) : 0}"
 
-  subnet_id      = "${aws_subnet.quorum_maker.id}"
+  subnet_id      = "${aws_subnet.quorum_maker.0.id}"
   route_table_id = "${aws_route_table.quorum_maker.id}"
 }
 
 resource "aws_route_table_association" "quorum_observer" {
   count  = "${var.backup_enabled ? signum(lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
 
-  subnet_id      = "${aws_subnet.quorum_observer.id}"
+  subnet_id      = "${aws_subnet.quorum_observer.0.id}"
   route_table_id = "${aws_route_table.quorum_observer.id}"
 }
 # ---------------------------------------------------------------------------------------------------------------------
