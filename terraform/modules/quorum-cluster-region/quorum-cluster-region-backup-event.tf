@@ -449,7 +449,7 @@ resource "aws_instance" "observer" {
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-  subnet_id = "${aws_subnet.quorum_observer.id}"
+  subnet_id = "${aws_subnet.quorum_observer.0.id}"
   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
     "${aws_security_group.allow_ssh_for_debugging.*.id}"]
   tags {
@@ -464,7 +464,7 @@ resource "aws_instance" "validator" {
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-  subnet_id = "${aws_subnet.quorum_validator.id}"
+  subnet_id = "${aws_subnet.quorum_validator.0.id}"
   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
     "${aws_security_group.allow_ssh_for_debugging.*.id}"]
   tags {
@@ -479,7 +479,7 @@ resource "aws_instance" "maker" {
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-  subnet_id = "${aws_subnet.quorum_maker.id}"
+  subnet_id = "${aws_subnet.quorum_maker.0.id}"
   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
     "${aws_security_group.allow_ssh_for_debugging.*.id}"]
   tags {
