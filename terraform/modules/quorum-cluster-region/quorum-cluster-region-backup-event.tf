@@ -428,6 +428,27 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+resource "aws_eip" "backup_lambda" {
+  count = "${var.aws_region =="us-east-1" ?1:0}"
+  instance = "${aws_instance.backup_lambda.id}"
+  vpc = "true"
+}
+resource "aws_eip" "observer" {
+  count = "${var.aws_region =="us-east-1" && lookup(var.observer_node_counts, var.aws_region, 0) > 0?1:0}"
+  instance = "${aws_instance.observer.id}"
+  vpc = "true"
+}
+resource "aws_eip" "validator" {
+  count = "${var.aws_region =="us-east-1" && lookup(var.validator_node_counts, var.aws_region, 0)>0?1:0}"
+  instance = "${aws_instance.validator.id}"
+  vpc = "true"
+}
+resource "aws_eip" "maker" {
+  count = "${var.aws_region =="us-east-1" && lookup(var.maker_node_counts, var.aws_region, 0)>0?1:0}"
+  instance = "${aws_instance.maker.id}"
+  vpc = "true"
+}
+
 resource "aws_instance" "backup_lambda" {
   count = "${var.aws_region =="us-east-1" ?1:0}"
   source_dest_check = false
