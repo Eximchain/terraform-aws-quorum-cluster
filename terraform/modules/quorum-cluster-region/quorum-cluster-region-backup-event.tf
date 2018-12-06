@@ -454,7 +454,7 @@ resource "aws_instance" "observer" {
     "${aws_security_group.allow_ssh_for_debugging.*.id}"]
   tags {
     Name = "quorum-network-${var.network_id}-BackupLambda-NAT-check-1"
-    subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_observer.id}"
+    subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_observer.0.id}"
   }
 }
 
@@ -469,7 +469,7 @@ resource "aws_instance" "validator" {
     "${aws_security_group.allow_ssh_for_debugging.*.id}"]
   tags {
     Name = "quorum-network-${var.network_id}-BackupLambda-NAT-check-1"
-    subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_validator.id}"
+    subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_validator.0.id}"
   }
 }
 
@@ -484,6 +484,6 @@ resource "aws_instance" "maker" {
     "${aws_security_group.allow_ssh_for_debugging.*.id}"]
   tags {
     Name = "quorum-network-${var.network_id}-BackupLambda-NAT-check-1"
-    subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_maker.id}"
+    subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_maker.0.id}"
   }
 }
