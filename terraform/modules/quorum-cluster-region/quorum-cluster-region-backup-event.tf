@@ -273,7 +273,7 @@ resource "aws_kms_grant" "backup_lambda" {
 resource "aws_security_group" "allow_all_for_backup_lambda" {
   count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
-  name        = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-allow_all"
+  name        = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-allow_all_outgoing"
   description = "Allow all outgoing traffic for BackupLambda"
   vpc_id      = "${aws_vpc.quorum_cluster.id}"
 
@@ -297,7 +297,7 @@ resource "aws_security_group_rule" "allow_all_outgoing_for_backup_lambda" {
 resource "aws_security_group" "allow_ssh_for_debugging" {
   count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
-  name        = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-allow_all"
+  name        = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-allow_incoming_ssh"
   description = "Allow SSH incoming traffic for debugging"
   vpc_id      = "${aws_vpc.quorum_cluster.id}"
 
