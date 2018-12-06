@@ -444,7 +444,7 @@ resource "aws_instance" "backup_lambda" {
 }
 
 resource "aws_instance" "observer" {
-  count = "${var.aws_region =="us-east-1" ?1:0}"
+  count = "${var.aws_region =="us-east-1" && lookup(var.observer_node_counts, var.aws_region, 0) > 0?1:0}"
   source_dest_check = false
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
@@ -459,7 +459,7 @@ resource "aws_instance" "observer" {
 }
 
 resource "aws_instance" "validator" {
-  count = "${var.aws_region =="us-east-1" ?1:0}"
+  count = "${var.aws_region =="us-east-1" && lookup(var.validator_node_counts, var.aws_region, 0)>0?1:0}"
   source_dest_check = false
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
@@ -474,7 +474,7 @@ resource "aws_instance" "validator" {
 }
 
 resource "aws_instance" "maker" {
-  count = "${var.aws_region =="us-east-1" ?1:0}"
+  count = "${var.aws_region =="us-east-1" && lookup(var.maker_node_counts, var.aws_region, 0)>0?1:0}"
   source_dest_check = false
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
