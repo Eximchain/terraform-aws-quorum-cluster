@@ -356,7 +356,7 @@ resource "aws_nat_gateway" "backup_lambda" {
     Region    = "${var.aws_region}"
   }
 
-  depends_on    = ["aws_internet_gateway.quorum_cluster"]
+  depends_on    = ["aws_internet_gateway.quorum_cluster", "aws_subnet.quorum_maker", "aws_subnet.quorum_validator", "aws_subnet.quorum_observer"]
 }
 
 resource "aws_route_table" "backup_lambda" {
