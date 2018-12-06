@@ -408,8 +408,8 @@ resource "aws_instance" "validator" {
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_validator.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
-    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.0.id}", 
+    "${aws_security_group.allow_ssh_for_debugging.0.id}"]
 }
 
 resource "aws_instance" "observer" {
@@ -423,8 +423,8 @@ resource "aws_instance" "observer" {
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_observer.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
-    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.0.id}", 
+    "${aws_security_group.allow_ssh_for_debugging.0.id}"]
 }
 
 resource "aws_instance" "maker" {
@@ -438,6 +438,6 @@ resource "aws_instance" "maker" {
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_maker.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
-    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.0.id}", 
+    "${aws_security_group.allow_ssh_for_debugging.0.id}"]
 }
