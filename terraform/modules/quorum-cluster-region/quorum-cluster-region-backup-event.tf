@@ -428,30 +428,10 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-resource "aws_eip" "backup_lambda" {
-  count = "${var.aws_region =="us-east-1" ?1:0}"
-  instance = "${aws_instance.backup_lambda.id}"
-  vpc = "true"
-}
-resource "aws_eip" "observer" {
-  count = "${var.aws_region =="us-east-1" && lookup(var.observer_node_counts, var.aws_region, 0) > 0?1:0}"
-  instance = "${aws_instance.observer.id}"
-  vpc = "true"
-}
-resource "aws_eip" "validator" {
-  count = "${var.aws_region =="us-east-1" && lookup(var.validator_node_counts, var.aws_region, 0)>0?1:0}"
-  instance = "${aws_instance.validator.id}"
-  vpc = "true"
-}
-resource "aws_eip" "maker" {
-  count = "${var.aws_region =="us-east-1" && lookup(var.maker_node_counts, var.aws_region, 0)>0?1:0}"
-  instance = "${aws_instance.maker.id}"
-  vpc = "true"
-}
-
 resource "aws_instance" "backup_lambda" {
   count = "${var.aws_region =="us-east-1" ?1:0}"
   source_dest_check = false
+  associate_public_ip_address = true
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
@@ -459,7 +439,7 @@ resource "aws_instance" "backup_lambda" {
   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
     "${aws_security_group.allow_ssh_for_debugging.*.id}"]
   tags {
-    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-check-1"
+    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-backup_lambda-1"
     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.backup_lambda.id}"
   }
 }
@@ -467,6 +447,7 @@ resource "aws_instance" "backup_lambda" {
 resource "aws_instance" "observer" {
   count = "${var.aws_region =="us-east-1" && lookup(var.observer_node_counts, var.aws_region, 0) > 0?1:0}"
   source_dest_check = false
+  associate_public_ip_address = true
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
@@ -474,7 +455,7 @@ resource "aws_instance" "observer" {
   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
     "${aws_security_group.allow_ssh_for_debugging.*.id}"]
   tags {
-    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-check-1"
+    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-observer-1"
     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_observer.0.id}"
   }
 }
@@ -482,6 +463,7 @@ resource "aws_instance" "observer" {
 resource "aws_instance" "validator" {
   count = "${var.aws_region =="us-east-1" && lookup(var.validator_node_counts, var.aws_region, 0)>0?1:0}"
   source_dest_check = false
+  associate_public_ip_address = true
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
@@ -489,7 +471,7 @@ resource "aws_instance" "validator" {
   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
     "${aws_security_group.allow_ssh_for_debugging.*.id}"]
   tags {
-    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-check-1"
+    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-validator-1"
     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_validator.0.id}"
   }
 }
@@ -497,6 +479,7 @@ resource "aws_instance" "validator" {
 resource "aws_instance" "maker" {
   count = "${var.aws_region =="us-east-1" && lookup(var.maker_node_counts, var.aws_region, 0)>0?1:0}"
   source_dest_check = false
+  associate_public_ip_address = true
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
@@ -504,7 +487,7 @@ resource "aws_instance" "maker" {
   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
     "${aws_security_group.allow_ssh_for_debugging.*.id}"]
   tags {
-    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-check-1"
+    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-maker-1"
     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_maker.0.id}"
   }
 }
