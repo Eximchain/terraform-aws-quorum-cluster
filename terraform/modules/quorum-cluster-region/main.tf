@@ -155,7 +155,7 @@ data "template_file" "quorum_maker_cidr_block" {
   template = "$${cidr_block}"
 
   vars {
-    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 0)}"
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 0)}"
   }
 }
 
@@ -163,7 +163,7 @@ data "template_file" "quorum_validator_cidr_block" {
   template = "$${cidr_block}"
 
   vars {
-    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 1)}"
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 1)}"
   }
 }
 
@@ -171,7 +171,7 @@ data "template_file" "quorum_observer_cidr_block" {
   template = "$${cidr_block}"
 
   vars {
-    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 2)}"
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 2)}"
   }
 }
 
@@ -179,7 +179,7 @@ data "template_file" "efs_mt_cidr_block" {
   template = "$${cidr_block}"
 
   vars {
-    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 3)}"
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 3)}"
   }
 }
 
