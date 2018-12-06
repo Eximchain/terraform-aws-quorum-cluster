@@ -338,7 +338,7 @@ resource "aws_nat_gateway" "backup_lambda" {
   count         = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
   allocation_id = "${aws_eip.gateway_ip.0.id}"
-  subnet_id     = "${aws_subnet.backup_lambda.id}"
+  subnet_id     = "${aws_subnet.backup_lambda.0.id}"
 
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"
@@ -347,7 +347,7 @@ resource "aws_nat_gateway" "backup_lambda" {
     Region    = "${var.aws_region}"
   }
 
-  depends_on    = ["aws_internet_gateway.quorum_cluster", "aws_subnet.quorum_maker", "aws_subnet.quorum_validator", "aws_subnet.quorum_observer"]
+  depends_on    = ["aws_internet_gateway.quorum_cluster"]
 }
 
 resource "aws_route_table" "backup_lambda" {
@@ -361,7 +361,7 @@ resource "aws_route_table" "backup_lambda" {
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.backup_lambda.0.id}"
+    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
   }
 }
 
