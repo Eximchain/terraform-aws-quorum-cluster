@@ -46,22 +46,17 @@ function generate_quorum_supervisor_config {
     done
     BOOTNODES=${BOOTNODES:1}
 
-    # TODO: Remove plaintext passwords once vault-related changes are pulled into geth
-    local PW_FILE="/tmp/geth-pw"
-    echo "$PASSWORD" > $PW_FILE
-
     if [ "$ROLE" == "maker" ]
     then
-        ARGS="$GLOBAL_ARGS --mine --minerthreads 1 --metrics --unlock \"$ADDRESS\" --password \"$PW_FILE\""
+        ARGS="$GLOBAL_ARGS --mine --minerthreads 1 --metrics --unlock \"$ADDRESS\""
     elif [ "$ROLE" == "validator" ]
     then
-        ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\" --password \"$PW_FILE\""
+        ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\""
     else # observer node
-        ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\" --password \"$PW_FILE\""
+        ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\""
     fi
 
-    # TODO: Reenable vault passwords once related changes are pulled into geth
-    #ARGS="$ARGS --vaultaddr \"$VAULT_ADDR\"  --vaultpasswordpath \"passwords/$THIS_REGION/$NODE_INDEX\""
+    ARGS="$ARGS --vaultaddr \"$VAULT_ADDR\"  --vaultpasswordpath \"passwords/$THIS_REGION/$NODE_INDEX\""
 
     ARGS="$ARGS --bootnodes $BOOTNODES"
 
