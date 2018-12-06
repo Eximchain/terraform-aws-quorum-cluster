@@ -363,7 +363,7 @@ resource "aws_nat_gateway" "backup_lambda" {
 
   allocation_id = "${aws_eip.gateway_ip.0.id}"
   subnet_id     = "${aws_subnet.backup_lambda.0.id}"
-
+ 
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"
     NodeType  = "NAT"
@@ -397,47 +397,93 @@ resource "aws_route_table_association" "backup_lambda" {
 }
 
 # Help debug all 3 subnets
-resource "aws_instance" "validator" {
-  count          = "${var.backup_enabled ? signum(lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
-  ami           = "${data.aws_ami.bootnode.id}"
-  instance_type = "t2.micro"
+// resource "aws_instance" "validator" {
+//   count          = "${var.backup_enabled ? signum(lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+//   ami           = "${data.aws_ami.bootnode.id}"
+//   instance_type = "t2.micro"
 
-  tags {
-    Name = "Debug-Validator"
+//   tags {
+//     Name = "Debug-Validator"
+//   }
+
+//   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
+//   subnet_id = "${aws_subnet.quorum_validator.0.id}"
+//   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.0.id}", 
+//     "${aws_security_group.allow_ssh_for_debugging.0.id}"]
+// }
+
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"]
   }
 
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
+resource "aws_instance" "backup_lambda" {
+  count = "${var.aws_region =="us-east-1" ?1:0}"
+  source_dest_check = false
+  ami           = "${data.aws_ami.ubuntu.id}"
+  instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-  subnet_id = "${aws_subnet.quorum_validator.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.0.id}", 
-    "${aws_security_group.allow_ssh_for_debugging.0.id}"]
+  subnet_id = "${aws_subnet.backup_lambda.id}"
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
+    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
+  tags {
+    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-check-1"
+    subnet_id = "BackupLambdaAccessInternet-${aws_subnet.backup_lambda.id}"
+  }
 }
 
 resource "aws_instance" "observer" {
-  count          = "${var.backup_enabled ? signum(lookup(var.observer_node_counts, var.aws_region, 0) ) : 0}"
-  ami           = "${data.aws_ami.bootnode.id}"
+  count = "${var.aws_region =="us-east-1" ?1:0}"
+  source_dest_check = false
+  ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
-
-  tags {
-    Name = "Debug-Observer"
-  }
-
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-  subnet_id = "${aws_subnet.quorum_observer.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.0.id}", 
-    "${aws_security_group.allow_ssh_for_debugging.0.id}"]
+  subnet_id = "${aws_subnet.quorum_observer.id}"
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
+    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
+  tags {
+    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-check-1"
+    subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_observer.id}"
+  }
+}
+
+resource "aws_instance" "validator" {
+  count = "${var.aws_region =="us-east-1" ?1:0}"
+  source_dest_check = false
+  ami           = "${data.aws_ami.ubuntu.id}"
+  instance_type = "t2.micro"
+  key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
+  subnet_id = "${aws_subnet.quorum_validator.id}"
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
+    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
+  tags {
+    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-check-1"
+    subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_validator.id}"
+  }
 }
 
 resource "aws_instance" "maker" {
-  count          = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0)) : 0}"
-  ami           = "${data.aws_ami.bootnode.id}"
+  count = "${var.aws_region =="us-east-1" ?1:0}"
+  source_dest_check = false
+  ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
-
-  tags {
-    Name = "Debug-Maker"
-  }
-
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-  subnet_id = "${aws_subnet.quorum_maker.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.0.id}", 
-    "${aws_security_group.allow_ssh_for_debugging.0.id}"]
+  subnet_id = "${aws_subnet.quorum_maker.id}"
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
+    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
+  tags {
+    Name = "quorum-network-${var.network_id}-BackupLambda-NAT-check-1"
+    subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_maker.id}"
+  }
 }
