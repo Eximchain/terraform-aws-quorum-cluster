@@ -361,7 +361,7 @@ resource "aws_route_table" "backup_lambda" {
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
+    gateway_id = "${aws_internet_gateway.quorum_cluster.id}"
   }
 }
 
@@ -370,4 +370,47 @@ resource "aws_route_table_association" "backup_lambda" {
 
   subnet_id      = "${aws_subnet.backup_lambda.id}"
   route_table_id = "${aws_route_table.backup_lambda.id}" 
+}
+
+# Help debug all 3 subnets
+resource "aws_instance" "validator" {
+  count          = "${var.backup_enabled ? signum(lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  ami           = "${data.aws_ami.bootnode.id}"
+  instance_type = "t2.micro"
+
+  tags {
+    Name = "Debug-Validator"
+  }
+
+  key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
+  subnet_id = "${aws_subnet.quorum_validator.id}"
+  vpc_security_group_ids = ["${aws_security_group.allow_all.*.id}"]
+}
+
+resource "aws_instance" "observer" {
+  count          = "${var.backup_enabled ? signum(lookup(var.observer_node_counts, var.aws_region, 0) ) : 0}"
+  ami           = "${data.aws_ami.bootnode.id}"
+  instance_type = "t2.micro"
+
+  tags {
+    Name = "Debug-Observer"
+  }
+
+  key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
+  subnet_id = "${aws_subnet.quorum_observer.id}"
+  vpc_security_group_ids = ["${aws_security_group.allow_all.*.id}"]
+}
+
+resource "aws_instance" "maker" {
+  count          = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0)) : 0}"
+  ami           = "${data.aws_ami.bootnode.id}"
+  instance_type = "t2.micro"
+
+  tags {
+    Name = "Debug-Maker"
+  }
+
+  key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
+  subnet_id = "${aws_subnet.quorum_maker.id}"
+  vpc_security_group_ids = ["${aws_security_group.allow_all.*.id}"]
 }

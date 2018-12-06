@@ -89,6 +89,74 @@ resource "aws_subnet" "quorum_observer" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# ROUTING TABLES
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_route_table" "quorum_validator" {
+  count  = "${var.backup_enabled ? signum(lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+
+  vpc_id = "${aws_vpc.quorum_cluster.id}"
+
+  tags {
+     Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Validator"
+  }
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
+  }
+}
+
+resource "aws_route_table" "quorum_maker" {
+  count  = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0)) : 0}"
+
+  vpc_id = "${aws_vpc.quorum_cluster.id}"
+
+  tags {
+     Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Maker"
+  }
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
+  }
+}
+
+resource "aws_route_table" "quorum_observer" {
+  count  = "${var.backup_enabled ? signum(lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  vpc_id = "${aws_vpc.quorum_cluster.id}"
+
+  tags {
+     Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Observer"
+  }
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
+  }
+}
+
+resource "aws_route_table_association" "quorum_validator" {
+  count  = "${var.backup_enabled ? signum(lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+
+  subnet_id      = "${aws_subnet.quorum_validator.id}"
+  route_table_id = "${aws_route_table.bar.id}"
+}
+
+resource "aws_route_table_association" "quorum_maker" {
+  count  = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0)) : 0}"
+
+  subnet_id      = "${aws_subnet.quorum_maker.id}"
+  route_table_id = "${aws_route_table.quorum_maker.id}"
+}
+
+resource "aws_route_table_association" "quorum_observer" {
+  count  = "${var.backup_enabled ? signum(lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  subnet_id      = "${aws_subnet.quorum_observer.id}"
+  route_table_id = "${aws_route_table.quorum_observer.id}"
+}
+# ---------------------------------------------------------------------------------------------------------------------
 # QUORUM NODE ASGs
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_autoscaling_group" "quorum_maker" {
