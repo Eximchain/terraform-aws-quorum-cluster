@@ -294,6 +294,30 @@ resource "aws_security_group_rule" "allow_all_outgoing_for_backup_lambda" {
   security_group_id = "${aws_security_group.allow_all_for_backup_lambda.0.id}"
 }
 
+resource "aws_security_group" "allow_ssh_for_debugging" {
+  count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+
+  name        = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-allow_all"
+  description = "Allow SSH incoming traffic for debugging"
+  vpc_id      = "${aws_vpc.quorum_cluster.id}"
+
+  tags {
+     name = "BackupLambda-${var.network_id}-${var.aws_region}-SG"
+  }
+}
+
+resource "aws_security_group_rule" "allow_ssh_incoming_for_debugging" {
+  count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+
+  type            = "ingress"
+  from_port       = 22
+  to_port         = 22
+  protocol        = "tcp"
+  cidr_blocks     = ["0.0.0.0/0"]
+
+  security_group_id = "${aws_security_group.allow_ssh_for_debugging.0.id}"
+}
+
 // use the next value after data.template_file.quorum_observer_cidr_block
 data "template_file" "quorum_maker_cidr_block_lambda" {
   count = "${var.backup_enabled ? 1 : 0}"
@@ -384,7 +408,8 @@ resource "aws_instance" "validator" {
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_validator.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
+    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
 }
 
 resource "aws_instance" "observer" {
@@ -398,7 +423,8 @@ resource "aws_instance" "observer" {
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_observer.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
+    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
 }
 
 resource "aws_instance" "maker" {
@@ -412,5 +438,6 @@ resource "aws_instance" "maker" {
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_maker.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
+    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
 }
