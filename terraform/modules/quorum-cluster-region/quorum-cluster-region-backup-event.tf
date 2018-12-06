@@ -310,7 +310,7 @@ resource "aws_subnet" "backup_lambda" {
 
   vpc_id             = "${aws_vpc.quorum_cluster.id}"
   availability_zone  = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
-  cidr_block         = "${cidrsubnet(data.template_file.quorum_maker_cidr_block_lambda.rendered, 3, count.index)}"
+  cidr_block         = "${cidrsubnet(data.template_file.quorum_backup_lambda_cidr_block.rendered, 3, count.index)}"
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"
     NodeType  = "BackupLambda"
@@ -384,7 +384,7 @@ resource "aws_instance" "validator" {
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_validator.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
 }
 
 resource "aws_instance" "observer" {
@@ -398,7 +398,7 @@ resource "aws_instance" "observer" {
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_observer.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
 }
 
 resource "aws_instance" "maker" {
@@ -412,5 +412,5 @@ resource "aws_instance" "maker" {
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_maker.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
 }

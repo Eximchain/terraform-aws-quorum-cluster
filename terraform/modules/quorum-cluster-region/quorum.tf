@@ -140,7 +140,7 @@ resource "aws_route_table_association" "quorum_validator" {
   count  = "${var.backup_enabled ? signum(lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
   subnet_id      = "${aws_subnet.quorum_validator.id}"
-  route_table_id = "${aws_route_table.bar.id}"
+  route_table_id = "${aws_route_table.quorum_validator.id}"
 }
 
 resource "aws_route_table_association" "quorum_maker" {

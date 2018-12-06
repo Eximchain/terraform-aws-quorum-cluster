@@ -183,6 +183,14 @@ data "template_file" "efs_mt_cidr_block" {
   }
 }
 
+data "template_file" "quorum_backup_lambda_cidr_block" {
+  template = "$${cidr_block}"
+
+  vars {
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 4)}"
+  }
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # EFS File System
 # ---------------------------------------------------------------------------------------------------------------------
