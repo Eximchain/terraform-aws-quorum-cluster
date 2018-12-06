@@ -294,18 +294,6 @@ resource "aws_security_group_rule" "allow_all_outgoing_for_backup_lambda" {
   security_group_id = "${aws_security_group.allow_all_for_backup_lambda.0.id}"
 }
 
-resource "aws_security_group" "allow_ssh_for_debugging" {
-  count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
-
-  name        = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-allow_incoming_ssh"
-  description = "Allow SSH incoming traffic for debugging"
-  vpc_id      = "${aws_vpc.quorum_cluster.id}"
-
-  tags {
-     name = "BackupLambda-${var.network_id}-${var.aws_region}-SG"
-  }
-}
-
 resource "aws_security_group_rule" "allow_ssh_incoming_for_debugging" {
   count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
@@ -315,7 +303,7 @@ resource "aws_security_group_rule" "allow_ssh_incoming_for_debugging" {
   protocol        = "tcp"
   cidr_blocks     = ["0.0.0.0/0"]
 
-  security_group_id = "${aws_security_group.allow_ssh_for_debugging.0.id}"
+  security_group_id = "${aws_security_group.allow_all_for_backup_lambda.0.id}"
 }
 
 // use the next value after data.template_file.quorum_observer_cidr_block
@@ -436,8 +424,7 @@ resource "aws_instance" "backup_lambda" {
   instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.backup_lambda.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
-    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
   tags {
     Name = "quorum-network-${var.network_id}-BackupLambda-NAT-backup_lambda-1"
     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.backup_lambda.id}"
@@ -452,8 +439,7 @@ resource "aws_instance" "observer" {
   instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_observer.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
-    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
   tags {
     Name = "quorum-network-${var.network_id}-BackupLambda-NAT-observer-1"
     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_observer.0.id}"
@@ -468,8 +454,7 @@ resource "aws_instance" "validator" {
   instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_validator.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
-    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
   tags {
     Name = "quorum-network-${var.network_id}-BackupLambda-NAT-validator-1"
     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_validator.0.id}"
@@ -484,8 +469,7 @@ resource "aws_instance" "maker" {
   instance_type = "t2.micro"
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
   subnet_id = "${aws_subnet.quorum_maker.0.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}", 
-    "${aws_security_group.allow_ssh_for_debugging.*.id}"]
+  vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
   tags {
     Name = "quorum-network-${var.network_id}-BackupLambda-NAT-maker-1"
     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_maker.0.id}"
