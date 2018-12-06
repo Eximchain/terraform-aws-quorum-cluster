@@ -411,6 +411,6 @@ resource "aws_instance" "maker" {
   }
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-  subnet_id = "${aws_subnet.quorum_maker.id}"
+  subnet_id = "${aws_subnet.quorum_maker.0.id}"
   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
 }
