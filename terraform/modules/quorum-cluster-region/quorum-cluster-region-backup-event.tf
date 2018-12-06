@@ -368,7 +368,7 @@ resource "aws_route_table" "backup_lambda" {
 resource "aws_route_table_association" "backup_lambda" {
   count          = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
-  subnet_id      = "${aws_subnet.backup_lambda.id}"
+  subnet_id      = "${aws_subnet.backup_lambda.0.id}"
   route_table_id = "${aws_route_table.backup_lambda.id}" 
 }
 
@@ -383,7 +383,7 @@ resource "aws_instance" "validator" {
   }
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-  subnet_id = "${aws_subnet.quorum_validator.id}"
+  subnet_id = "${aws_subnet.quorum_validator.0.id}"
   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
 }
 
@@ -397,7 +397,7 @@ resource "aws_instance" "observer" {
   }
 
   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-  subnet_id = "${aws_subnet.quorum_observer.id}"
+  subnet_id = "${aws_subnet.quorum_observer.0.id}"
   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
 }
 
