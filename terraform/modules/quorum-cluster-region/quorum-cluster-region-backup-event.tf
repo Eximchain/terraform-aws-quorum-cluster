@@ -97,7 +97,7 @@ resource "aws_lambda_function" "backup_lambda" {
     timeout          = 300
 
     vpc_config {
-       subnet_ids         = ["${aws_subnet.backup_lambda.id}"]
+       subnet_ids         = ["${aws_subnet.backup_lambda.*.id}"]
        security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
     }
 
