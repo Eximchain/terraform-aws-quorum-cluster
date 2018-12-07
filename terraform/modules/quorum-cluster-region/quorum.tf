@@ -89,7 +89,7 @@ resource "aws_subnet" "quorum_observer" {
 }
 
 resource "aws_subnet" "public" {
-  count = "${var.backup_enabled ? 1 : 0}"
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
 
   vpc_id                  = "${aws_vpc.quorum_cluster.id}"
   availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
@@ -105,7 +105,7 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "private" {
-  count = "${var.backup_enabled ? 1 : 0}"
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
 
   vpc_id                  = "${aws_vpc.quorum_cluster.id}"
   availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
