@@ -183,11 +183,19 @@ data "template_file" "efs_mt_cidr_block" {
   }
 }
 
-data "template_file" "quorum_backup_lambda_cidr_block" {
+data "template_file" "quorum_backup_lambda_private_cidr_block" {
   template = "$${cidr_block}"
 
   vars {
     cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 4)}"
+  }
+}
+
+data "template_file" "quorum_backup_lambda_public_cidr_block" {
+  template = "$${cidr_block}"
+
+  vars {
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 5)}"
   }
 }
 
