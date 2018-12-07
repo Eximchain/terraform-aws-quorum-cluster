@@ -456,7 +456,15 @@ resource "aws_nat_gateway" "backup_lambda" {
   count         = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
   allocation_id = "${aws_eip.gateway_ip.0.id}"
+<<<<<<< HEAD
   subnet_id     = "${aws_subnet.backup_lambda_public.0.id}" # this must be a public subnet   
+=======
+<<<<<<< HEAD
+  subnet_id     = "${aws_subnet.public.0.id}" # Place it in a public subnet, fix after Terraform 0.12 is released, to a ternary expression
+=======
+  subnet_id     = "${aws_subnet.backup_lambda.0.id}"
+>>>>>>> parent of e3076de... Add public, private subnet
+>>>>>>> parent of 9667ff3... Fix heredoc issue
  
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"
