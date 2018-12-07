@@ -97,7 +97,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags {
-    Name      = "quorum-network-${var.network_id}-Subnet"
+    Name      = "quorum-network-${var.network_id}-Public-Subnet"
     NodeType  = "Public-Subnet"
     NetworkId = "${var.network_id}"
     Region    = "${var.aws_region}"
@@ -113,7 +113,7 @@ resource "aws_subnet" "private" {
   map_public_ip_on_launch = false
 
   tags {
-    Name      = "quorum-network-${var.network_id}-Subnet"
+    Name      = "quorum-network-${var.network_id}-Private-Subnet"
     NodeType  = "Private-Subnet"
     NetworkId = "${var.network_id}"
     Region    = "${var.aws_region}"
@@ -122,50 +122,50 @@ resource "aws_subnet" "private" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ROUTING TABLES
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_route_table" "quorum_validator" {
-  count  = "${var.backup_enabled ? signum(lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+// resource "aws_route_table" "quorum_validator" {
+//   count  = "${var.backup_enabled ? signum(lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
-  vpc_id = "${aws_vpc.quorum_cluster.id}"
+//   vpc_id = "${aws_vpc.quorum_cluster.id}"
 
-  tags {
-     Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Validator"
-  }
+//   tags {
+//      Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Validator"
+//   }
 
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
-  }
-}
+//   route {
+//     cidr_block     = "0.0.0.0/0"
+//     nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
+//   }
+// }
 
-resource "aws_route_table" "quorum_maker" {
-  count  = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0)) : 0}"
+// resource "aws_route_table" "quorum_maker" {
+//   count  = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0)) : 0}"
 
-  vpc_id = "${aws_vpc.quorum_cluster.id}"
+//   vpc_id = "${aws_vpc.quorum_cluster.id}"
 
-  tags {
-     Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Maker"
-  }
+//   tags {
+//      Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Maker"
+//   }
 
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
-  }
-}
+//   route {
+//     cidr_block     = "0.0.0.0/0"
+//     nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
+//   }
+// }
 
-resource "aws_route_table" "quorum_observer" {
-  count  = "${var.backup_enabled ? signum(lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+// resource "aws_route_table" "quorum_observer" {
+//   count  = "${var.backup_enabled ? signum(lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
 
-  vpc_id = "${aws_vpc.quorum_cluster.id}"
+//   vpc_id = "${aws_vpc.quorum_cluster.id}"
 
-  tags {
-     Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Observer"
-  }
+//   tags {
+//      Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Observer"
+//   }
 
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
-  }
-}
+//   route {
+//     cidr_block     = "0.0.0.0/0"
+//     nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
+//   }
+// }
 
 resource "aws_route_table" "public" {
   count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
