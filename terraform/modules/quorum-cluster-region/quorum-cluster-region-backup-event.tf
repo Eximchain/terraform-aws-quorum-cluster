@@ -409,12 +409,11 @@ resource "aws_eip" "gateway_ip" {
   depends_on = ["aws_internet_gateway.quorum_cluster"]
 }
 
-# NAT gateway needs to be in a public subnet, so subnet_id must point to a public subnet
 resource "aws_nat_gateway" "backup_lambda" {
   count         = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
   allocation_id = "${aws_eip.gateway_ip.0.id}"
-  subnet_id     = "${aws_subnet.public.0.id}"
+  subnet_id     = "${aws_subnet.public.0.id}" # Place it in a public subnet, fix after Terraform 0.12 is released, to a ternary expression
  
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"
@@ -538,4 +537,4 @@ resource "aws_route_table_association" "backup_lambda" {
 //     Name = "quorum-network-${var.network_id}-BackupLambda-NAT-maker-1"
 //     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_maker.0.id}"
 //   }
-// }
+// } 
