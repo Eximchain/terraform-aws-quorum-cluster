@@ -170,14 +170,26 @@ resource "aws_route_table" "quorum_observer" {
 resource "aws_route_table" "public" {
   count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
 
+  vpc_id = "${aws_vpc.quorum_cluster.id}"
+
+  tags {
+     Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Public"
+  }
+
   route {
     cidr_block     = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.quorum_cluster.id}"
+    gateway_id     = "${aws_internet_gateway.quorum_cluster.id}"
   }
 }
 
 resource "aws_route_table" "private" {
   count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  vpc_id = "${aws_vpc.quorum_cluster.id}"
+
+  tags {
+     Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Private"
+  }
 
   route {
     cidr_block     = "0.0.0.0/0"
