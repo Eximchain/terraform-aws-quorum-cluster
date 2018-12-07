@@ -85,8 +85,6 @@ data "aws_iam_policy_document" "sns_topic_policy" {
 
 # Declare the Backup Lambda
 # Lambdas are by default in a VPC
-# The subnets must all be private, ie, its routing table points to a NAT gateway
-# The NAT gateway needs to be in a public subnet, ie, its routing table points to an Internet Gateway
 resource "aws_lambda_function" "backup_lambda" {
     count            = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
@@ -99,7 +97,10 @@ resource "aws_lambda_function" "backup_lambda" {
     timeout          = 300
 
     vpc_config {
-       subnet_ids         = ["${aws_subnet.backup_lambda.id}"]
+       subnet_ids         = ["${aws_subnet.quorum_validator.*.id}",
+         "${aws_subnet.quorum_maker.*.id}",
+         "${aws_subnet.quorum_observer.*.id}",
+         "${aws_subnet.backup_lambda.*.id}"]
        security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
     }
 
@@ -319,66 +320,6 @@ data "template_file" "quorum_maker_cidr_block_lambda" {
   }
 }
 
-resource "aws_subnet" "public" {
-  count  = "${var.backup_enabled ? 1 : 0}"
-
-  vpc_id             = "${aws_vpc.quorum_cluster.id}"
-  availability_zone  = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
-  cidr_block         = "${cidrsubnet(data.template_file.quorum_public_cidr_block.rendered, 3, count.index)}"
-
-  tags {
-    Name      = "quorum-network-${var.network_id}-Public"
-    NodeType  = "BackupLambda"
-    NetworkId = "${var.network_id}"
-    Region    = "${var.aws_region}"
-  }
-}
-
-resource "aws_route_table" "public" {
-  count  = "${var.backup_enabled ? 1 : 0}"
-
-  vpc_id = "${aws_vpc.quorum_cluster.id}"
-
-  tags {
-     Name = "Public-${var.network_id}-${var.aws_region}-RouteTable"
-  }
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.quorum_cluster.id}"
-  }
-}
-
-resource "aws_subnet" "private" {
-  count  = "${var.backup_enabled ? 1 : 0}"
-
-  vpc_id             = "${aws_vpc.quorum_cluster.id}"
-  availability_zone  = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
-  cidr_block         = "${cidrsubnet(data.template_file.quorum_private_cidr_block.rendered, 3, count.index)}"
-
-  tags {
-    Name      = "quorum-network-${var.network_id}-Private"
-    NodeType  = "BackupLambda"
-    NetworkId = "${var.network_id}"
-    Region    = "${var.aws_region}"
-  }
-}
-
-resource "aws_route_table" "private" {
-  count  = "${var.backup_enabled ? 1 : 0}"
-
-  vpc_id = "${aws_vpc.quorum_cluster.id}"
-
-  tags {
-     Name = "Private-${var.network_id}-${var.aws_region}-RouteTable"
-  }
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
-  }
-}
-
 resource "aws_subnet" "backup_lambda" {
   count              = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
@@ -413,7 +354,11 @@ resource "aws_nat_gateway" "backup_lambda" {
   count         = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
   allocation_id = "${aws_eip.gateway_ip.0.id}"
+<<<<<<< HEAD
   subnet_id     = "${aws_subnet.public.0.id}" # Place it in a public subnet, fix after Terraform 0.12 is released, to a ternary expression
+=======
+  subnet_id     = "${aws_subnet.backup_lambda.0.id}"
+>>>>>>> parent of e3076de... Add public, private subnet
  
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"
@@ -436,7 +381,7 @@ resource "aws_route_table" "backup_lambda" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
+    gateway_id = "${aws_internet_gateway.quorum_cluster.id}"
   }
 }
 
