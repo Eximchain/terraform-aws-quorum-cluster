@@ -317,26 +317,24 @@ data "template_file" "quorum_maker_cidr_block_lambda" {
   }
 }
 
-<<<<<<< HEAD
-resource "aws_subnet" "backup_lambda_private" {
-  count              = "${var.backup_enabled ? 1 : 0}"
-=======
-resource "aws_subnet" "public" {
+resource "aws_subnet" "backup_lambda_public" {
   count  = "${var.backup_enabled ? 1 : 0}"
 
   vpc_id             = "${aws_vpc.quorum_cluster.id}"
   availability_zone  = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
-  cidr_block         = "${cidrsubnet(data.template_file.quorum_public_cidr_block.rendered, 3, count.index)}"
+  cidr_block         = "${cidrsubnet(data.template_file.quorum_backup_lambda_public_cidr_block.rendered, 3, count.index)}"
+
+  map_public_ip_on_launch = true
 
   tags {
     Name      = "quorum-network-${var.network_id}-Public"
-    NodeType  = "BackupLambda"
+    NodeType  = "Public-Subnet"
     NetworkId = "${var.network_id}"
     Region    = "${var.aws_region}"
   }
 }
 
-resource "aws_route_table" "public" {
+resource "aws_route_table" "backup_lambda_public" {
   count  = "${var.backup_enabled ? 1 : 0}"
 
   vpc_id = "${aws_vpc.quorum_cluster.id}"
@@ -351,39 +349,15 @@ resource "aws_route_table" "public" {
   }
 }
 
-resource "aws_subnet" "private" {
-  count  = "${var.backup_enabled ? 1 : 0}"
+resource "aws_route_table_association" "backup_lambda_public" {
+  count          = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
-  vpc_id             = "${aws_vpc.quorum_cluster.id}"
-  availability_zone  = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
-  cidr_block         = "${cidrsubnet(data.template_file.quorum_private_cidr_block.rendered, 3, count.index)}"
-
-  tags {
-    Name      = "quorum-network-${var.network_id}-Private"
-    NodeType  = "BackupLambda"
-    NetworkId = "${var.network_id}"
-    Region    = "${var.aws_region}"
-  }
+  subnet_id      = "${aws_subnet.backup_lambda_public.0.id}"
+  route_table_id = "${aws_route_table.backup_lambda_public.id}" 
 }
 
-resource "aws_route_table" "private" {
-  count  = "${var.backup_enabled ? 1 : 0}"
-
-  vpc_id = "${aws_vpc.quorum_cluster.id}"
-
-  tags {
-     Name = "Private-${var.network_id}-${var.aws_region}-RouteTable"
-  }
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
-  }
-}
-
-resource "aws_subnet" "backup_lambda" {
+resource "aws_subnet" "backup_lambda_private" {
   count              = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
->>>>>>> parent of 4524da7... Removed public/private subnet
 
   vpc_id             = "${aws_vpc.quorum_cluster.id}"
   availability_zone  = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
@@ -419,23 +393,6 @@ resource "aws_route_table_association" "backup_lambda_private" {
   route_table_id = "${aws_route_table.backup_lambda_private.id}" 
 }
 
-resource "aws_subnet" "backup_lambda_public" {
-  count              = "${var.backup_enabled ? 1 : 0}"
-
-  vpc_id             = "${aws_vpc.quorum_cluster.id}"
-  availability_zone  = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
-  cidr_block         = "${cidrsubnet(data.template_file.quorum_backup_lambda_public_cidr_block.rendered, 3, count.index)}"
-
-  map_public_ip_on_launch = true
-
-  tags {
-    Name      = "quorum-network-${var.network_id}-BackupLambda-public"
-    NodeType  = "Public-Subnet"
-    NetworkId = "${var.network_id}"
-    Region    = "${var.aws_region}"
-  }
-}
-
 resource "aws_eip" "gateway_ip" {
   count      = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
@@ -456,15 +413,7 @@ resource "aws_nat_gateway" "backup_lambda" {
   count         = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
   allocation_id = "${aws_eip.gateway_ip.0.id}"
-<<<<<<< HEAD
   subnet_id     = "${aws_subnet.backup_lambda_public.0.id}" # this must be a public subnet   
-=======
-<<<<<<< HEAD
-  subnet_id     = "${aws_subnet.public.0.id}" # Place it in a public subnet, fix after Terraform 0.12 is released, to a ternary expression
-=======
-  subnet_id     = "${aws_subnet.backup_lambda.0.id}"
->>>>>>> parent of e3076de... Add public, private subnet
->>>>>>> parent of 9667ff3... Fix heredoc issue
  
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"
@@ -474,28 +423,6 @@ resource "aws_nat_gateway" "backup_lambda" {
   }
 
   depends_on    = ["aws_internet_gateway.quorum_cluster"]
-}
-
-resource "aws_route_table" "backup_lambda_public" {
-  count  = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
-
-  vpc_id = "${aws_vpc.quorum_cluster.id}"
-
-  tags {
-     Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable"
-  }
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.quorum_cluster.id}"
-  }
-}
-
-resource "aws_route_table_association" "backup_lambda_public" {
-  count          = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
-
-  subnet_id      = "${aws_subnet.backup_lambda_public.0.id}"
-  route_table_id = "${aws_route_table.backup_lambda_public.id}" 
 }
 
 # Help debug all 3 subnets
