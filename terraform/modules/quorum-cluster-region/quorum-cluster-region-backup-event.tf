@@ -332,7 +332,7 @@ resource "aws_eip" "gateway_ip" {
   depends_on = ["aws_internet_gateway.quorum_cluster"]
 }
 
-# NAT gateway must be in a public subnet
+# NAT gateway must be located in a public subnet
 resource "aws_nat_gateway" "backup_lambda" {
   count         = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 

@@ -93,7 +93,7 @@ resource "aws_subnet" "public" {
 
   vpc_id                  = "${aws_vpc.quorum_cluster.id}"
   availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
-  cidr_block              = "${cidrsubnet(data.template_file.quorum_observer_cidr_block.rendered, 3, count.index)}"
+  cidr_block              = "${cidrsubnet(data.template_file.quorum_backup_lambda_public_cidr_block.rendered, 3, count.index)}"
   map_public_ip_on_launch = true
 
   tags {
@@ -109,7 +109,7 @@ resource "aws_subnet" "private" {
 
   vpc_id                  = "${aws_vpc.quorum_cluster.id}"
   availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
-  cidr_block              = "${cidrsubnet(data.template_file.quorum_observer_cidr_block.rendered, 3, count.index)}"
+  cidr_block              = "${cidrsubnet(data.template_file.quorum_backup_lambda_private_cidr_block.rendered, 3, count.index)}"
   map_public_ip_on_launch = false
 
   tags {
@@ -167,6 +167,24 @@ resource "aws_route_table" "quorum_observer" {
   }
 }
 
+resource "aws_route_table" "public" {
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    gateway_id = "${aws_internet_gateway.quorum_cluster.id}"
+  }
+}
+
+resource "aws_route_table" "private" {
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
+  }
+}
+
 resource "aws_route_table_association" "quorum_validator" {
   count  = "${var.backup_enabled ? signum(lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
@@ -186,6 +204,20 @@ resource "aws_route_table_association" "quorum_observer" {
 
   subnet_id      = "${aws_subnet.quorum_observer.0.id}"
   route_table_id = "${aws_route_table.quorum_observer.id}"
+}
+
+resource "aws_route_table_association" "public" {
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  subnet_id      = "${aws_subnet.public.0.id}"
+  route_table_id = "${aws_route_table.public.id}"
+}
+
+resource "aws_route_table_association" "private" {
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  subnet_id      = "${aws_subnet.private.0.id}"
+  route_table_id = "${aws_route_table.private.id}"
 }
 # ---------------------------------------------------------------------------------------------------------------------
 # QUORUM NODE ASGs
