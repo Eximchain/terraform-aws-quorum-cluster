@@ -97,7 +97,7 @@ resource "aws_lambda_function" "backup_lambda" {
     timeout          = 300
 
     vpc_config {
-       subnet_ids         = ["${aws_subnet.backup_lambda_private.*.id}"]
+       subnet_ids         = ["${aws_subnet.private.*.id}"] # These must be private subnets
        security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
     }
 
@@ -332,18 +332,12 @@ resource "aws_eip" "gateway_ip" {
   depends_on = ["aws_internet_gateway.quorum_cluster"]
 }
 
-locals {
-  public_subnet_id = "${lookup(var.validator_node_counts, var.aws_region, 0)>0 ? aws_subnet.quorum_validator.0.id : 
-  lookup(var.maker_node_counts, var.aws_region, 0)>0 ? aws_subnet.quorum_maker.0.id :
-  lookup(var.observer_node_counts, var.aws_region, 0)> 0 ? aws_subnet.observer.0.id : ""}"
-}
-
 # NAT gateway must be in a public subnet
 resource "aws_nat_gateway" "backup_lambda" {
   count         = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
 
   allocation_id = "${aws_eip.gateway_ip.0.id}"
-  subnet_id     = "${locals.public_subnet_id}" # this must be a public subnet   
+  subnet_id     = "${aws_subnet.public.id}" # this must be a public subnet   
  
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"

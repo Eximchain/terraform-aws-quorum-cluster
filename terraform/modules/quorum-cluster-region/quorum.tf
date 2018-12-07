@@ -88,6 +88,37 @@ resource "aws_subnet" "quorum_observer" {
   }
 }
 
+resource "aws_subnet" "public" {
+  count = "${var.backup_enabled ? 1 : 0}"
+
+  vpc_id                  = "${aws_vpc.quorum_cluster.id}"
+  availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
+  cidr_block              = "${cidrsubnet(data.template_file.quorum_observer_cidr_block.rendered, 3, count.index)}"
+  map_public_ip_on_launch = true
+
+  tags {
+    Name      = "quorum-network-${var.network_id}-Subnet"
+    NodeType  = "Public-Subnet"
+    NetworkId = "${var.network_id}"
+    Region    = "${var.aws_region}"
+  }
+}
+
+resource "aws_subnet" "private" {
+  count = "${var.backup_enabled ? 1 : 0}"
+
+  vpc_id                  = "${aws_vpc.quorum_cluster.id}"
+  availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
+  cidr_block              = "${cidrsubnet(data.template_file.quorum_observer_cidr_block.rendered, 3, count.index)}"
+  map_public_ip_on_launch = false
+
+  tags {
+    Name      = "quorum-network-${var.network_id}-Subnet"
+    NodeType  = "Private-Subnet"
+    NetworkId = "${var.network_id}"
+    Region    = "${var.aws_region}"
+  }
+}
 # ---------------------------------------------------------------------------------------------------------------------
 # ROUTING TABLES
 # ---------------------------------------------------------------------------------------------------------------------
