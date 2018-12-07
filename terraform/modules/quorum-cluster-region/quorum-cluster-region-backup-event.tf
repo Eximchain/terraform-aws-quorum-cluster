@@ -93,7 +93,7 @@ resource "aws_lambda_function" "backup_lambda" {
     handler          = "${var.backup_lambda_binary}" # Name of Go package after unzipping the filename above
     role             = "${aws_iam_role.backup_lambda.arn}"
     runtime          = "go1.x"
-    source_code_hash = "${sha256("file(${local.temp_lambda_zip_path})")}" # 
+    source_code_hash = "${sha256("file(${local.temp_lambda_zip_path})")}"
     timeout          = 300
 
     vpc_config {
@@ -318,7 +318,7 @@ data "template_file" "quorum_maker_cidr_block_lambda" {
 }
 
 resource "aws_subnet" "backup_lambda_private" {
-  count              = "${var.backup_enabled 1 : 0}"
+  count              = "${var.backup_enabled ? 1 : 0}"
 
   vpc_id             = "${aws_vpc.quorum_cluster.id}"
   availability_zone  = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
