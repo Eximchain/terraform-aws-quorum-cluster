@@ -97,12 +97,10 @@ resource "aws_lambda_function" "backup_lambda" {
     timeout          = 300
 
     vpc_config {
-       subnet_ids         = [
-         "${lookup(var.validator_node_counts, var.aws_region, 0)>0 ? aws_subnet.quorum_validator.*.id :
-            lookup(var.maker_node_counts, var.aws_region, 0)>0 ? aws_subnet.quorum_maker.*.id : 
-            lookup(var.observer_node_counts, var.aws_region, 0)>0 ? aws_subnet.quorum_observer.*.id : 
-            aws_subnet.backup_lambda.*.id}"
-       ]
+       subnet_ids         = ["${aws_subnet.quorum_validator.*.id}",
+         "${aws_subnet.quorum_maker.*.id}",
+         "${aws_subnet.quorum_observer.*.id}",
+         "${aws_subnet.backup_lambda.*.id}"]
        security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
     }
 
