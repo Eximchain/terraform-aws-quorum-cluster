@@ -464,11 +464,11 @@ resource "aws_nat_gateway" "backup_lambda" {
 //   ami           = "${data.aws_ami.ubuntu.id}"
 //   instance_type = "t2.micro"
 //   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-//   subnet_id = "${aws_subnet.backup_lambda.id}"
+//   subnet_id = "${aws_subnet.backup_lambda_private.id}"
 //   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
 //   tags {
 //     Name = "quorum-network-${var.network_id}-BackupLambda-NAT-backup_lambda-1"
-//     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.backup_lambda.id}"
+//     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.backup_lambda_private.id}"
 //   }
 // }
 
@@ -501,21 +501,3 @@ resource "aws_nat_gateway" "backup_lambda" {
 //     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_validator.0.id}"
 //   }
 // }
-
-// resource "aws_instance" "maker" {
-//   count = "${var.aws_region =="us-east-1" && lookup(var.maker_node_counts, var.aws_region, 0)>0?1:0}"
-//   source_dest_check = false
-//   associate_public_ip_address = true
-//   ami           = "${data.aws_ami.ubuntu.id}"
-//   instance_type = "t2.micro"
-//   key_name = "quorum-cluster-${var.aws_region}-network-${var.network_id}"
-//   subnet_id = "${aws_subnet.quorum_maker.0.id}"
-//   vpc_security_group_ids = ["${aws_security_group.allow_all_for_backup_lambda.*.id}"]
-//   tags {
-//     Name = "quorum-network-${var.network_id}-BackupLambda-NAT-maker-1"
-//     subnet_id = "BackupLambdaAccessInternet-${aws_subnet.quorum_maker.0.id}"
-//   }
-// } 
-
-
-
