@@ -9,8 +9,12 @@ data "local_file" "backup_lambda_ssh_private_key" {
   filename = "${var.backup_lambda_ssh_private_key_path}"
 }
 
+locals {
+  signum_lookup = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0))}"
+}
+
 resource "aws_s3_bucket_object" "encrypted_ssh_key" {
-  count      = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count      = "${var.backup_enabled ? local.signum_lookup : 0}"
   
   bucket     = "${aws_s3_bucket.quorum_backup.id}"
   key        = "${var.enc_ssh_key}"
@@ -21,20 +25,20 @@ resource "aws_s3_bucket_object" "encrypted_ssh_key" {
 }
 
 resource "aws_sns_topic" "backup_event" {
-  count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count       = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   name_prefix = "BackupLambda-${var.network_id}-${var.aws_region}-"
 }
 
 resource "aws_cloudwatch_event_rule" "backup_timer" {
-  count               = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count               = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   name_prefix         = "BackupLambda-${var.network_id}-${var.aws_region}-" 
   schedule_expression = "${var.backup_interval}"
 }
 
 resource "aws_cloudwatch_event_target" "sns" {
-  count     = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"  
+  count     = "${var.backup_enabled ? local.signum_lookup : 0}"  
 
   rule      = "${aws_cloudwatch_event_rule.backup_timer.name}"
   target_id = "SendToSNS"
@@ -42,7 +46,7 @@ resource "aws_cloudwatch_event_target" "sns" {
 }
 
 resource "aws_sns_topic_subscription" "backup_lambda" {
-  count     = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count     = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   topic_arn = "${aws_sns_topic.backup_event.arn}"
   protocol  = "lambda"
@@ -51,7 +55,7 @@ resource "aws_sns_topic_subscription" "backup_lambda" {
 
 # Allow the SNS to trigger the backup lambda
 resource "aws_lambda_permission" "backup_lambda" {
-  count         = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count         = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   statement_id  = "AllowExecutionFromSNS-BackupLambda-${var.network_id}-${var.aws_region}"
   action        = "lambda:InvokeFunction"
@@ -61,14 +65,14 @@ resource "aws_lambda_permission" "backup_lambda" {
 }
 
 resource "aws_sns_topic_policy" "default" {
-  count  = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count  = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   arn    = "${aws_sns_topic.backup_event.arn}"
   policy = "${data.aws_iam_policy_document.sns_topic_policy.json}"
 }
 
 data "aws_iam_policy_document" "sns_topic_policy" {
-  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   statement {
     effect  = "Allow"
@@ -86,7 +90,7 @@ data "aws_iam_policy_document" "sns_topic_policy" {
 # Declare the Backup Lambda
 # Lambdas are by default in a VPC
 resource "aws_lambda_function" "backup_lambda" {
-    count            = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+    count            = "${var.backup_enabled ? local.signum_lookup : 0}"
 
     filename         = "${local.temp_lambda_zip_path}"
     function_name    = "BackupLambda-${var.network_id}-${var.aws_region}"
@@ -115,7 +119,7 @@ resource "aws_lambda_function" "backup_lambda" {
 }
 
 resource "aws_iam_role" "backup_lambda" {
-  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   name  = "iam_for_backup_lambda-${var.network_id}-${var.aws_region}"
 # See also https://aws.amazon.com/blogs/compute/easy-authorization-of-aws-lambda-functions/
@@ -139,7 +143,7 @@ EOF
 }
 
 resource "aws_iam_policy" "backup_lambda_permissions" {
-  count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count       = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   path        = "/"
   description = "IAM policy for accesing EC2 and S3 buckets from Lambda"
@@ -168,7 +172,7 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "allow_backup_lambda_access_s3_and_ec2_resources" {
-   count      = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+   count      = "${var.backup_enabled ? local.signum_lookup : 0}"
 
    role       = "${aws_iam_role.backup_lambda.name}"
    policy_arn = "${aws_iam_policy.backup_lambda_permissions.arn}"
@@ -176,7 +180,7 @@ resource "aws_iam_role_policy_attachment" "allow_backup_lambda_access_s3_and_ec2
 
 
 resource "aws_iam_policy" "allow_backup_lambda_logging" {
-  count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count       = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   name        = "BackupLambda-${var.network_id}-${var.aws_region}"
   path        = "/"
@@ -213,7 +217,7 @@ EOT
 }
 
 resource "aws_iam_role_policy_attachment" "allow_backup_lambda_logging" {
-   count      = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+   count      = "${var.backup_enabled ? local.signum_lookup : 0}"
 
    role       = "${aws_iam_role.backup_lambda.name}"
    policy_arn = "${aws_iam_policy.allow_backup_lambda_logging.arn}"
@@ -244,7 +248,7 @@ EOT
 }
 
 resource "aws_kms_key" "ssh_encryption_key" {
-  count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count       = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   description = "Used for encrypting SSH keys on S3"
 
@@ -255,14 +259,14 @@ resource "aws_kms_key" "ssh_encryption_key" {
 
 # Encrypt the contents of the SSH key
 data "aws_kms_ciphertext" "encrypt_ssh_operation" {
-  count     = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count     = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   key_id    = "${aws_kms_key.ssh_encryption_key.id}"  
   plaintext = "${var.backup_lambda_ssh_private_key}"
 }
 
 resource "aws_kms_grant" "backup_lambda" {
-  count             = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count             = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   name              = "kms-grant-${var.network_id}-${var.aws_region}"
   key_id            = "${aws_kms_key.ssh_encryption_key.key_id}"
@@ -271,7 +275,7 @@ resource "aws_kms_grant" "backup_lambda" {
 }
 
 resource "aws_security_group" "allow_all_for_backup_lambda" {
-  count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count       = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   name        = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-allow_all_outgoing"
   description = "Allow all outgoing traffic for BackupLambda"
@@ -283,7 +287,7 @@ resource "aws_security_group" "allow_all_for_backup_lambda" {
 }
 
 resource "aws_security_group_rule" "allow_all_outgoing_for_backup_lambda" {
-  count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count       = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   type            = "egress"
   from_port       = 0
@@ -295,7 +299,7 @@ resource "aws_security_group_rule" "allow_all_outgoing_for_backup_lambda" {
 }
 
 resource "aws_security_group_rule" "allow_ssh_incoming_for_debugging" {
-  count       = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count       = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   type            = "ingress"
   from_port       = 22
@@ -318,7 +322,7 @@ data "template_file" "quorum_maker_cidr_block_lambda" {
 }
 
 resource "aws_eip" "gateway_ip" {
-  count      = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count      = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   vpc        = true
 
@@ -334,7 +338,7 @@ resource "aws_eip" "gateway_ip" {
 
 # NAT gateway must be located in a public subnet
 resource "aws_nat_gateway" "backup_lambda" {
-  count         = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0)) : 0}"
+  count         = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   allocation_id = "${aws_eip.gateway_ip.0.id}"
   subnet_id     = "${aws_subnet.public.id}" # this must be a public subnet   
