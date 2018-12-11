@@ -97,10 +97,10 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags {
-    Name      = "quorum-network-${var.network_id}-Public-Subnet"
-    NodeType  = "Public-Subnet"
-    NetworkId = "${var.network_id}"
-    Region    = "${var.aws_region}"
+    Name       = "quorum-network-${var.network_id}-Public-Subnet"
+    SubnetType = "Public"
+    NetworkId  = "${var.network_id}"
+    Region     = "${var.aws_region}"
   }
 }
 
@@ -113,10 +113,10 @@ resource "aws_subnet" "private" {
   map_public_ip_on_launch = false
 
   tags {
-    Name      = "quorum-network-${var.network_id}-Private-Subnet"
-    NodeType  = "Private-Subnet"
-    NetworkId = "${var.network_id}"
-    Region    = "${var.aws_region}"
+    Name       = "quorum-network-${var.network_id}-Private-Subnet"
+    SubnetType = "Private"
+    NetworkId  = "${var.network_id}"
+    Region     = "${var.aws_region}"
   }
 }
 # ---------------------------------------------------------------------------------------------------------------------

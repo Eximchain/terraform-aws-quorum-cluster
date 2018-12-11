@@ -3,14 +3,16 @@ provider "local" {version = "~> 1.1"}
 provider "null" {version = "~> 1.0"}
 provider "random" {version = "~> 2.0"}
 
+locals {
+  signum_lookup = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0))}"
+
+  temp_lambda_zip_path = "${path.module}/tmp/${var.aws_region}-${var.backup_lambda_output_path}"
+}
+
 data "local_file" "backup_lambda_ssh_private_key" {
   count = "${var.backup_enabled && var.backup_lambda_ssh_private_key == "" ? 1 : 0}"
 
   filename = "${var.backup_lambda_ssh_private_key_path}"
-}
-
-locals {
-  signum_lookup = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0))}"
 }
 
 resource "aws_s3_bucket_object" "encrypted_ssh_key" {
@@ -121,7 +123,7 @@ resource "aws_lambda_function" "backup_lambda" {
 resource "aws_iam_role" "backup_lambda" {
   count = "${var.backup_enabled ? local.signum_lookup : 0}"
 
-  name  = "iam_for_backup_lambda-${var.network_id}-${var.aws_region}"
+  name  = "iam-for-backup-lambda-${var.network_id}-${var.aws_region}"
 # See also https://aws.amazon.com/blogs/compute/easy-authorization-of-aws-lambda-functions/
   assume_role_policy = <<EOF
 {
@@ -223,10 +225,6 @@ resource "aws_iam_role_policy_attachment" "allow_backup_lambda_logging" {
    policy_arn = "${aws_iam_policy.allow_backup_lambda_logging.arn}"
 }
 
-locals {
-  temp_lambda_zip_path = "${path.module}/tmp/${var.aws_region}-${var.backup_lambda_output_path}"
-}
-
 resource "null_resource" "fetch_backup_lambda_zip" {
   count = "${var.backup_enabled ? 1 : 0}"
 
@@ -253,7 +251,7 @@ resource "aws_kms_key" "ssh_encryption_key" {
   description = "Used for encrypting SSH keys on S3"
 
   tags {
-     name = "BackupLambda-${var.network_id}-${var.aws_region}-KMS"
+    Name = "BackupLambda-${var.network_id}-${var.aws_region}-KMS"
   }
 }
 
@@ -277,7 +275,7 @@ resource "aws_kms_grant" "backup_lambda" {
 resource "aws_security_group" "allow_all_for_backup_lambda" {
   count       = "${var.backup_enabled ? local.signum_lookup : 0}"
 
-  name        = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-allow_all_outgoing"
+  name        = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-allow-all-outgoing"
   description = "Allow all outgoing traffic for BackupLambda"
   vpc_id      = "${aws_vpc.quorum_cluster.id}"
 
@@ -324,11 +322,10 @@ data "template_file" "quorum_maker_cidr_block_lambda" {
 resource "aws_eip" "gateway_ip" {
   count      = "${var.backup_enabled ? local.signum_lookup : 0}"
 
-  vpc        = true
+  vpc = true
 
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda"
-    NodeType  = "BackupLambda-EIP"
     NetworkId = "${var.network_id}"
     Region    = "${var.aws_region}"
   }
@@ -345,7 +342,6 @@ resource "aws_nat_gateway" "backup_lambda" {
  
   tags {
     Name      = "quorum-network-${var.network_id}-BackupLambda-NAT"
-    NodeType  = "NAT"
     NetworkId = "${var.network_id}"
     Region    = "${var.aws_region}"
   }
