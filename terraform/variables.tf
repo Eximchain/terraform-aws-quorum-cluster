@@ -2,10 +2,6 @@
 # REQUIRED PARAMETERS
 # You must provide a value for each of these parameters.
 # ---------------------------------------------------------------------------------------------------------------------
-variable "vote_threshold" {
-  description = "The number of votes needed to confirm a block. This should be more than half of the number of validator nodes."
-}
-
 variable "cert_tool_kms_key_id" {
   description = "The KMS Key ID that the cert tool encrypted the private key with. Will be output by the cert-tool module."
 }

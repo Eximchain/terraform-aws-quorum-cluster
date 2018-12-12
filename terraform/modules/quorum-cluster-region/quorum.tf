@@ -255,7 +255,6 @@ data "template_file" "user_data_quorum_maker" {
     aws_region     = "${var.aws_region}"
     primary_region = "${var.primary_region}"
 
-    vote_threshold   = "${var.vote_threshold}"
     max_peers        = "${var.max_peers}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
@@ -307,7 +306,6 @@ data "template_file" "user_data_quorum_validator" {
     aws_region     = "${var.aws_region}"
     primary_region = "${var.primary_region}"
 
-    vote_threshold   = "${var.vote_threshold}"
     max_peers        = "${var.max_peers}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
@@ -359,7 +357,6 @@ data "template_file" "user_data_quorum_observer" {
     aws_region     = "${var.aws_region}"
     primary_region = "${var.primary_region}"
 
-    vote_threshold   = "${var.vote_threshold}"
     max_peers        = "${var.max_peers}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
