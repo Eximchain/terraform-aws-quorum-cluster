@@ -208,12 +208,12 @@ resource "null_resource" "mkdir_temp" {
   triggers { always="${uuid()}" }
   provisioner "local-exec" {
     command = <<EOT
-  mkdir -p ${path.module}/tmp/
+  mkdir -p ${path.module}/temp/
 EOT
   }
   provisioner "local-exec" {
     when = "destroy"
-    command = "rm -rf ${path.module}/tmp"
+    command = "rm -rf ${path.module}/temp"
     on_failure = "continue"
   }
 }
@@ -280,7 +280,7 @@ resource "aws_security_group" "allow_all_for_backup_lambda" {
   vpc_id      = "${aws_vpc.quorum_cluster.id}"
 
   tags {
-     name = "BackupLambda-${var.network_id}-${var.aws_region}-SG"
+     Name = "BackupLambda-${var.network_id}-${var.aws_region}-SG"
   }
 }
 

@@ -487,7 +487,7 @@ variable "backup_enabled" {
   description = <<DESCRIPTION
 Enable backup of chain data.
 DESCRIPTION
-  default = "true"
+  default = "false"
 }
 
 variable "backup_interval" {
