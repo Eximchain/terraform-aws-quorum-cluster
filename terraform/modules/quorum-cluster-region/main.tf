@@ -42,7 +42,7 @@ resource "aws_s3_bucket" "quorum_constellation" {
 # S3 BUCKET FOR REGIONAL BACKUPS
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_s3_bucket" "quorum_backup" {
-  count = "${var.backup_enabled ? signum(lookup(var.bootnode_counts, var.aws_region, 0) + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+  count = "${signum(lookup(var.bootnode_counts, var.aws_region, 0) + lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
 
   bucket        = "quorum-backup-${var.aws_region}-network-${var.network_id}${var.s3_bucket_suffix}"
   force_destroy = "${var.force_destroy_s3_buckets}"
