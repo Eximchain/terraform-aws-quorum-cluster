@@ -6,7 +6,8 @@ provider "random" {version = "~> 2.0"}
 locals {
   signum_lookup = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0))}"
 
-  temp_lambda_zip_path = "${path.module}/temp/${var.aws_region}-${var.backup_lambda_output_path}"
+  tempdir = "${path.module}/temp/"
+  temp_lambda_zip_path = "${tempdir}${var.aws_region}-${var.backup_lambda_output_path}"
 }
 
 data "local_file" "backup_lambda_ssh_private_key" {
@@ -208,12 +209,12 @@ resource "null_resource" "mkdir_temp" {
   triggers { always="${uuid()}" }
   provisioner "local-exec" {
     command = <<EOT
-  mkdir -p ${path.module}/temp/
+  mkdir -p ${local.tempdir}
 EOT
   }
   provisioner "local-exec" {
     when = "destroy"
-    command = "rm -rf ${path.module}/temp"
+    command = "rm -rf ${local.tempdir}"
     on_failure = "continue"
   }
 }
