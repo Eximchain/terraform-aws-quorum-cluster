@@ -7,7 +7,7 @@ locals {
   signum_lookup = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0))}"
 
   tempdir = "${path.module}/temp/"
-  temp_lambda_zip_path = "${tempdir}${var.aws_region}-${var.backup_lambda_output_path}"
+  temp_lambda_zip_path = "${local.tempdir}${var.aws_region}-${var.backup_lambda_output_path}"
 }
 
 data "local_file" "backup_lambda_ssh_private_key" {
