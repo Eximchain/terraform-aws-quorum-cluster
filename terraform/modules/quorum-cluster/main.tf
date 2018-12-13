@@ -28,7 +28,7 @@ data "local_file" "public_key" {
 
 data "local_file" "backup_lambda_ssh_private_key" {
   count = "${var.backup_enabled && var.backup_lambda_ssh_private_key == "" ? 1 : 0}"
-  
+
   filename = "${var.backup_lambda_ssh_private_key_path}"
 }
 
@@ -294,7 +294,7 @@ module "quorum_cluster_us_east_1" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   use_efs = "${var.use_efs}"
 
@@ -403,7 +403,7 @@ module "quorum_cluster_us_east_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  
+
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
@@ -434,7 +434,7 @@ module "quorum_cluster_us_east_2" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   use_efs = "${var.use_efs}"
 
@@ -543,7 +543,7 @@ module "quorum_cluster_us_west_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  
+
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
@@ -574,7 +574,7 @@ module "quorum_cluster_us_west_1" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   use_efs = "${var.use_efs}"
 
@@ -683,7 +683,7 @@ module "quorum_cluster_us_west_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-  
+
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
   backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
@@ -714,7 +714,7 @@ module "quorum_cluster_us_west_2" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   use_efs = "${var.use_efs}"
 
@@ -854,7 +854,7 @@ module "quorum_cluster_eu_central_1" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   use_efs = "${var.use_efs}"
 
@@ -994,7 +994,7 @@ module "quorum_cluster_eu_west_1" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   use_efs = "${var.use_efs}"
 
@@ -1134,7 +1134,7 @@ module "quorum_cluster_eu_west_2" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   # EFS not yet available in eu-west-2
   use_efs = false
@@ -1275,7 +1275,7 @@ module "quorum_cluster_ap_south_1" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   # EFS not yet available in ap-south-1
   use_efs = false
@@ -1416,7 +1416,7 @@ module "quorum_cluster_ap_northeast_1" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   use_efs = "${var.use_efs}"
 
@@ -1556,7 +1556,7 @@ module "quorum_cluster_ap_northeast_2" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   use_efs = "${var.use_efs}"
 
@@ -1696,7 +1696,7 @@ module "quorum_cluster_ap_southeast_1" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   use_efs = "${var.use_efs}"
 
@@ -1836,7 +1836,7 @@ module "quorum_cluster_ap_southeast_2" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   use_efs = "${var.use_efs}"
 
@@ -1976,7 +1976,7 @@ module "quorum_cluster_ca_central_1" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   # EFS not yet available in ca-central-1
   use_efs = false
@@ -2117,7 +2117,7 @@ module "quorum_cluster_sa_east_1" {
   bootnode_instance_type         = "${var.bootnode_instance_type}"
   quorum_maker_instance_type     = "${var.quorum_maker_instance_type}"
   quorum_validator_instance_type = "${var.quorum_validator_instance_type}"
-  quorum_observer_instance_type  = "${var.quorum_maker_instance_type}"
+  quorum_observer_instance_type  = "${var.quorum_observer_instance_type}"
 
   # EFS not yet available in sa-east-1
   use_efs = false
