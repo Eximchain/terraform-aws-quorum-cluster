@@ -523,3 +523,13 @@ variable "enc_ssh_key" {
   description = "The key to access the encrypted SSH key on the S3 bucket"
   default = "enc_ssh"
 }
+
+variable "backup_lambda_ssh_user" {
+  description = "SSH user for connecting to nodes."
+  default = "ubuntu"
+}
+
+variable "backup_lambda_ssh_pass" {
+  description = "SSH password to use for connecting to nodes. If not specified, uses the backup_lambda_ssh_private_key or backup_lambda_ssh_private_key_path."
+  default = ""
+}
