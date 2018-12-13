@@ -98,6 +98,20 @@ DESCRIPTION
   default     = ""
 }
 
+variable "backup_lambda_ssh_private_key_path" {
+  description = <<DESCRIPTION
+Path to SSH private key to be used for authentication by the BackupLambda function.
+DESCRIPTION
+  default     = ""
+}
+
+variable "backup_lambda_ssh_private_key" {
+  description = <<DESCRIPTION
+SSH private key to be used for authentication by the BackupLambda function.
+DESCRIPTION
+  default     = ""
+}
+
 variable "gas_limit" {
   description = "The limit on gas that can be used in a single block"
   default     = 804247552
@@ -391,4 +405,78 @@ variable "observer_node_counts" {
     # South America
     sa-east-1      = 0
   }
+}
+
+variable "backup_lambda_binary" {
+  description = "Name of BackupLambda binary"
+  default = "BackupLambda"
+}
+
+variable "backup_lambda_binary_url" {
+  description = <<DESCRIPTION
+URL to retrieve the backup lambda binary.
+DESCRIPTION
+  default     = "https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda.zip"
+}
+
+# this is the lambda zip, must be a relative path
+# eg "BackupLambda.zip"
+variable "backup_lambda_output_path" {
+  description = "Relative path to the BackupLambda zip"
+  default = "BackupLambda.zip"
+}
+
+# This is the full path to the private key 
+# eg "/Users/xxxx/.ssh/cert"
+variable "private_key_path" {
+  description = "Full path to the private key to access Quorum nodes"
+  default = ""
+}
+
+# This is the public key path
+# eg "/Users/xxxx/.ssh/cert.pub"
+variable "public_key_path" {
+  description = "Full path to the public key for Quorum nodes"
+  default = ""
+}
+
+# output prefix of encrypted SSH key, region will be appended to the filename
+variable "enc_ssh_path" {
+  description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
+  default = "enc-ssh"
+}
+
+# key on S3 bucket
+variable "enc_ssh_key" {
+  description = "The key to access the encrypted SSH key on the S3 bucket"
+  default = "enc-ssh"
+}
+
+# If singular, it's 1 hour, 1 minute, 1 week, 1 day, etc.
+variable "backup_interval" {
+  description = <<DESCRIPTION
+Schedule expression for backup event, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html for examples.
+cron(45 08 ? * WED *) will trigger every WED at 8 45 am GMT
+cron(05 13 ? * MON *) will trigger every MON at 1 05 pm GMT
+rate(3 mins) will trigger every 3 minutes
+rate(7 hours) will trigger every 7 hours
+DESCRIPTION
+  default     = "rate(4 hours)"
+}
+
+variable "backup_enabled" {
+  description = <<DESCRIPTION
+Enable backup of chain data.
+DESCRIPTION
+  default = "false"
+}
+
+variable "backup_lambda_ssh_user" {
+  description = "SSH user for connecting to nodes."
+  default = "ubuntu"
+}
+
+variable "backup_lambda_ssh_pass" {
+  description = "SSH password to use for connecting to nodes. If not specified, uses the backup_lambda_ssh_private_key or backup_lambda_ssh_private_key_path."
+  default = ""
 }

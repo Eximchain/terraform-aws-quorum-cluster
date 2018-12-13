@@ -31,3 +31,8 @@ variable "quorum_vpc_peering_counts" {
   description = "A mapping from region to a 1 if there should be a quorum peering connection to that region or 0 otherwise."
   type        = "map"
 }
+
+variable "quorum_vpc_main_route_table" {
+  description = "A mapping from region to the quorum VPC main route table in that region"
+  type        = "map"
+}

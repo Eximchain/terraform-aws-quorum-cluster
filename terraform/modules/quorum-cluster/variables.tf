@@ -60,8 +60,24 @@ DESCRIPTION
 
 variable "private_key" {
   description = <<DESCRIPTION
-SSH private key to be used for authentication.
-Will use the agent if none is provided.
+SSH public key to be used for authentication.
+DESCRIPTION
+  default     = ""
+}
+
+variable "backup_lambda_ssh_private_key_path" {
+  description = <<DESCRIPTION
+Path to SSH private key to be used for authentication by the BackupLambda function.
+Ensure this keypair is added to your local SSH agent so provisioners can
+connect.
+Example: ~/.ssh/terraform
+DESCRIPTION
+  default     = ""
+}
+
+variable "backup_lambda_ssh_private_key" {
+  description = <<DESCRIPTION
+SSH private key to be used for authentication by the BackupLambda function.
 DESCRIPTION
   default     = ""
 }
@@ -469,4 +485,56 @@ variable "observer_node_counts" {
     # South America
     sa-east-1      = 0
   }
+}
+
+# Backup Lambda related variables
+variable "backup_enabled" {
+  description = <<DESCRIPTION
+Enable backup of chain data.
+DESCRIPTION
+  default = "false"
+}
+
+variable "backup_interval" {
+  description = "Schedule expression for backup"
+  default = ""
+}
+
+variable "backup_lambda_binary" {
+  description = "Name of BackupLambda binary"
+  default = ""
+}
+
+variable "backup_lambda_binary_url" {
+  description = "Full URL path to Backup Lambda binary"
+  default = ""
+}
+
+# this is the lambda zip, must be a relative path
+# eg "BackupLambda.zip"
+variable "backup_lambda_output_path" {
+  description = "Relative path to the BackupLambda zip"
+  default = ""
+}
+
+# output prefix of encrypted SSH key, region will be appended to the filename
+variable "enc_ssh_path" {
+  description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
+  default = ""
+}
+
+# key on S3 bucket
+variable "enc_ssh_key" {
+  description = "The key to access the encrypted SSH key on the S3 bucket"
+  default = "enc_ssh"
+}
+
+variable "backup_lambda_ssh_user" {
+  description = "SSH user for connecting to nodes."
+  default = "ubuntu"
+}
+
+variable "backup_lambda_ssh_pass" {
+  description = "SSH password to use for connecting to nodes. If not specified, uses the backup_lambda_ssh_private_key or backup_lambda_ssh_private_key_path."
+  default = ""
 }

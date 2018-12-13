@@ -470,3 +470,80 @@ variable "observer_node_counts" {
     sa-east-1      = 0
   }
 }
+
+
+variable "backup_lambda_binary" {
+  description = "Name of BackupLambda binary"
+  default = "BackupLambda"
+}
+
+variable "backup_lambda_binary_url" {
+  description = <<DESCRIPTION
+URL to retrieve the Backup Lambda binary from.
+DESCRIPTION
+  default    = "https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda.zip"
+}
+
+variable "backup_lambda_ssh_private_key" {
+  description = <<DESCRIPTION
+SSH private key to be used for authentication.
+DESCRIPTION
+  default     = ""
+}
+
+variable "backup_lambda_ssh_private_key_path" {
+  description = <<DESCRIPTION
+Path to the SSH private key to be used for authentication.
+Ensure this keypair is added to your local SSH agent so provisioners can
+connect.
+Example: ~/.ssh/terraform
+DESCRIPTION
+  default     = ""
+}
+
+# this is the lambda zip, must be a relative path
+# eg "BackupLambda.zip"
+variable "backup_lambda_output_path" {
+  description = "Relative path to the BackupLambda zip, which will be generated from the backup binary"
+  default = "BackupLambda.zip"
+}
+
+# output prefix of encrypted SSH key, region will be appended to the filename
+variable "enc_ssh_path" {
+  description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"
+  default = "enc-ssh"
+}
+
+# key on S3 bucket
+variable "enc_ssh_key" {
+  description = "The key to access the encrypted SSH key on the S3 bucket"
+  default = "enc-ssh"
+}
+
+variable "backup_interval" {
+  description = <<DESCRIPTION
+Schedule expression for backup event, see https://docs.aws.amazon.com/lambda/latest/dg/tutorial-scheduled-events-schedule-expressions.html for examples.
+cron(45 08 ? * WED *) will trigger every WED at 8 45 am GMT
+cron(05 13 ? * MON *) will trigger every MON at 1 05 pm GMT
+rate(3 mins) will trigger every 3 minutes
+rate(7 hours) will trigger every 7 hours
+DESCRIPTION
+  default     = "rate(4 hours)"
+}
+
+variable "backup_enabled" {
+  description = <<DESCRIPTION
+Enable backup of chain data.
+DESCRIPTION
+  default = "true"
+}
+
+variable "backup_lambda_ssh_user" {
+  description = "SSH user for connecting to nodes."
+  default = "ubuntu"
+}
+
+variable "backup_lambda_ssh_pass" {
+  description = "SSH password to use for connecting to nodes. If not specified, uses the backup_lambda_ssh_private_key or backup_lambda_ssh_private_key_path."
+  default = ""
+}
