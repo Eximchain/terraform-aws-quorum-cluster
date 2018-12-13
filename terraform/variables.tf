@@ -528,7 +528,7 @@ cron(05 13 ? * MON *) will trigger every MON at 1 05 pm GMT
 rate(3 mins) will trigger every 3 minutes
 rate(7 hours) will trigger every 7 hours
 DESCRIPTION
-  default     = "rate(4 hours)"
+  default     = "rate(4 days)"
 }
 
 variable "backup_enabled" {
