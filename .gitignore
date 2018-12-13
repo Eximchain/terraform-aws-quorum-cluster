@@ -7,5 +7,6 @@ terraform/cert-tool/terraform.tfvars
 terraform/cert-tool/terraform.tfstate*
 terraform/cert-tool/.terraform*
 
+terraform/modules/quorum-cluster-region/temp
+
 .vscode/
-terraform/temp
