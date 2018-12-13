@@ -113,7 +113,8 @@ resource "aws_lambda_function" "backup_lambda" {
             NetworkId = "${var.network_id}"
             Bucket    = "${aws_s3_bucket.quorum_backup.id}"
             Key       = "${var.enc_ssh_key}"
-            SSHUser   = "ubuntu"
+            SSHUser   = "${var.backup_lambda_ssh_user}"
+            SSHPass   = "${var.backup_lambda_ssh_pass}"
         }
     }
 

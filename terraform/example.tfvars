@@ -103,3 +103,6 @@ backup_lambda_binary_url           = "https://github.com/EximChua/BackupLambda/r
 backup_lambda_output_path          = "BackupLambda.zip"
 backup_lambda_ssh_private_key_path = ""
 backup_lambda_ssh_private_key      = ""
+backup_lambda_ssh_user             = "ubuntu"
+backup_lambda_ssh_pass             = ""
+

@@ -465,3 +465,13 @@ Enable backup of chain data.
 DESCRIPTION
   default = "false"
 }
+
+variable "backup_lambda_ssh_user" {
+  description = "SSH user for connecting to nodes."
+  default = "ubuntu"
+}
+
+variable "backup_lambda_ssh_pass" {
+  description = "SSH password to use for connecting to nodes. If not specified, uses the backup_lambda_ssh_private_key or backup_lambda_ssh_private_key_path."
+  default = ""
+}

@@ -79,4 +79,6 @@ module "quorum_cluster" {
   backup_lambda_output_path          = "${var.backup_lambda_output_path}"
   enc_ssh_path                       = "${var.enc_ssh_path}"
   enc_ssh_key                        = "${var.enc_ssh_key}"
+  backup_lambda_ssh_user             = "${var.backup_lambda_ssh_user}"
+  backup_lambda_ssh_pass             = "${var.backup_lambda_ssh_pass}" 
 }
