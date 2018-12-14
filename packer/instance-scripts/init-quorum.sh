@@ -31,8 +31,7 @@ function generate_quorum_supervisor_config {
     local KEYSTORE="$LOCAL_DATA_DIR/keystore/"
     local IPC_PATH="$LOCAL_DATA_DIR/geth.ipc"
 
-    # TODO: Add --privateconfigpath once private transactions are pulled into geth
-    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --rpcvhosts $HOSTNAME --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE --ipcpath $IPC_PATH"
+    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --rpcvhosts $HOSTNAME --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE --ipcpath $IPC_PATH --privateconfigpath $CONSTELLATION_CONFIG"
 
     # Assemble list of bootnodes
     local BOOTNODES=""
