@@ -175,6 +175,7 @@ function generate_genesis_file {
     local REGIONS=$(cat /opt/quorum/info/regions.txt)
     local VOTE_THRESHOLD=$(cat /opt/quorum/info/vote-threshold.txt)
     local GAS_LIMIT=$(cat /opt/quorum/info/gas-limit.txt)
+    local CHAIN_ID=$(cat /opt/quorum/info/network-id.txt)
     local MAKERS=()
     local VALIDATORS=()
     local OBSERVERS=()
@@ -207,7 +208,7 @@ function generate_genesis_file {
     done
 
     # Generate the quorum config and genesis now that we have all the info we need
-    python /opt/quorum/bin/generate-quorum-config.py --makers ${MAKERS[@]} --validators ${VALIDATORS[@]} --observers ${OBSERVERS[@]} --vote-threshold $VOTE_THRESHOLD --gas-limit $GAS_LIMIT
+    python /opt/quorum/bin/generate-quorum-config.py --makers ${MAKERS[@]} --validators ${VALIDATORS[@]} --observers ${OBSERVERS[@]} --vote-threshold $VOTE_THRESHOLD --gas-limit $GAS_LIMIT --chain-id $CHAIN_ID
     (cd /opt/quorum/private && quorum-genesis)
 
     # Make sure genesis file exists before continuing
