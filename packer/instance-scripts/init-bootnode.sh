@@ -85,6 +85,7 @@ AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
 IP_ADDR=$(cat /opt/quorum/info/public-ip.txt)
 USING_EIP=$(cat /opt/quorum/info/using-eip.txt)
 EIP_ID=$(cat /opt/quorum/info/eip-id.txt)
+CLUSTER_INDEX=$(cat /opt/quorum/info/overall-index.txt)
 INSTANCE_ID=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/instance-id')
 BOOT_PORT=30301
 
@@ -113,7 +114,7 @@ BOOT_ADDR=$(vault read -field=enode quorum/bootnodes/addresses/$AWS_REGION/$INDE
 if [ $? -eq 0 ]
 then
     # Address already in vault, this is a replacement instance
-    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw qorum/bootnodes/passwords/$AWS_REGION/$INDEX")
+    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw quorum/bootnodes/passwords/$AWS_REGION/$INDEX")
     BOOT_PUB=$(wait_for_successful_command "vault read -field=pub_key quorum/bootnodes/addresses/$AWS_REGION/$INDEX")
     BOOT_KEY=$(wait_for_successful_command "vault read -field=bootnode_key quorum/bootnodes/keys/$AWS_REGION/$INDEX")
     echo $BOOT_KEY > $BOOT_KEY_FILE
@@ -125,7 +126,7 @@ then
 elif [ -e $BOOT_ADDR_FILE ]
 then
     # Address in file but not in vault yet, this is a process restart
-    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw qorum/bootnodes/passwords/$AWS_REGION/$INDEX")
+    CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw quorum/bootnodes/passwords/$AWS_REGION/$INDEX")
     BOOT_ADDR=$(cat $BOOT_ADDR_FILE)
     BOOT_PUB=$(cat $BOOT_PUB_FILE)
     BOOT_KEY=$(cat $BOOT_KEY_FILE)
