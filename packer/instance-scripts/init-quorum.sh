@@ -12,6 +12,42 @@ function wait_for_successful_command {
     done
 }
 
+function generate_crux_supervisor_config {
+  local HOSTNAME=$1
+
+  local GRPC_PORT="8090"
+  local HTTP_PORT="9000"
+  local VERBOSITY="3"
+
+  local REGIONS=$(cat /opt/quorum/info/regions.txt)
+  local OTHER_NODES=""
+
+  # Configure crux othernodes with bootnode IPs
+  for region in ${REGIONS[@]}
+  do
+      local NUM_BOOTNODES=$(cat /opt/quorum/info/bootnode-counts/${region}.txt)
+      for index in $(seq 0 $(expr $NUM_BOOTNODES - 1))
+      do
+          BOOTNODE=$(wait_for_successful_command "vault read -field=hostname quorum/bootnodes/addresses/${region}/$index")
+          OTHER_NODES="$OTHER_NODES,http://$BOOTNODE:9000/"
+      done
+  done
+  OTHER_NODES=${OTHER_NODES:1}
+
+  # TODO: Persistent storage on s3fs or efs
+  COMMAND="crux --url=http://$HOSTNAME:$HTTP_PORT/ --networkinterface=0.0.0.0 --port=$HTTP_PORT --grpcport=$GRPC_PORT --workdir=/opt/quorum/constellation --publickeys=private/constellation.pub --privatekeys=private/constellation.key --verbosity=$VERBOSITY --othernodes=$OTHER_NODES"
+
+  echo "[program:crux]
+command=$COMMAND
+stdout_logfile=/opt/quorum/log/crux-stdout.log
+stderr_logfile=/opt/quorum/log/crux-error.log
+numprocs=1
+autostart=true
+autorestart=unexpected
+stopsignal=INT
+user=ubuntu" | sudo tee /etc/supervisor/conf.d/crux-supervisor.conf
+}
+
 function generate_quorum_supervisor_config {
     local ADDRESS=$1
     local PASSWORD=$2
@@ -27,11 +63,12 @@ function generate_quorum_supervisor_config {
     local CHAIN_DATA_DIR=$(cat /opt/quorum/info/chain-data-dir.txt)
     local VERBOSITY=$(cat /opt/quorum/info/geth-verbosity.txt)
 
+    local CRUX_IPC="/opt/quorum/constellation/crux.ipc"
     local LOCAL_DATA_DIR="/home/ubuntu/.ethereum"
     local KEYSTORE="$LOCAL_DATA_DIR/keystore/"
     local IPC_PATH="$LOCAL_DATA_DIR/geth.ipc"
 
-    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --rpcvhosts $HOSTNAME --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE --ipcpath $IPC_PATH --privateconfigpath $CONSTELLATION_CONFIG"
+    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --rpcvhosts $HOSTNAME --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE --ipcpath $IPC_PATH --privateconfigpath $CRUX_IPC"
 
     # Assemble list of bootnodes
     local BOOTNODES=""
@@ -348,7 +385,7 @@ then
     # Generate constellation keys if they weren't generated last run
     if [ ! -e /opt/quorum/constellation/private/constellation.* ]
     then
-        echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation
+        crux --generate-keys=/opt/quorum/constellation/private/constellation
     fi
 else
     # This is the first run, generate a new key and password
@@ -360,7 +397,7 @@ else
     # Generate the new key pair
     ADDRESS=0x$(echo -ne "$GETH_PW\n$GETH_PW\n" | geth account new | grep Address | awk '{ gsub("{|}", "") ; print $2 }')
     # Generate constellation keys
-    echo "$CONSTELLATION_PW" | constellation-node --generatekeys=/opt/quorum/constellation/private/constellation
+    crux --generate-keys=/opt/quorum/constellation/private/constellation
 fi
 CONSTELLATION_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation.pub)
 CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key)
@@ -383,8 +420,6 @@ wait_for_successful_command "vault write quorum/addresses/$AWS_REGION/$CLUSTER_I
 wait_for_all_nodes
 wait_for_all_bootnodes
 
-complete_constellation_config $HOSTNAME /opt/quorum/constellation/config.conf
-
 # Generate the genesis file
 generate_genesis_file
 
@@ -394,11 +429,11 @@ init_geth
 sleep 30
 
 # Run Constellation
-sudo mv /opt/quorum/private/constellation-supervisor.conf /etc/supervisor/conf.d/
+generate_crux_supervisor_config $HOSTNAME
 sudo supervisorctl reread
 sudo supervisorctl update
 
-# Sleep to let constellation-node start
+# Sleep to let crux start
 sleep 5
 
 # Generate supervisor config to run quorum
