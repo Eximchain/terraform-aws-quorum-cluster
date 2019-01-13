@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu -o pipefail
 
-RELEASE="private-transactions"
+RELEASE="vault-weyl"
 
 source /etc/profile.d/quorum-custom.sh
 git clone https://github.com/Eximchain/go-ethereum.git
