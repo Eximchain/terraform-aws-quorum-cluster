@@ -204,7 +204,8 @@ wait_for_all_bootnodes
 
 # Run the bootnode
 sudo mv /opt/quorum/private/bootnode-supervisor.conf /etc/supervisor/conf.d/
-generate_crux_supervisor_config $IP_ADDR
+# TODO: Enable crux once private transactions work
+#generate_crux_supervisor_config $IP_ADDR
 sudo supervisorctl reread
 sudo supervisorctl update
 

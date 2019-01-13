@@ -68,7 +68,8 @@ function generate_quorum_supervisor_config {
     local KEYSTORE="$LOCAL_DATA_DIR/keystore/"
     local IPC_PATH="$LOCAL_DATA_DIR/geth.ipc"
 
-    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --rpcvhosts $HOSTNAME --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE --ipcpath $IPC_PATH --privateconfigpath $CRUX_IPC"
+    # TODO: Add '--privateconfigpath $CRUX_IPC' once crux is enabled
+    local GLOBAL_ARGS="--networkid $NETID --rpc --rpcaddr $HOSTNAME --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum --rpcport 22000 --rpccorsdomain \"*\" --rpcvhosts $HOSTNAME --port 21000 --maxpeers $MAX_PEERS --verbosity $VERBOSITY --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE --ipcpath $IPC_PATH"
 
     # Assemble list of bootnodes
     local BOOTNODES=""
@@ -428,13 +429,14 @@ init_geth
 # Sleep to let constellation bootnodes start first
 sleep 30
 
+# TODO: Enable crux once private transactions work
 # Run Constellation
-generate_crux_supervisor_config $HOSTNAME
-sudo supervisorctl reread
-sudo supervisorctl update
+#generate_crux_supervisor_config $HOSTNAME
+#sudo supervisorctl reread
+#sudo supervisorctl update
 
 # Sleep to let crux start
-sleep 5
+#sleep 5
 
 # Generate supervisor config to run quorum
 generate_quorum_supervisor_config $ADDRESS $GETH_PW $HOSTNAME $ROLE /opt/quorum/constellation/config.conf
