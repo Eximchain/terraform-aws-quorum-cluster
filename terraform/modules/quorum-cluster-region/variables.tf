@@ -14,18 +14,6 @@ variable "public_key" {
   description = "The public key that will be used to SSH the instances in this region."
 }
 
-variable "vote_threshold" {
-  description = "The number of votes needed to confirm a block. This should be more than half of the number of validator nodes."
-}
-
-variable "min_block_time" {
-  description = "The minimum number of seconds a block maker should wait between proposing blocks."
-}
-
-variable "max_block_time" {
-  description = "The maximum number of seconds a block maker should wait between proposing blocks."
-}
-
 variable "vault_dns" {
   description = "The DNS name that vault will be accessible on."
 }

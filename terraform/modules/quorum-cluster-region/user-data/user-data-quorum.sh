@@ -100,9 +100,7 @@ function populate_data_files {
 
   echo "${index}" | sudo tee /opt/quorum/info/role-index.txt
   echo "${role}" | sudo tee /opt/quorum/info/role.txt
-  echo "${vote_threshold}" | sudo tee /opt/quorum/info/vote-threshold.txt
-  echo "${min_block_time}" | sudo tee /opt/quorum/info/min-block-time.txt
-  echo "${max_block_time}" | sudo tee /opt/quorum/info/max-block-time.txt
+  echo "0" | sudo tee /opt/quorum/info/vote-threshold.txt
   echo "${max_peers}" | sudo tee /opt/quorum/info/max-peers.txt
   echo "${gas_limit}" | sudo tee /opt/quorum/info/gas-limit.txt
   echo "${aws_region}" | sudo tee /opt/quorum/info/aws-region.txt
