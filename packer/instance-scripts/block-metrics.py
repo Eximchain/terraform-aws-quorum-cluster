@@ -19,8 +19,8 @@ PRIMARY_REGION_FILE = '/opt/quorum/info/primary-region.txt'
 with open(PRIMARY_REGION_FILE, 'r') as f:
     PRIMARY_REGION = f.read().strip()
 
-GETH_SUPERVISOR_PROCESS = 'quorum'
-DEFAULT_GETH_PORT = 22000
+EXIM_SUPERVISOR_PROCESS = 'quorum'
+DEFAULT_EXIM_PORT = 22000
 
 CLOUDWATCH_NAMESPACE = 'Quorum'
 CLOUDWATCH_METRIC = 'NewBlockCreated'
@@ -31,9 +31,9 @@ HOSTNAME = urllib2.urlopen("http://169.254.169.254/latest/meta-data/public-hostn
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Emit cloudwatch metrics on block creation')
-    parser.add_argument('--network-id', required=True, dest='network_id', help='ID of the network geth is currently connected to')
-    parser.add_argument('--rpc-address', default=HOSTNAME, dest='rpc_address', help='Address to reach geth RPC at')
-    parser.add_argument('--rpc-port', default=DEFAULT_GETH_PORT, dest='rpc_port', help='Port to reach geth RPC at')
+    parser.add_argument('--network-id', required=True, dest='network_id', help='ID of the network exim is currently connected to')
+    parser.add_argument('--rpc-address', default=HOSTNAME, dest='rpc_address', help='Address to reach exim RPC at')
+    parser.add_argument('--rpc-port', default=DEFAULT_EXIM_PORT, dest='rpc_port', help='Port to reach exim RPC at')
     return parser.parse_args()
 
 def emit_block_creation_metric(cloudwatch_metric):
@@ -80,7 +80,7 @@ while True:
         block_filter = eth_client.eth_newBlockFilter()
         break
     except:
-        print "Error contacting geth node. Waiting %d seconds and retrying." % (SLEEP_SECONDS)
+        print "Error contacting exim node. Waiting %d seconds and retrying." % (SLEEP_SECONDS)
         time.sleep(SLEEP_SECONDS)
 
 while True:

@@ -35,28 +35,6 @@ resource "aws_network_acl_rule" "quorum_maker_allow_all_egress" {
   cidr_block     = "0.0.0.0/0"
 }
 
-resource "aws_network_acl_rule" "quorum_maker_deny_observer_ingress" {
-  count = "${aws_network_acl.quorum_maker.count == 1 ? length(compact(var.quorum_observer_cidrs)) : 0}"
-
-  network_acl_id = "${aws_network_acl.quorum_maker.id}"
-  rule_number    = "${99 - count.index}"
-  egress         = false
-  protocol       = "-1"
-  rule_action    = "deny"
-  cidr_block     = "${element(compact(var.quorum_observer_cidrs), count.index)}"
-}
-
-resource "aws_network_acl_rule" "quorum_maker_deny_observer_egress" {
-  count = "${aws_network_acl.quorum_maker.count == 1 ? length(compact(var.quorum_observer_cidrs)) : 0}"
-
-  network_acl_id = "${aws_network_acl.quorum_maker.id}"
-  rule_number    = "${99 - count.index}"
-  egress         = true
-  protocol       = "-1"
-  rule_action    = "deny"
-  cidr_block     = "${element(compact(var.quorum_observer_cidrs), count.index)}"
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # QUORUM VALIDATOR NETWORK ACLS
 # ---------------------------------------------------------------------------------------------------------------------
@@ -129,26 +107,4 @@ resource "aws_network_acl_rule" "quorum_observer_allow_all_egress" {
   protocol       = "-1"
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
-}
-
-resource "aws_network_acl_rule" "quorum_observer_deny_maker_ingress" {
-  count = "${aws_network_acl.quorum_observer.count == 1 ? length(compact(var.quorum_maker_cidrs)) : 0}"
-
-  network_acl_id = "${aws_network_acl.quorum_observer.id}"
-  rule_number    = "${99 - count.index}"
-  egress         = false
-  protocol       = "-1"
-  rule_action    = "deny"
-  cidr_block     = "${element(compact(var.quorum_maker_cidrs), count.index)}"
-}
-
-resource "aws_network_acl_rule" "quorum_observer_deny_maker_egress" {
-  count = "${aws_network_acl.quorum_observer.count == 1 ? length(compact(var.quorum_maker_cidrs)) : 0}"
-
-  network_acl_id = "${aws_network_acl.quorum_observer.id}"
-  rule_number    = "${99 - count.index}"
-  egress         = true
-  protocol       = "-1"
-  rule_action    = "deny"
-  cidr_block     = "${element(compact(var.quorum_maker_cidrs), count.index)}"
 }
