@@ -220,8 +220,18 @@ variable "node_volume_size" {
   default     = 20
 }
 
-variable "max_peers" {
-  description = "The number of peers each node will accept."
+variable "maker_max_peers" {
+  description = "The number of peers each maker node will accept."
+  default     = 25
+}
+
+variable "validator_max_peers" {
+  description = "The number of peers each validator node will accept."
+  default     = 25
+}
+
+variable "observer_max_peers" {
+  description = "The number of peers each observer node will accept."
   default     = 25
 }
 
