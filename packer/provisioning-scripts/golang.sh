@@ -8,5 +8,10 @@ wget -q https://storage.googleapis.com/golang/$GOREL
 tar xfz $GOREL
 sudo mv go /usr/local/go
 rm -f $GOREL
-PATH=$PATH:/usr/local/go/bin
-printf "\nexport PATH=/usr/local/go/bin:$PATH" | sudo tee -a $BASH_PROFILE
+
+export GOBIN=/usr/local/go/bin
+PATH=$PATH:$GOBIN
+printf "\nexport PATH=$GOBIN:$PATH\nexport GOPATH=/usr/local/go\nexport GOBIN=/usr/local/go/bin" | sudo tee -a $BASH_PROFILE
+
+# Install dep
+curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh

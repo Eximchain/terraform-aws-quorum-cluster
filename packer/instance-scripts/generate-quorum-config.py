@@ -15,6 +15,7 @@ def parse_args():
     parser.add_argument('--owners', dest='owners', help="A list of addresses to start as owners in the governance contract")
     parser.add_argument('--vote-threshold', dest='vote_threshold', required=True, type=int, help="The number of votes required to confirm a block")
     parser.add_argument('--gas-limit', dest='gas_limit', required=True, type=int, help="The maximum gas that can be included in a single block")
+    parser.add_argument('--chain-id', dest='chain_id', type=int, default=1, help="The chainID to initialize the chain with")
     parser.add_argument('--out-file', dest='out_file', default='/opt/quorum/private/quorum-config.json', help="The command line output of 'vault read -format=json quorum/makers'")
     return parser.parse_args()
 
@@ -22,10 +23,11 @@ def main():
     args = parse_args()
 
     output = {
-        "threshold": args.vote_threshold, 
-        "gasLimit": hex(args.gas_limit).upper(), 
+        "threshold": args.vote_threshold,
+        "gasLimit": hex(args.gas_limit).upper(),
+        "chainID": args.chain_id,
         "voters": args.validators,
-        "makers": args.makers, 
+        "makers": args.makers,
         "fundedObservers": args.observers
     }
 

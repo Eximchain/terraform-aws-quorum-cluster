@@ -79,14 +79,15 @@
   },{
     "type": "shell",
     "scripts": [
-      "../provisioning-scripts/constellation.sh",
       "../provisioning-scripts/golang.sh",
+      "../provisioning-scripts/crux.sh",
       "../provisioning-scripts/solc.sh",
       "../provisioning-scripts/quorum.sh",
       "../provisioning-scripts/quorum-setup.sh",
       "../provisioning-scripts/porosity.sh",
       "../provisioning-scripts/quorum-genesis.sh",
       "../provisioning-scripts/s3fs.sh",
+      "../provisioning-scripts/efs-utils.sh",
       "../provisioning-scripts/swapfile.sh",
       "../provisioning-scripts/threatstack.sh"
     ]
@@ -131,6 +132,14 @@
     "source": "../instance-scripts/private-transaction-test-recipient.sh",
     "destination": "/tmp/private-transaction-test-recipient.sh"
   },{
+    "type": "file",
+    "source": "../instance-scripts/public-transaction-test-sender.sh",
+    "destination": "/tmp/public-transaction-test-sender.sh"
+  },{
+    "type": "file",
+    "source": "../instance-scripts/public-contract-test-sender.sh",
+    "destination": "/tmp/public-contract-test-sender.sh"
+  },{
     "type": "shell",
     "inline": [
       "sudo mv /tmp/init-quorum.sh /opt/quorum/bin/",
@@ -143,6 +152,8 @@
       "sudo mv /tmp/crashcloudwatch.py /opt/quorum/bin/",
       "sudo mv /tmp/private-transaction-test-sender.sh /opt/quorum/bin/",
       "sudo mv /tmp/private-transaction-test-recipient.sh /opt/quorum/bin/",
+      "sudo mv /tmp/public-transaction-test-sender.sh /opt/quorum/bin/",
+      "sudo mv /tmp/public-contract-test-sender.sh /opt/quorum/bin/",
       "sudo chmod 744 /opt/quorum/bin/*"
     ]
   },{

@@ -109,10 +109,10 @@ readonly FROM_CONSTELLATION_PUB_KEY=$(vault read -field=constellation_pub_key $F
 readonly FROM_HOSTNAME=$(vault read -field=hostname $FROM_PATH_ADDRESSES)
 
 readonly FROM_CONSTELLATION_PRIV_KEY=$(vault read -field=constellation_priv_key $FROM_PATH_KEYS)
-readonly FROM_GETH_KEY=$(vault read -field=geth_key $FROM_PATH_KEYS)
-readonly FROM_GETH_KEY_FILE=$(vault read -field=geth_key_file $FROM_PATH_KEYS)
+readonly FROM_EXIM_KEY=$(vault read -field=exim_key $FROM_PATH_KEYS)
+readonly FROM_EXIM_KEY_FILE=$(vault read -field=exim_key_file $FROM_PATH_KEYS)
 
-readonly FROM_GETH_PW=$(vault read -field=geth_pw $FROM_PATH_PASSWORDS)
+readonly FROM_EXIM_PW=$(vault read -field=exim_pw $FROM_PATH_PASSWORDS)
 readonly FROM_CONSTELLATION_PW=$(vault read -field=constellation_pw $FROM_PATH_PASSWORDS)
 
 # Save the to node data in the graveyard before we replace it
@@ -123,21 +123,21 @@ then
   readonly TO_HOSTNAME=$(vault read -field=hostname $TO_PATH_ADDRESSES)
 
   readonly TO_CONSTELLATION_PRIV_KEY=$(vault read -field=constellation_priv_key $TO_PATH_KEYS)
-  readonly TO_GETH_KEY=$(vault read -field=geth_key $TO_PATH_KEYS)
-  readonly TO_GETH_KEY_FILE=$(vault read -field=geth_key_file $TO_PATH_KEYS)
+  readonly TO_EXIM_KEY=$(vault read -field=exim_key $TO_PATH_KEYS)
+  readonly TO_EXIM_KEY_FILE=$(vault read -field=exim_key_file $TO_PATH_KEYS)
 
-  readonly TO_GETH_PW=$(vault read -field=geth_pw $TO_PATH_PASSWORDS)
+  readonly TO_EXIM_PW=$(vault read -field=exim_pw $TO_PATH_PASSWORDS)
   readonly TO_CONSTELLATION_PW=$(vault read -field=constellation_pw $TO_PATH_PASSWORDS)
   
   echo "Saving original node info in graveyard at path $GRAVEYARD_PATH"
-  vault write $GRAVEYARD_PATH address=$TO_ADDRESS constellation_pub_key=$TO_CONSTELLATION_PUB_KEY hostname=$TO_HOSTNAME geth_key=$TO_GETH_KEY geth_key_file=$TO_GETH_KEY_FILE constellation_priv_key=$TO_CONSTELLATION_PRIV_KEY geth_pw=$TO_GETH_PW constellation_pw=$TO_CONSTELLATION_PW
+  vault write $GRAVEYARD_PATH address=$TO_ADDRESS constellation_pub_key=$TO_CONSTELLATION_PUB_KEY hostname=$TO_HOSTNAME exim_key=$TO_EXIM_KEY exim_key_file=$TO_EXIM_KEY_FILE constellation_priv_key=$TO_CONSTELLATION_PRIV_KEY exim_pw=$TO_EXIM_PW constellation_pw=$TO_CONSTELLATION_PW
 fi
 
 # Write the From data to the To location
 # Role indexing should stay the same to keep the genesis block constant
 vault write $TO_PATH_ADDRESSES address=$FROM_ADDRESS constellation_pub_key=$FROM_CONSTELLATION_PUB_KEY hostname=$FROM_HOSTNAME
-vault write $TO_PATH_KEYS geth_key=$FROM_GETH_KEY geth_key_file=$FROM_GETH_KEY_FILE constellation_priv_key=$FROM_CONSTELLATION_PRIV_KEY
-vault write $TO_PATH_PASSWORDS geth_pw=$FROM_GETH_PW constellation_pw=$FROM_CONSTELLATION_PW
+vault write $TO_PATH_KEYS exim_key=$FROM_EXIM_KEY exim_key_file=$FROM_EXIM_KEY_FILE constellation_priv_key=$FROM_CONSTELLATION_PRIV_KEY
+vault write $TO_PATH_PASSWORDS exim_pw=$FROM_EXIM_PW constellation_pw=$FROM_CONSTELLATION_PW
 
 # Clean up from address if requested
 if [[ "$CLEANUP" == "YES" && "$GRAVEYARD_RESURRECT" == "NO" ]]

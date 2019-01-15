@@ -49,7 +49,7 @@ resource "aws_subnet" "quorum_maker" {
   map_public_ip_on_launch = true
 
   tags {
-    Name      = "quorum-network-${var.network_id}-makers"
+    Name      = "quorum-network-${var.network_id}-makers-${count.index}"
     NodeType  = "Maker"
     NetworkId = "${var.network_id}"
     Region    = "${var.aws_region}"
@@ -65,7 +65,7 @@ resource "aws_subnet" "quorum_validator" {
   map_public_ip_on_launch = true
 
   tags {
-    Name      = "quorum-network-${var.network_id}-validators"
+    Name      = "quorum-network-${var.network_id}-validators-${count.index}"
     NodeType  = "Validator"
     NetworkId = "${var.network_id}"
     Region    = "${var.aws_region}"
@@ -81,13 +81,90 @@ resource "aws_subnet" "quorum_observer" {
   map_public_ip_on_launch = true
 
   tags {
-    Name      = "quorum-network-${var.network_id}-observers"
+    Name      = "quorum-network-${var.network_id}-observers-${count.index}"
     NodeType  = "Observer"
     NetworkId = "${var.network_id}"
     Region    = "${var.aws_region}"
   }
 }
 
+resource "aws_subnet" "public" {
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  vpc_id                  = "${aws_vpc.quorum_cluster.id}"
+  availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
+  cidr_block              = "${cidrsubnet(data.template_file.quorum_backup_lambda_public_cidr_block.rendered, 3, count.index)}"
+  map_public_ip_on_launch = true
+
+  tags {
+    Name       = "quorum-network-${var.network_id}-Public-Subnet"
+    SubnetType = "Public"
+    NetworkId  = "${var.network_id}"
+    Region     = "${var.aws_region}"
+  }
+}
+
+resource "aws_subnet" "private" {
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  vpc_id                  = "${aws_vpc.quorum_cluster.id}"
+  availability_zone       = "${lookup(var.az_override, var.aws_region, "") == "" ? element(data.aws_availability_zones.available.names, count.index) : element(split(",", lookup(var.az_override, var.aws_region, "")), count.index)}"
+  cidr_block              = "${cidrsubnet(data.template_file.quorum_backup_lambda_private_cidr_block.rendered, 3, count.index)}"
+  map_public_ip_on_launch = false
+
+  tags {
+    Name       = "quorum-network-${var.network_id}-Private-Subnet"
+    SubnetType = "Private"
+    NetworkId  = "${var.network_id}"
+    Region     = "${var.aws_region}"
+  }
+}
+# ---------------------------------------------------------------------------------------------------------------------
+# ROUTING TABLES
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_route_table" "public" {
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  vpc_id = "${aws_vpc.quorum_cluster.id}"
+
+  tags {
+     Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Public"
+  }
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    gateway_id     = "${aws_internet_gateway.quorum_cluster.id}"
+  }
+}
+
+resource "aws_route_table" "private" {
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  vpc_id = "${aws_vpc.quorum_cluster.id}"
+
+  tags {
+     Name = "BackupLambdaSSH-${var.network_id}-${var.aws_region}-RouteTable-Private"
+  }
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = "${aws_nat_gateway.backup_lambda.id}"
+  }
+}
+
+resource "aws_route_table_association" "public" {
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  subnet_id      = "${aws_subnet.public.0.id}"
+  route_table_id = "${aws_route_table.public.id}"
+}
+
+resource "aws_route_table_association" "private" {
+  count = "${var.backup_enabled ? signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0)) : 0}"
+
+  subnet_id      = "${aws_subnet.private.0.id}"
+  route_table_id = "${aws_route_table.private.id}"
+}
 # ---------------------------------------------------------------------------------------------------------------------
 # QUORUM NODE ASGs
 # ---------------------------------------------------------------------------------------------------------------------
@@ -255,10 +332,7 @@ data "template_file" "user_data_quorum_maker" {
     aws_region     = "${var.aws_region}"
     primary_region = "${var.primary_region}"
 
-    vote_threshold   = "${var.vote_threshold}"
-    min_block_time   = "${var.min_block_time}"
-    max_block_time   = "${var.max_block_time}"
-    max_peers        = "${var.max_peers}"
+    max_peers        = "${var.maker_max_peers}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
 
@@ -269,6 +343,13 @@ data "template_file" "user_data_quorum_maker" {
 
     generate_metrics   = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
+
+    efs_fs_id  = "${var.use_efs ? element(coalescelist(aws_efs_file_system.chain_data.*.id, list("")), 0) : ""}"
+    efs_mt_dns = "${var.use_efs ? element(coalescelist(aws_efs_mount_target.chain_data.*.dns_name, list("")), count.index) : ""}"
+
+    chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/makers/${count.index}/ethereum/" : "/home/ubuntu/.exim/"}"
+
+    exim_verbosity = "${var.exim_verbosity}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
@@ -302,10 +383,7 @@ data "template_file" "user_data_quorum_validator" {
     aws_region     = "${var.aws_region}"
     primary_region = "${var.primary_region}"
 
-    vote_threshold   = "${var.vote_threshold}"
-    min_block_time   = "${var.min_block_time}"
-    max_block_time   = "${var.max_block_time}"
-    max_peers        = "${var.max_peers}"
+    max_peers        = "${var.validator_max_peers}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
 
@@ -316,6 +394,13 @@ data "template_file" "user_data_quorum_validator" {
 
     generate_metrics = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
+
+    efs_fs_id  = "${var.use_efs ? element(coalescelist(aws_efs_file_system.chain_data.*.id, list("")), 0) : ""}"
+    efs_mt_dns = "${var.use_efs ? element(coalescelist(aws_efs_mount_target.chain_data.*.dns_name, list("")), count.index) : ""}"
+
+    chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/validators/${count.index}/ethereum/" : "/home/ubuntu/.exim/"}"
+
+    exim_verbosity = "${var.exim_verbosity}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
@@ -349,10 +434,7 @@ data "template_file" "user_data_quorum_observer" {
     aws_region     = "${var.aws_region}"
     primary_region = "${var.primary_region}"
 
-    vote_threshold   = "${var.vote_threshold}"
-    min_block_time   = "${var.min_block_time}"
-    max_block_time   = "${var.max_block_time}"
-    max_peers        = "${var.max_peers}"
+    max_peers        = "${var.observer_max_peers}"
     gas_limit        = "${var.gas_limit}"
     network_id       = "${var.network_id}"
 
@@ -367,6 +449,13 @@ data "template_file" "user_data_quorum_observer" {
 
     generate_metrics = "${var.generate_metrics}"
     data_backup_bucket = "${aws_s3_bucket.quorum_backup.id}"
+
+    efs_fs_id  = "${var.use_efs ? element(coalescelist(aws_efs_file_system.chain_data.*.id, list("")), 0) : ""}"
+    efs_mt_dns = "${var.use_efs ? element(coalescelist(aws_efs_mount_target.chain_data.*.dns_name, list("")), count.index) : ""}"
+
+    chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/observers/${count.index}/ethereum/" : "/home/ubuntu/.exim/"}"
+
+    exim_verbosity = "${var.exim_verbosity}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
@@ -481,37 +570,67 @@ data "aws_ami" "quorum" {
 # ---------------------------------------------------------------------------------------------------------------------
 # OUTPUT INSTANCES
 # ---------------------------------------------------------------------------------------------------------------------
-data "aws_instance" "quorum_maker_node" {
-  count = "${aws_autoscaling_group.quorum_maker.count}"
+data "aws_instances" "quorum_maker_dns" {
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0)>0 ? 1 : 0}"
 
-  filter {
-    name   = "tag:aws:autoscaling:groupName"
-    values = ["${element(aws_autoscaling_group.quorum_maker.*.name, count.index)}"]
+  instance_tags {
+    Name = "quorum-network-${var.network_id}-maker-*"
   }
 
   depends_on = ["aws_autoscaling_group.quorum_maker"]
 }
 
-data "aws_instance" "quorum_validator_node" {
-  count = "${aws_autoscaling_group.quorum_validator.count}"
+data "aws_instance" "quorum_maker_node" {
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
-  filter {
-    name   = "tag:aws:autoscaling:groupName"
-    values = ["${element(aws_autoscaling_group.quorum_validator.*.name, count.index)}"]
+  instance_tags {
+    Name = "quorum-network-${var.network_id}-maker-*"
+  }
+  instance_id = "${data.aws_instances.quorum_maker_dns.ids[count.index]}"
+
+  depends_on = ["aws_autoscaling_group.quorum_maker", "data.aws_instances.quorum_maker_dns"]
+}
+
+data "aws_instances" "quorum_validator_dns" {
+  count = "${lookup(var.validator_node_counts, var.aws_region, 0)>0 ? 1 : 0}"
+
+  instance_tags {
+    Name = "quorum-network-${var.network_id}-validator-*"
   }
 
   depends_on = ["aws_autoscaling_group.quorum_validator"]
 }
 
-data "aws_instance" "quorum_observer_node" {
-  count = "${aws_autoscaling_group.quorum_observer.count}"
+data "aws_instance" "quorum_validator_node" {
+  count = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
 
-  filter {
-    name   = "tag:aws:autoscaling:groupName"
-    values = ["${element(aws_autoscaling_group.quorum_observer.*.name, count.index)}"]
+  instance_tags {
+    Name = "quorum-network-${var.network_id}-validator-*"
+  }
+  instance_id = "${data.aws_instances.quorum_validator_dns.ids[count.index]}"
+
+  depends_on = ["aws_autoscaling_group.quorum_validator", "data.aws_instances.quorum_validator_dns"]
+}
+
+data "aws_instances" "quorum_observer_dns" {
+  count = "${lookup(var.observer_node_counts, var.aws_region, 0)>0 ? 1 : 0}"
+
+  instance_tags {
+    Name = "quorum-network-${var.network_id}-observer-*"
   }
 
   depends_on = ["aws_autoscaling_group.quorum_observer"]
+}
+
+data "aws_instance" "quorum_observer_node" {
+  count = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
+
+  instance_tags {
+    Name = "quorum-network-${var.network_id}-observer-*"
+  }
+  instance_id = "${data.aws_instances.quorum_observer_dns.ids[count.index]}"
+
+  depends_on = ["aws_autoscaling_group.quorum_observer", "data.aws_instances.quorum_observer_dns"]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

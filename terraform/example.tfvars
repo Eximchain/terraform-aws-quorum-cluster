@@ -24,9 +24,6 @@ quorum_maker_instance_type     = "t2.medium"
 quorum_validator_instance_type = "t2.medium"
 quorum_observer_instance_type  = "t2.medium"
 node_volume_size               = 20
-vote_threshold                 = 1
-min_block_time                 = 2
-max_block_time                 = 5
 bootnode_counts                = {
   us-east-1      = 1
   us-east-2      = 0
@@ -95,3 +92,14 @@ observer_node_counts           = {
   ca-central-1   = 0
   sa-east-1      = 0
 }
+
+backup_enabled                     = "true"
+backup_interval                    = "cron(45 08 ? * TUE *)"
+backup_lambda_binary               = "BackupLambda"
+backup_lambda_binary_url           = "https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda.zip"
+backup_lambda_output_path          = "BackupLambda.zip"
+backup_lambda_ssh_private_key_path = ""
+backup_lambda_ssh_private_key      = ""
+backup_lambda_ssh_user             = "ubuntu"
+backup_lambda_ssh_pass             = ""
+
