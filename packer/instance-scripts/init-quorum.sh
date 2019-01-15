@@ -61,10 +61,11 @@ function generate_quorum_supervisor_config {
     local NODE_INDEX=$(cat /opt/quorum/info/overall-index.txt)
     local THIS_REGION=$(cat /opt/quorum/info/aws-region.txt)
     local CHAIN_DATA_DIR=$(cat /opt/quorum/info/chain-data-dir.txt)
-    local VERBOSITY=$(cat /opt/quorum/info/geth-verbosity.txt)
+    local VERBOSITY=$(cat /opt/quorum/info/exim-verbosity.txt)
 
+    local VAULT_PW_NAME="exim_pw"
     local CRUX_IPC="/opt/quorum/constellation/crux.ipc"
-    local LOCAL_DATA_DIR="/home/ubuntu/.ethereum"
+    local LOCAL_DATA_DIR="/home/ubuntu/.exim"
     local KEYSTORE="$LOCAL_DATA_DIR/keystore/"
     local IPC_PATH="$LOCAL_DATA_DIR/geth.ipc"
 
@@ -93,11 +94,11 @@ function generate_quorum_supervisor_config {
         ARGS="$GLOBAL_ARGS --unlock \"$ADDRESS\""
     fi
 
-    ARGS="$ARGS --vaultaddr \"$VAULT_ADDR\"  --vaultpasswordpath \"passwords/$THIS_REGION/$NODE_INDEX\""
+    ARGS="$ARGS --vaultaddr \"$VAULT_ADDR\"  --vaultpasswordpath \"passwords/$THIS_REGION/$NODE_INDEX\" --vaultpasswordname $VAULT_PW_NAME"
 
     ARGS="$ARGS --bootnodes $BOOTNODES"
 
-    local COMMAND="geth $ARGS"
+    local COMMAND="exim $ARGS"
 
     echo "[program:quorum]
 command=$COMMAND
@@ -111,13 +112,13 @@ exitcodes=0,1,2
 user=ubuntu" | sudo tee /etc/supervisor/conf.d/quorum-supervisor.conf
 }
 
-function init_geth {
+function init_exim {
   local readonly CHAIN_DATA_DIR=$(cat /opt/quorum/info/chain-data-dir.txt)
 
-  local readonly KEYSTORE="/home/ubuntu/.ethereum/keystore/"
+  local readonly KEYSTORE="/home/ubuntu/.exim/keystore/"
   local readonly GENESIS_BLOCK="/opt/quorum/private/quorum-genesis.json"
 
-  geth --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE init $GENESIS_BLOCK
+  exim --datadir $CHAIN_DATA_DIR --keystore $KEYSTORE init $GENESIS_BLOCK
 }
 
 function generate_quorum_crash_listener {
@@ -365,24 +366,24 @@ ADDRESS=$(vault read -field=address quorum/addresses/$AWS_REGION/$CLUSTER_INDEX)
 if [ $? -eq 0 ]
 then
     # Address is already in vault and this is a replacement instance.  Load info from vault
-    GETH_PW=$(wait_for_successful_command "vault read -field=geth_pw quorum/passwords/$AWS_REGION/$CLUSTER_INDEX")
+    EXIM_PW=$(wait_for_successful_command "vault read -field=exim_pw quorum/passwords/$AWS_REGION/$CLUSTER_INDEX")
     CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw quorum/passwords/$AWS_REGION/$CLUSTER_INDEX")
     # Generate constellation key files
     wait_for_successful_command "vault read -field=constellation_pub_key quorum/addresses/$AWS_REGION/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.pub
     wait_for_successful_command "vault read -field=constellation_priv_key quorum/keys/$AWS_REGION/$CLUSTER_INDEX" > /opt/quorum/constellation/private/constellation.key
-    # Generate geth key file
-    GETH_KEY_FILE_NAME=$(wait_for_successful_command "vault read -field=geth_key_file quorum/keys/$AWS_REGION/$CLUSTER_INDEX")
-    GETH_KEY_FILE_DIR="/home/ubuntu/.ethereum/keystore"
-    mkdir -p $GETH_KEY_FILE_DIR
-    GETH_KEY_FILE_PATH="$GETH_KEY_FILE_DIR/$GETH_KEY_FILE_NAME"
-    wait_for_successful_command "vault read -field=geth_key quorum/keys/$AWS_REGION/$CLUSTER_INDEX" > $GETH_KEY_FILE_PATH
-elif [ -e /home/ubuntu/.ethereum/keystore/* ]
+    # Generate exim key file
+    EXIM_KEY_FILE_NAME=$(wait_for_successful_command "vault read -field=exim_key_file quorum/keys/$AWS_REGION/$CLUSTER_INDEX")
+    EXIM_KEY_FILE_DIR="/home/ubuntu/.exim/keystore"
+    mkdir -p $EXIM_KEY_FILE_DIR
+    EXIM_KEY_FILE_PATH="$EXIM_KEY_FILE_DIR/$EXIM_KEY_FILE_NAME"
+    wait_for_successful_command "vault read -field=exim_key quorum/keys/$AWS_REGION/$CLUSTER_INDEX" > $EXIM_KEY_FILE_PATH
+elif [ -e /home/ubuntu/.exim/keystore/* ]
 then
     # Address was created but not stored in vault. This is a process reboot after a previous failure.
     # Load address from file and password from vault
-    GETH_PW=$(wait_for_successful_command "vault read -field=geth_pw quorum/passwords/$AWS_REGION/$CLUSTER_INDEX")
+    EXIM_PW=$(wait_for_successful_command "vault read -field=exim_pw quorum/passwords/$AWS_REGION/$CLUSTER_INDEX")
     CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw quorum/passwords/$AWS_REGION/$CLUSTER_INDEX")
-    ADDRESS=0x$(cat /home/ubuntu/.ethereum/keystore/* | jq -r .address)
+    ADDRESS=0x$(cat /home/ubuntu/.exim/keystore/* | jq -r .address)
     # Generate constellation keys if they weren't generated last run
     if [ ! -e /opt/quorum/constellation/private/constellation.* ]
     then
@@ -390,21 +391,21 @@ then
     fi
 else
     # This is the first run, generate a new key and password
-    GETH_PW=$(uuidgen -r)
+    EXIM_PW=$(uuidgen -r)
     # TODO: Get non-empty passwords to work
     CONSTELLATION_PW=""
     # Store the password first so we don't lose it
-    wait_for_successful_command "vault write quorum/passwords/$AWS_REGION/$CLUSTER_INDEX geth_pw=$GETH_PW constellation_pw=$CONSTELLATION_PW"
+    wait_for_successful_command "vault write quorum/passwords/$AWS_REGION/$CLUSTER_INDEX exim_pw=$EXIM_PW constellation_pw=$CONSTELLATION_PW"
     # Generate the new key pair
-    ADDRESS=0x$(echo -ne "$GETH_PW\n$GETH_PW\n" | geth account new | grep Address | awk '{ gsub("{|}", "") ; print $2 }')
+    ADDRESS=0x$(echo -ne "$EXIM_PW\n$EXIM_PW\n" | exim account new | grep Address | awk '{ gsub("{|}", "") ; print $2 }')
     # Generate constellation keys
     crux --generate-keys=/opt/quorum/constellation/private/constellation
 fi
 CONSTELLATION_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation.pub)
 CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key)
 HOSTNAME=$(wait_for_successful_command 'curl http://169.254.169.254/latest/meta-data/public-hostname')
-PRIV_KEY=$(cat /home/ubuntu/.ethereum/keystore/*$(echo $ADDRESS | cut -d 'x' -f2))
-PRIV_KEY_FILENAME=$(ls /home/ubuntu/.ethereum/keystore/)
+PRIV_KEY=$(cat /home/ubuntu/.exim/keystore/*$(echo $ADDRESS | cut -d 'x' -f2))
+PRIV_KEY_FILENAME=$(ls /home/ubuntu/.exim/keystore/)
 
 # Tag the instance with the ETH Address
 tag_instance_with_address $ADDRESS
@@ -414,7 +415,7 @@ ROLE=$(cat /opt/quorum/info/role.txt)
 broadcast_role_info $ROLE $AWS_REGION
 
 # Write key and address into the vault
-wait_for_successful_command "vault write quorum/keys/$AWS_REGION/$CLUSTER_INDEX geth_key=$PRIV_KEY geth_key_file=$PRIV_KEY_FILENAME constellation_priv_key=$CONSTELLATION_PRIV_KEY"
+wait_for_successful_command "vault write quorum/keys/$AWS_REGION/$CLUSTER_INDEX exim_key=$PRIV_KEY exim_key_file=$PRIV_KEY_FILENAME constellation_priv_key=$CONSTELLATION_PRIV_KEY"
 wait_for_successful_command "vault write quorum/addresses/$AWS_REGION/$CLUSTER_INDEX address=$ADDRESS constellation_pub_key=$CONSTELLATION_PUB_KEY hostname=$HOSTNAME"
 
 # Wait for all nodes to write their address to vault
@@ -424,7 +425,7 @@ wait_for_all_bootnodes
 # Generate the genesis file
 generate_genesis_file
 
-init_geth
+init_exim
 
 # Sleep to let constellation bootnodes start first
 sleep 30
@@ -439,7 +440,7 @@ sleep 30
 #sleep 5
 
 # Generate supervisor config to run quorum
-generate_quorum_supervisor_config $ADDRESS $GETH_PW $HOSTNAME $ROLE /opt/quorum/constellation/config.conf
+generate_quorum_supervisor_config $ADDRESS $EXIM_PW $HOSTNAME $ROLE /opt/quorum/constellation/config.conf
 
 # Start processes that generate CloudWatch metrics
 if [ $(cat /opt/quorum/info/generate-metrics.txt) == "1" ]

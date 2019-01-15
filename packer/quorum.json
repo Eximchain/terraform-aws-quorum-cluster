@@ -80,8 +80,8 @@
     "type": "shell",
     "scripts": [
       "provisioning-scripts/binutils-update.sh",
-      "provisioning-scripts/constellation.sh",
       "provisioning-scripts/golang.sh",
+      "provisioning-scripts/crux.sh",
       "provisioning-scripts/solc.sh",
       "provisioning-scripts/quorum.sh",
       "provisioning-scripts/quorum-setup.sh",

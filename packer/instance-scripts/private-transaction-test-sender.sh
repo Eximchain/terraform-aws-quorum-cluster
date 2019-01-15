@@ -2,7 +2,7 @@
 set -eu -o pipefail
 
 # Source the IPC path
-GETH_IPC=$(cat /opt/quorum/info/geth-ipc.txt)
+EXIM_IPC=$(cat /opt/quorum/info/exim-ipc.txt)
 
 # Constellation public key of the recipient
 RECIPIENT_PUB_KEY=$1
@@ -40,5 +40,5 @@ var simpleContract = web3.eth.contract(simpleAbi);
 var simple = simpleContract.new(42, {from:web3.eth.accounts[0], data: simpleCompiled, gas: 300000, privateFor: ["$RECIPIENT_PUB_KEY"]}, simpleCallback);
 EOF
 
-# Attach the geth console and execute the script
-geth --preload $OUTPUT_SCRIPT attach $GETH_IPC
+# Attach the exim console and execute the script
+exim --preload $OUTPUT_SCRIPT attach $EXIM_IPC

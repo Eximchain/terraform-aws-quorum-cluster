@@ -2,9 +2,9 @@
 set -eu -o pipefail
 
 # Source the IPC path
-GETH_IPC=$(cat /opt/quorum/info/geth-ipc.txt)
+EXIM_IPC=$(cat /opt/quorum/info/exim-ipc.txt)
 
-# geth address public key of the recipient
+# exim address public key of the recipient
 RECIPIENT_ADDRESS=$1
 
 
@@ -30,5 +30,5 @@ console.log(recipient);
 eth.sendTransaction({from: eth.coinbase, to: recipient, value: web3.toWei(1, "ether")});
 EOF
 
-# Attach the geth console and execute the script
-geth --preload $OUTPUT_SCRIPT attach $GETH_IPC
+# Attach the exim console and execute the script
+exim --preload $OUTPUT_SCRIPT attach $EXIM_IPC

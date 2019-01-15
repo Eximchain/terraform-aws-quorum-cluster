@@ -6,21 +6,21 @@
 set -eu
 
 readonly BASH_PROFILE_FILE="/etc/profile.d/quorum-custom.sh"
-readonly GETH_IPC_PATH_LOCAL="/home/ubuntu/.ethereum/geth.ipc"
+readonly EXIM_IPC_PATH_LOCAL="/home/ubuntu/.exim/geth.ipc"
 readonly VAULT_TLS_CERT_DIR="/opt/vault/tls"
 readonly CA_TLS_CERT_FILE="$VAULT_TLS_CERT_DIR/ca.crt.pem"
 
 # This is necessary to retrieve the address for vault
 echo '' | sudo tee -a $BASH_PROFILE_FILE
 echo "export VAULT_ADDR=https://${vault_dns}:${vault_port}
-export GETH_IPC_PATH=$GETH_IPC_PATH_LOCAL
-export GETH_IPC=ipc:$GETH_IPC_PATH_LOCAL
+export EXIM_IPC_PATH=$EXIM_IPC_PATH_LOCAL
+export EXIM_IPC=ipc:$EXIM_IPC_PATH_LOCAL
 
-function pause-geth {
+function pause-exim {
   sudo supervisorctl stop quorum
 }
 
-function resume-geth {
+function resume-exim {
   sudo supervisorctl start quorum
 }" | sudo tee -a $BASH_PROFILE_FILE
 source $BASH_PROFILE_FILE
@@ -57,7 +57,7 @@ function setup_mounts {
   fi
   sudo mount -a
 
-  # Give ownership back to the user running geth
+  # Give ownership back to the user running exim
   sudo chown ubuntu /opt/quorum/mnt/efs
 }
 
@@ -109,14 +109,14 @@ function populate_data_files {
   echo "${data_backup_bucket}" | sudo tee /opt/quorum/info/data-backup-bucket.txt
   echo "${network_id}" | sudo tee /opt/quorum/info/network-id.txt
   echo "https://${vault_dns}:${vault_port}" | sudo tee /opt/quorum/info/vault-address.txt
-  echo "ipc:$GETH_IPC_PATH_LOCAL" | sudo tee /opt/quorum/info/geth-ipc.txt
+  echo "ipc:$EXIM_IPC_PATH_LOCAL" | sudo tee /opt/quorum/info/exim-ipc.txt
   echo "${use_elastic_observer_ips}" | sudo tee /opt/quorum/info/using-eip.txt
   echo "${public_ip}" | sudo tee /opt/quorum/info/public-ip.txt
   echo "${eip_id}" | sudo tee /opt/quorum/info/eip-id.txt
   echo "${efs_mt_dns}" | sudo tee /opt/quorum/info/efs-dns.txt
   echo "${efs_fs_id}" | sudo tee /opt/quorum/info/efs-fsid.txt
   echo "${chain_data_dir}" | sudo tee /opt/quorum/info/chain-data-dir.txt
-  echo "${geth_verbosity}" | sudo tee /opt/quorum/info/geth-verbosity.txt
+  echo "${exim_verbosity}" | sudo tee /opt/quorum/info/exim-verbosity.txt
 
   # Download node counts
   aws configure set s3.signature_version s3v4

@@ -14,10 +14,10 @@ MAX_SIZE = 50 * 1000 * 1000
 PART_SIZE = 6 * 1000 * 1000
 
 
-CHAIN_DATA_DIR = '/home/ubuntu/.ethereum/geth/chaindata/'
+CHAIN_DATA_DIR = '/home/ubuntu/.exim/exim/chaindata/'
 
-GETH_SUPERVISOR_PROCESS = 'quorum'
-GETH_PORT = 22000
+EXIM_SUPERVISOR_PROCESS = 'quorum'
+EXIM_PORT = 22000
 
 BACKUP_BUCKET_FILE = '/opt/quorum/info/data-backup-bucket.txt'
 
@@ -25,7 +25,7 @@ hostname = urllib2.urlopen("http://169.254.169.254/latest/meta-data/public-hostn
 
 supervisor_client = xmlrpclib.Server('http://localhost:9001/RPC2').supervisor
 s3 = boto3.resource('s3')
-eth_client = EthJsonRpc(hostname, GETH_PORT)
+eth_client = EthJsonRpc(hostname, EXIM_PORT)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Back up and restore chain data')
@@ -38,13 +38,13 @@ def parse_args():
     parser_restore.add_argument('--bucket', dest='bucket_id', help='Specify an alternate AWS S3 bucket ID to restore from')
     return parser.parse_args()
 
-def pause_geth():
-    supervisor_client.stopProcess(GETH_SUPERVISOR_PROCESS)
-    print 'Geth Paused'
+def pause_exim():
+    supervisor_client.stopProcess(EXIM_SUPERVISOR_PROCESS)
+    print 'Exim Paused'
 
-def resume_geth():
-    supervisor_client.startProcess(GETH_SUPERVISOR_PROCESS)
-    print 'Geth Resumed'
+def resume_exim():
+    supervisor_client.startProcess(EXIM_SUPERVISOR_PROCESS)
+    print 'Exim Resumed'
 
 def s3_upload(bucket_name, source_dir, dest_dir):
     upload_file_names = []
@@ -139,7 +139,7 @@ def execute_command(args):
     try:
         if args.command == 'backup':
             current_block = eth_client.eth_blockNumber()
-            pause_geth()
+            pause_exim()
             if backup_exists(backup_bucket, current_block):
                 if args.force:
                     print 'Backup already found for block %s, OVERWRITING due to --force' % (current_block)
@@ -148,10 +148,10 @@ def execute_command(args):
                     return
             backup_chain_data(backup_bucket, current_block)
         elif args.command == 'restore':
-            pause_geth()
+            pause_exim()
             restore_chain_data(backup_bucket, args.block_to_restore)
     finally:
-        resume_geth()
+        resume_exim()
 
 args = parse_args()
 execute_command(args)

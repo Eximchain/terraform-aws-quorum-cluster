@@ -16,7 +16,7 @@ Table of Contents
          * [Unseal additional vault servers](#unseal-additional-vault-servers)
       * [Access the Quorum Node](#access-the-quorum-node)
          * [Check processes have started](#check-processes-have-started)
-         * [Attach the Geth Console](#attach-the-geth-console)
+         * [Attach the Exim Console](#attach-the-exim-console)
          * [Run Private Transaction Test](#run-private-transaction-test)
             * [Deploy the private contract](#deploy-the-private-contract)
          * [Destroy the Network](#destroy-the-network)
@@ -261,17 +261,17 @@ $ vault operator unseal $UNSEAL_KEY
 
 ## Access the Quorum Node
 
-SSH any quorum node and wait for the geth and constellation processes to start. There is an intentional delay to allow bootnodes to start first.
+SSH any quorum node and wait for the exim and constellation processes to start. There is an intentional delay to allow bootnodes to start first.
 
 ### Check processes have started
 
-One way to check is to inspect the log folder. If geth and constellation have started, we expect to find logs for `constellation` and `quorum`, not just `init-quorum`.
+One way to check is to inspect the log folder. If exim and constellation have started, we expect to find logs for `constellation` and `quorum`, not just `init-quorum`.
 
 ```sh
 $ ls /opt/quorum/log
 ```
 
-Another way is to check the supervisor config folder. if geth and constellation have started, we expect to find files `quorum-supervisor.conf` and `constellation-supervisor.conf`.
+Another way is to check the supervisor config folder. if exim and constellation have started, we expect to find files `quorum-supervisor.conf` and `constellation-supervisor.conf`.
 
 ```sh
 $ ls /etc/supervisor/conf.d
@@ -281,15 +281,15 @@ Finally, you can check for the running processes themselves.  Expect to find a r
 
 ```sh
 $ ps -aux | grep constellation-node
-$ ps -aux | grep geth
+$ ps -aux | grep exim
 ```
 
-### Attach the Geth Console
+### Attach the Exim Console
 
-Once the processes are all running, you can attach your console to the geth JavaScript console
+Once the processes are all running, you can attach your console to the exim JavaScript console
 
 ```sh
-$ geth attach
+$ exim attach
 ```
 
 You should be able to see your other nodes as peers
@@ -325,7 +325,7 @@ $ RECIPIENT_PUB_KEY=$(vault read -field=constellation_pub_key quorum/addresses/u
 $ /opt/quorum/bin/private-transaction-test-sender.sh $RECIPIENT_PUB_KEY
 ```
 
-The geth console will be attached. Wait for output indicating the contract was mined, which should appear as follows:
+The exim console will be attached. Wait for output indicating the contract was mined, which should appear as follows:
 
 ```javascript
 > Contract mined! Address: 0x74d977a43deaac2281b6f3d489719f6d2e4aae74
@@ -339,7 +339,7 @@ $ CONTRACT_ADDR=<Address of the mined private contract>
 $ /opt/quorum/bin/private-transaction-test-recipient.sh $CONTRACT_ADDR
 ```
 
-The geth console will be attached and the private contract will be loaded. Both the sender and recipient should be able to get the following result from querying the contract:
+The exim console will be attached and the private contract will be loaded. Both the sender and recipient should be able to get the following result from querying the contract:
 
 ```javascript
 > simple.get()
@@ -477,7 +477,7 @@ The following major components are included in a `quorum-cluster-region`:
     * Access to the bootnode discovery port from anywhere
     * Local access to the RPC port
     * Local access to the supervisor RPC port
-  * Network ACL rules preventing makers and supervisors from communicating on their geth ports (see [Network Topology](#network-topology) for more details)
+  * Network ACL rules preventing makers and supervisors from communicating on their exim ports (see [Network Topology](#network-topology) for more details)
 
 The following modules contain supporting functionality
 
@@ -499,7 +499,7 @@ Currently this provides a fixed well-known DNS for the vault load balancer so th
 
 This creates peering connections between the vault VPC and each quorum VPC, as well as between each pair of quorum VPCs. The result is that all VPCs except the bootnode VPCs are connected to each other via peering connections, and can communicate over them.
 
-This has desirable properties. One is that the vault load balancer can be kept internal, reducing the attack surface for the vault server. Another is that geth processes establish connections using their private IPs, which allows us to set cross-region security group rules based on private IP CIDR ranges. This is important in enforcing the [Network Topology](#network-topology).
+This has desirable properties. One is that the vault load balancer can be kept internal, reducing the attack surface for the vault server. Another is that exim processes establish connections using their private IPs, which allows us to set cross-region security group rules based on private IP CIDR ranges. This is important in enforcing the [Network Topology](#network-topology).
 
 ## Diagrams
 

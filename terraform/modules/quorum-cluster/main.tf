@@ -295,7 +295,7 @@ module "quorum_cluster_us_east_1" {
 
   use_efs = "${var.use_efs}"
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -432,7 +432,7 @@ module "quorum_cluster_us_east_2" {
 
   use_efs = "${var.use_efs}"
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -569,7 +569,7 @@ module "quorum_cluster_us_west_1" {
 
   use_efs = "${var.use_efs}"
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -706,7 +706,7 @@ module "quorum_cluster_us_west_2" {
 
   use_efs = "${var.use_efs}"
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -843,7 +843,7 @@ module "quorum_cluster_eu_central_1" {
 
   use_efs = "${var.use_efs}"
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -980,7 +980,7 @@ module "quorum_cluster_eu_west_1" {
 
   use_efs = "${var.use_efs}"
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -1118,7 +1118,7 @@ module "quorum_cluster_eu_west_2" {
   # EFS not yet available in eu-west-2
   use_efs = false
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -1256,7 +1256,7 @@ module "quorum_cluster_ap_south_1" {
   # EFS not yet available in ap-south-1
   use_efs = false
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -1393,7 +1393,7 @@ module "quorum_cluster_ap_northeast_1" {
 
   use_efs = "${var.use_efs}"
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -1530,7 +1530,7 @@ module "quorum_cluster_ap_northeast_2" {
 
   use_efs = "${var.use_efs}"
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -1667,7 +1667,7 @@ module "quorum_cluster_ap_southeast_1" {
 
   use_efs = "${var.use_efs}"
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -1804,7 +1804,7 @@ module "quorum_cluster_ap_southeast_2" {
 
   use_efs = "${var.use_efs}"
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -1942,7 +1942,7 @@ module "quorum_cluster_ca_central_1" {
   # EFS not yet available in ca-central-1
   use_efs = false
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"
@@ -2080,7 +2080,7 @@ module "quorum_cluster_sa_east_1" {
   # EFS not yet available in sa-east-1
   use_efs = false
 
-  geth_verbosity = "${var.geth_verbosity}"
+  exim_verbosity = "${var.exim_verbosity}"
 
   use_dedicated_bootnodes  = "${var.use_dedicated_bootnodes}"
   use_dedicated_makers     = "${var.use_dedicated_makers}"

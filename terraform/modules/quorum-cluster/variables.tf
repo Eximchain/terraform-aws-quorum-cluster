@@ -160,8 +160,8 @@ variable "use_efs" {
   default     = false
 }
 
-variable "geth_verbosity" {
-  description = "The verbosity level of the geth process as an integer from 1 to 5. 0=silent, 1=error, 2=warn, 3=info, 4=debug, 5=detail."
+variable "exim_verbosity" {
+  description = "The verbosity level of the exim process as an integer from 1 to 5. 0=silent, 1=error, 2=warn, 3=info, 4=debug, 5=detail."
   default = "2"
 }
 

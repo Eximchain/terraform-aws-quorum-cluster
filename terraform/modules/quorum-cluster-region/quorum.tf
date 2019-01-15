@@ -347,9 +347,9 @@ data "template_file" "user_data_quorum_maker" {
     efs_fs_id  = "${var.use_efs ? element(coalescelist(aws_efs_file_system.chain_data.*.id, list("")), 0) : ""}"
     efs_mt_dns = "${var.use_efs ? element(coalescelist(aws_efs_mount_target.chain_data.*.dns_name, list("")), count.index) : ""}"
 
-    chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/makers/${count.index}/ethereum/" : "/home/ubuntu/.ethereum/"}"
+    chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/makers/${count.index}/ethereum/" : "/home/ubuntu/.exim/"}"
 
-    geth_verbosity = "${var.geth_verbosity}"
+    exim_verbosity = "${var.exim_verbosity}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
@@ -398,9 +398,9 @@ data "template_file" "user_data_quorum_validator" {
     efs_fs_id  = "${var.use_efs ? element(coalescelist(aws_efs_file_system.chain_data.*.id, list("")), 0) : ""}"
     efs_mt_dns = "${var.use_efs ? element(coalescelist(aws_efs_mount_target.chain_data.*.dns_name, list("")), count.index) : ""}"
 
-    chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/validators/${count.index}/ethereum/" : "/home/ubuntu/.ethereum/"}"
+    chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/validators/${count.index}/ethereum/" : "/home/ubuntu/.exim/"}"
 
-    geth_verbosity = "${var.geth_verbosity}"
+    exim_verbosity = "${var.exim_verbosity}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
@@ -453,9 +453,9 @@ data "template_file" "user_data_quorum_observer" {
     efs_fs_id  = "${var.use_efs ? element(coalescelist(aws_efs_file_system.chain_data.*.id, list("")), 0) : ""}"
     efs_mt_dns = "${var.use_efs ? element(coalescelist(aws_efs_mount_target.chain_data.*.dns_name, list("")), count.index) : ""}"
 
-    chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/observers/${count.index}/ethereum/" : "/home/ubuntu/.ethereum/"}"
+    chain_data_dir = "${var.use_efs ? "/opt/quorum/mnt/efs/observers/${count.index}/ethereum/" : "/home/ubuntu/.exim/"}"
 
-    geth_verbosity = "${var.geth_verbosity}"
+    exim_verbosity = "${var.exim_verbosity}"
 
     vault_dns  = "${var.vault_dns}"
     vault_port = "${var.vault_port}"
