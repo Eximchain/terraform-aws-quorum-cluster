@@ -4,7 +4,10 @@
 resource "aws_route53_zone" "root" {
   name    = "${var.root_domain}"
   comment = "Shared internal DNS for network ${var.network_id}"
-  vpc_id  = "${var.primary_vpc}"
+
+  vpc {
+    vpc_id = "${var.primary_vpc}"
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
