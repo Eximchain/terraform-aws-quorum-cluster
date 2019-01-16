@@ -127,14 +127,6 @@ EOF
 # ---------------------------------------------------------------------------------------------------------------------
 # NETWORKING CIDR RANGES
 # ---------------------------------------------------------------------------------------------------------------------
-data "template_file" "system_cidr_block" {
-  template = "$${cidr_block}"
-
-  vars {
-    cidr_block = "${cidrsubnet(var.quorum_vpc_cidr, 0, 0)}"
-  }
-}
-
 data "template_file" "quorum_cidr_block" {
   template = "$${cidr_block}"
 
@@ -155,7 +147,7 @@ data "template_file" "quorum_maker_cidr_block" {
   template = "$${cidr_block}"
 
   vars {
-    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 0)}"
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 0)}"
   }
 }
 
@@ -163,7 +155,7 @@ data "template_file" "quorum_validator_cidr_block" {
   template = "$${cidr_block}"
 
   vars {
-    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 1)}"
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 1)}"
   }
 }
 
@@ -171,7 +163,7 @@ data "template_file" "quorum_observer_cidr_block" {
   template = "$${cidr_block}"
 
   vars {
-    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 2)}"
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 2)}"
   }
 }
 
@@ -179,23 +171,7 @@ data "template_file" "efs_mt_cidr_block" {
   template = "$${cidr_block}"
 
   vars {
-    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 3)}"
-  }
-}
-
-data "template_file" "quorum_backup_lambda_private_cidr_block" {
-  template = "$${cidr_block}"
-
-  vars {
-    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 4)}"
-  }
-}
-
-data "template_file" "quorum_backup_lambda_public_cidr_block" {
-  template = "$${cidr_block}"
-
-  vars {
-    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 3, 5)}"
+    cidr_block = "${cidrsubnet(data.template_file.quorum_cidr_block.rendered, 2, 3)}"
   }
 }
 

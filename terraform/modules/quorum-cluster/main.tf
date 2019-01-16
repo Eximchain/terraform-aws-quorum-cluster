@@ -26,12 +26,6 @@ data "local_file" "public_key" {
   filename = "${var.public_key_path}"
 }
 
-data "local_file" "backup_lambda_ssh_private_key" {
-  count = "${var.backup_enabled && var.backup_lambda_ssh_private_key == "" ? 1 : 0}"
-
-  filename = "${var.backup_lambda_ssh_private_key_path}"
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # S3 NODE COUNTS
 # ---------------------------------------------------------------------------------------------------------------------
@@ -263,18 +257,7 @@ module "quorum_cluster_us_east_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -403,18 +386,7 @@ module "quorum_cluster_us_east_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -543,18 +515,7 @@ module "quorum_cluster_us_west_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -683,18 +644,7 @@ module "quorum_cluster_us_west_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -823,18 +773,7 @@ module "quorum_cluster_eu_central_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -963,18 +902,7 @@ module "quorum_cluster_eu_west_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -1103,18 +1031,7 @@ module "quorum_cluster_eu_west_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -1244,18 +1161,7 @@ module "quorum_cluster_ap_south_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -1385,18 +1291,7 @@ module "quorum_cluster_ap_northeast_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -1525,18 +1420,7 @@ module "quorum_cluster_ap_northeast_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -1665,18 +1549,7 @@ module "quorum_cluster_ap_southeast_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -1805,18 +1678,7 @@ module "quorum_cluster_ap_southeast_2" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -1945,18 +1807,7 @@ module "quorum_cluster_ca_central_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -2086,18 +1937,7 @@ module "quorum_cluster_sa_east_1" {
   create_alarms            = "${var.create_alarms}"
 
   public_key  = "${var.public_key == "" ? join("", data.local_file.public_key.*.content) : var.public_key}"
-
-  backup_enabled                      = "${var.backup_enabled}"
-  backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
-  backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
-  backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
-  backup_interval                     = "${var.backup_interval}"
-  backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
-  enc_ssh_path                        = "${var.enc_ssh_path}"
-  enc_ssh_key                         = "${var.enc_ssh_key}"
+  private_key = "${var.private_key}"
 
   network_id     = "${var.network_id}"
   gas_limit      = "${var.gas_limit}"
@@ -2261,24 +2101,6 @@ module "vpc_peering_connections" {
     ca-central-1   = "${signum(lookup(var.maker_node_counts, "ca-central-1", 0) + lookup(var.validator_node_counts, "ca-central-1", 0) + lookup(var.observer_node_counts, "ca-central-1", 0))}"
     sa-east-1      = "${signum(lookup(var.maker_node_counts, "sa-east-1", 0) + lookup(var.validator_node_counts, "sa-east-1", 0) + lookup(var.observer_node_counts, "sa-east-1", 0))}"
   }
-
-  quorum_vpc_main_route_table {
-    us-east-1      = "${module.quorum_cluster_us_east_1.quorum_vpc_main_route_table_id}"
-    us-east-2      = "${module.quorum_cluster_us_east_2.quorum_vpc_main_route_table_id}"
-    us-west-1      = "${module.quorum_cluster_us_west_1.quorum_vpc_main_route_table_id}"
-    us-west-2      = "${module.quorum_cluster_us_west_2.quorum_vpc_main_route_table_id}"
-    eu-central-1   = "${module.quorum_cluster_eu_central_1.quorum_vpc_main_route_table_id}"
-    eu-west-1      = "${module.quorum_cluster_eu_west_1.quorum_vpc_main_route_table_id}"
-    eu-west-2      = "${module.quorum_cluster_eu_west_2.quorum_vpc_main_route_table_id}"
-    ap-south-1     = "${module.quorum_cluster_ap_south_1.quorum_vpc_main_route_table_id}"
-    ap-northeast-1 = "${module.quorum_cluster_ap_northeast_1.quorum_vpc_main_route_table_id}"
-    ap-northeast-2 = "${module.quorum_cluster_ap_northeast_2.quorum_vpc_main_route_table_id}"
-    ap-southeast-1 = "${module.quorum_cluster_ap_southeast_1.quorum_vpc_main_route_table_id}"
-    ap-southeast-2 = "${module.quorum_cluster_ap_southeast_2.quorum_vpc_main_route_table_id}"
-    ca-central-1   = "${module.quorum_cluster_ca_central_1.quorum_vpc_main_route_table_id}"
-    sa-east-1      = "${module.quorum_cluster_sa_east_1.quorum_vpc_main_route_table_id}"
-  }
-
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
