@@ -69,4 +69,16 @@ module "quorum_cluster" {
   vault_consul_ami = "${var.vault_consul_ami}"
   quorum_amis      = "${var.quorum_amis}"
   bootnode_amis    = "${var.bootnode_amis}"
+
+  backup_enabled                     = "${var.backup_enabled}"
+  backup_lambda_ssh_private_key_path = "${var.backup_lambda_ssh_private_key_path}"
+  backup_lambda_ssh_private_key      = "${var.backup_lambda_ssh_private_key}"
+  backup_interval                    = "${var.backup_interval}"
+  backup_lambda_binary               = "${var.backup_lambda_binary}"
+  backup_lambda_binary_url           = "${var.backup_lambda_binary_url}" 
+  backup_lambda_output_path          = "${var.backup_lambda_output_path}"
+  enc_ssh_path                       = "${var.enc_ssh_path}"
+  enc_ssh_key                        = "${var.enc_ssh_key}"
+  backup_lambda_ssh_user             = "${var.backup_lambda_ssh_user}"
+  backup_lambda_ssh_pass             = "${var.backup_lambda_ssh_pass}" 
 }
