@@ -533,7 +533,7 @@ variable "backup_enabled" {
   description = <<DESCRIPTION
 Enable backup of chain data.
 DESCRIPTION
-  default = "false"
+  default = "true"
 }
 
 variable "backup_lambda_ssh_user" {
