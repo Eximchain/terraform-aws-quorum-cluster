@@ -140,6 +140,10 @@
     "source": "../instance-scripts/public-contract-test-sender.sh",
     "destination": "/tmp/public-contract-test-sender.sh"
   },{
+    "type": "file",
+    "source": "../instance-scripts/difficulty-stats.js",
+    "destination": "/tmp/difficulty-stats.js"
+  },{
     "type": "shell",
     "inline": [
       "sudo mv /tmp/init-quorum.sh /opt/quorum/bin/",
@@ -154,6 +158,7 @@
       "sudo mv /tmp/private-transaction-test-recipient.sh /opt/quorum/bin/",
       "sudo mv /tmp/public-transaction-test-sender.sh /opt/quorum/bin/",
       "sudo mv /tmp/public-contract-test-sender.sh /opt/quorum/bin/",
+      "sudo mv /tmp/difficulty-stats.js /opt/quorum/bin/",
       "sudo chmod 744 /opt/quorum/bin/*"
     ]
   },{
