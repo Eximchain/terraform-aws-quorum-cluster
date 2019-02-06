@@ -39,5 +39,6 @@ function average(data) {
   var stdDev = Math.sqrt(variance)
   
   console.log("Difficulty statistics for last " + numBlocks + " blocks:");
+  console.log("Mean: " + difficultyAvg);
   console.log("Variance: " + variance);
   console.log("Standard Deviation: " + stdDev + "\n");
