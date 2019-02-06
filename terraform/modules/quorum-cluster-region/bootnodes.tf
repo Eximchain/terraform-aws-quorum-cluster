@@ -25,7 +25,7 @@ resource "aws_launch_configuration" "bootnodes" {
 
   name_prefix = "quorum-network-${var.network_id}-bootnode-${count.index}-"
 
-  image_id   = "${var.bootnode_ami == "" ? data.aws_ami.bootnode.id : var.bootnode_ami}"
+  image_id   = "${var.bootnode_ami == "" ? element(coalescelist(data.aws_ami.bootnode.*.id, list("")), 0) : var.bootnode_ami}"
   instance_type = "${var.bootnode_instance_type}"
   user_data = "${element(data.template_file.user_data_bootnode.*.rendered, count.index)}"
 
@@ -154,6 +154,8 @@ data "template_file" "user_data_bootnode" {
 }
 
 data "aws_ami" "bootnode" {
+  count = "${var.bootnode_ami == "" ? 1 : 0}"
+
   most_recent = true
   owners      = ["037794263736"]
 
