@@ -97,6 +97,8 @@ resource "aws_subnet" "vault_consul" {
 # AMIs
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_ami" "vault_consul" {
+  count = "${var.vault_consul_ami == "" ? 1 : 0}"
+
   most_recent = true
   owners      = ["037794263736"]
 
