@@ -57,7 +57,7 @@ resource "aws_autoscaling_group" "vault_cluster" {
 
 resource "aws_launch_configuration" "vault_cluster" {
   name_prefix   = "${data.template_file.vault_cluster_name.rendered}-"
-  image_id      = "${var.vault_consul_ami == "" ? data.aws_ami.vault_consul.id : var.vault_consul_ami}"
+  image_id      = "${var.vault_consul_ami == "" ? element(coalescelist(data.aws_ami.vault_consul.*.id, list("")), 0) : var.vault_consul_ami}"
   instance_type = "${var.vault_instance_type}"
   user_data     = "${data.template_file.user_data_vault_cluster.rendered}"
 
