@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu -o pipefail
 
-RELEASE="pow-consensus"
+RELEASE="gamma-network"
 
 git clone https://github.com/Eximchain/quorum-genesis.git /opt/quorum/lib/quorum-genesis
 cd /opt/quorum/lib/quorum-genesis
