@@ -207,6 +207,8 @@ EOF
 }
 
 resource "null_resource" "mkdir_temp" {
+  count = "${var.backup_enabled ? 1 : 0}"
+  
   triggers { always="${uuid()}" }
   provisioner "local-exec" {
     command = <<EOT
