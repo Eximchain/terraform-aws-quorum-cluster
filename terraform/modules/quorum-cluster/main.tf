@@ -7,6 +7,8 @@ terraform {
 
 provider "aws" {
   region = "${var.primary_region}"
+  
+  version = "1.56.0"
 }
 
 provider "template" {
