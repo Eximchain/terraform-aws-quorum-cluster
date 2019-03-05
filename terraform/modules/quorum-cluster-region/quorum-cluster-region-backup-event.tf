@@ -119,23 +119,32 @@ resource "aws_iam_role" "backup_lambda" {
 
   name  = "iam-for-backup-lambda-${var.network_id}-${var.aws_region}"
 # See also https://aws.amazon.com/blogs/compute/easy-authorization-of-aws-lambda-functions/
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com",
-        "Service": "events.amazonaws.com",
-        "Service": "sns.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
+  assume_role_policy = "${data.aws_iam_policy_document.backup_lambda_assume_role.json}"
 }
-EOF
+
+data "aws_iam_policy_document" "backup_lambda_assume_role" {
+  version = "2012-10-17"
+  statement {
+    sid = "1"
+
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+
+    principals {
+      type        = "Service"
+      identifiers = ["sns.amazonaws.com"]
+    }
+  }
 }
 
 resource "aws_iam_policy" "backup_lambda_permissions" {
