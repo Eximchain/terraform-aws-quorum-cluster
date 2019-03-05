@@ -86,13 +86,6 @@ DESCRIPTION
   default     = ""
 }
 
-variable "backup_lambda_ssh_private_key_path" {
-  description = <<DESCRIPTION
-Path to SSH private key to be used for authentication by the BackupLambda function.
-DESCRIPTION
-  default     = ""
-}
-
 variable "backup_lambda_ssh_private_key" {
   description = <<DESCRIPTION
 SSH private key to be used for authentication by the BackupLambda function.
@@ -408,20 +401,6 @@ variable "observer_node_counts" {
 variable "backup_lambda_binary" {
   description = "Name of BackupLambda binary"
   default = "BackupLambda"
-}
-
-variable "backup_lambda_binary_url" {
-  description = <<DESCRIPTION
-URL to retrieve the backup lambda binary.
-DESCRIPTION
-  default     = "https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda.zip"
-}
-
-# this is the lambda zip, must be a relative path
-# eg "BackupLambda.zip"
-variable "backup_lambda_output_path" {
-  description = "Relative path to the BackupLambda zip"
-  default = "BackupLambda.zip"
 }
 
 # This is the full path to the private key 
