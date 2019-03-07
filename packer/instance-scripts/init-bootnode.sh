@@ -129,7 +129,7 @@ AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
 IP_ADDR=$(cat /opt/quorum/info/public-ip.txt)
 USING_EIP=$(cat /opt/quorum/info/using-eip.txt)
 EIP_ID=$(cat /opt/quorum/info/eip-id.txt)
-CLUSTER_INDEX=$(cat /opt/quorum/info/overall-index.txt)
+CLUSTER_INDEX=$(cat /opt/quorum/info/index.txt)
 INSTANCE_ID=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/instance-id')
 BOOT_PORT=30301
 
