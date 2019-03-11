@@ -197,7 +197,7 @@ CONSTELLATION_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation.pub)
 CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key)
 
 # Write bootnode address to vault
-wait_for_successful_command "vault write quorum/bootnodes/keys/$AWS_REGION/$INDEX bootnode_key=\"$BOOT_KEY\" constellation_priv_key=\"$CONSTELLATION_PRIV_KEY\""
+wait_for_successful_command "vault write quorum/bootnodes/keys/$AWS_REGION/$INDEX bootnode_key=$BOOT_KEY constellation_priv_key=$CONSTELLATION_PRIV_KEY"
 wait_for_successful_command "vault write quorum/bootnodes/addresses/$AWS_REGION/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB hostname=$IP_ADDR constellation_pub_key=$CONSTELLATION_PUB_KEY"
 # Wait for all bootnodes to write their address to vault
 wait_for_all_bootnodes
