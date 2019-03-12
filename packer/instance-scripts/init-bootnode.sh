@@ -161,6 +161,7 @@ then
     CONSTELLATION_PW=$(wait_for_successful_command "vault read -field=constellation_pw quorum/bootnodes/passwords/$AWS_REGION/$INDEX")
     BOOT_PUB=$(wait_for_successful_command "vault read -field=pub_key quorum/bootnodes/addresses/$AWS_REGION/$INDEX")
     BOOT_KEY=$(wait_for_successful_command "vault read -field=bootnode_key quorum/bootnodes/keys/$AWS_REGION/$INDEX")
+    BOOT_ADDR="enode://$BOOT_PUB@$IP_ADDR:$BOOT_PORT"
     echo $BOOT_KEY > $BOOT_KEY_FILE
     echo $BOOT_PUB > $BOOT_PUB_FILE
     echo $BOOT_ADDR > $BOOT_ADDR_FILE
