@@ -146,7 +146,7 @@
   },{
     "type": "file",
     "source": "instance-scripts/public-contract-test-sender.sh",
-    "destination": "/tmp/public-transaction-test-sender.sh"
+    "destination": "/tmp/public-contract-test-sender.sh"
   },{
     "type": "file",
     "source": "instance-scripts/difficulty-stats.js",
