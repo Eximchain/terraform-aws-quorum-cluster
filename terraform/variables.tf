@@ -475,13 +475,6 @@ variable "backup_lambda_binary" {
   default = "BackupLambda"
 }
 
-variable "backup_lambda_binary_url" {
-  description = <<DESCRIPTION
-URL to retrieve the Backup Lambda binary from.
-DESCRIPTION
-  default    = "https://github.com/EximChua/BackupLambda/releases/download/0.1/BackupLambda.zip"
-}
-
 variable "backup_lambda_ssh_private_key" {
   description = <<DESCRIPTION
 SSH private key to be used for authentication.
@@ -497,13 +490,6 @@ connect.
 Example: ~/.ssh/terraform
 DESCRIPTION
   default     = ""
-}
-
-# this is the lambda zip, must be a relative path
-# eg "BackupLambda.zip"
-variable "backup_lambda_output_path" {
-  description = "Relative path to the BackupLambda zip, which will be generated from the backup binary"
-  default = "BackupLambda.zip"
 }
 
 # output prefix of encrypted SSH key, region will be appended to the filename
