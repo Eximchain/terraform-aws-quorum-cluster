@@ -503,18 +503,6 @@ variable "backup_lambda_binary" {
   default = ""
 }
 
-variable "backup_lambda_binary_url" {
-  description = "Full URL path to Backup Lambda binary"
-  default = ""
-}
-
-# this is the lambda zip, must be a relative path
-# eg "BackupLambda.zip"
-variable "backup_lambda_output_path" {
-  description = "Relative path to the BackupLambda zip"
-  default = ""
-}
-
 # output prefix of encrypted SSH key, region will be appended to the filename
 variable "enc_ssh_path" {
   description = "Full path to the encrypted SSH key to be generated, region will be appended to the filename"

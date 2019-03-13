@@ -6,14 +6,7 @@ provider "random" {version = "~> 2.0"}
 locals {
   signum_lookup = "${signum(lookup(var.maker_node_counts, var.aws_region, 0) + lookup(var.observer_node_counts, var.aws_region, 0) + lookup(var.validator_node_counts, var.aws_region, 0))}"
 
-  tempdir = "${path.module}/temp/"
-  temp_lambda_zip_path = "${local.tempdir}${var.aws_region}-${var.backup_lambda_output_path}"
-}
-
-data "local_file" "backup_lambda_ssh_private_key" {
-  count = "${var.backup_enabled && var.backup_lambda_ssh_private_key == "" ? 1 : 0}"
-
-  filename = "${var.backup_lambda_ssh_private_key_path}"
+  lambda_zip_path = "${path.root}/lambda/BackupLambda.zip"
 }
 
 resource "aws_s3_bucket_object" "encrypted_ssh_key" {
@@ -95,12 +88,12 @@ data "aws_iam_policy_document" "sns_topic_policy" {
 resource "aws_lambda_function" "backup_lambda" {
     count            = "${var.backup_enabled ? local.signum_lookup : 0}"
 
-    filename         = "${local.temp_lambda_zip_path}"
+    filename         = "${local.lambda_zip_path}"
     function_name    = "BackupLambda-${var.network_id}-${var.aws_region}"
     handler          = "${var.backup_lambda_binary}" # Name of Go package after unzipping the filename above
     role             = "${aws_iam_role.backup_lambda.arn}"
     runtime          = "go1.x"
-    source_code_hash = "${sha256("file(${local.temp_lambda_zip_path})")}"
+    source_code_hash = "${base64sha256(file(local.lambda_zip_path))}"
     timeout          = 300
 
     vpc_config {
@@ -118,8 +111,7 @@ resource "aws_lambda_function" "backup_lambda" {
         }
     }
 
-    depends_on       = ["aws_s3_bucket.quorum_backup", "aws_nat_gateway.backup_lambda",
-    "null_resource.fetch_backup_lambda_zip"]
+    depends_on = ["aws_s3_bucket.quorum_backup", "aws_nat_gateway.backup_lambda"]
 }
 
 resource "aws_iam_role" "backup_lambda" {
@@ -127,23 +119,32 @@ resource "aws_iam_role" "backup_lambda" {
 
   name  = "iam-for-backup-lambda-${var.network_id}-${var.aws_region}"
 # See also https://aws.amazon.com/blogs/compute/easy-authorization-of-aws-lambda-functions/
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com",
-        "Service": "events.amazonaws.com",
-        "Service": "sns.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
+  assume_role_policy = "${data.aws_iam_policy_document.backup_lambda_assume_role.json}"
 }
-EOF
+
+data "aws_iam_policy_document" "backup_lambda_assume_role" {
+  version = "2012-10-17"
+  statement {
+    sid = "1"
+
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    principals {
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
+    }
+
+    principals {
+      type        = "Service"
+      identifiers = ["sns.amazonaws.com"]
+    }
+  }
 }
 
 resource "aws_iam_policy" "backup_lambda_permissions" {
@@ -206,45 +207,11 @@ resource "aws_iam_policy" "allow_backup_lambda_logging" {
 EOF
 }
 
-resource "null_resource" "mkdir_temp" {
-  triggers { always="${uuid()}" }
-  provisioner "local-exec" {
-    command = <<EOT
-  mkdir -p ${local.tempdir}
-EOT
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    command = "rm -rf ${local.tempdir}"
-    on_failure = "continue"
-  }
-}
-
 resource "aws_iam_role_policy_attachment" "allow_backup_lambda_logging" {
    count      = "${var.backup_enabled ? local.signum_lookup : 0}"
 
    role       = "${aws_iam_role.backup_lambda.name}"
    policy_arn = "${aws_iam_policy.allow_backup_lambda_logging.arn}"
-}
-
-resource "null_resource" "fetch_backup_lambda_zip" {
-  count = "${var.backup_enabled ? 1 : 0}"
-
-  triggers { always="${uuid()}" }
-  provisioner "local-exec" {
-     command = <<EOT
-if [ ! -e ${local.temp_lambda_zip_path} ]; then 
-   wget -O ${local.temp_lambda_zip_path} ${var.backup_lambda_binary_url}
-fi
-EOT
-  }
-  provisioner "local-exec" {
-    when = "destroy"
-    command = "rm ${local.temp_lambda_zip_path}"
-    on_failure = "continue"
-  }
-
-  depends_on = ["null_resource.mkdir_temp"]
 }
 
 resource "aws_kms_key" "ssh_encryption_key" {

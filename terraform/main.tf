@@ -75,8 +75,6 @@ module "quorum_cluster" {
   backup_lambda_ssh_private_key      = "${var.backup_lambda_ssh_private_key}"
   backup_interval                    = "${var.backup_interval}"
   backup_lambda_binary               = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url           = "${var.backup_lambda_binary_url}" 
-  backup_lambda_output_path          = "${var.backup_lambda_output_path}"
   enc_ssh_path                       = "${var.enc_ssh_path}"
   enc_ssh_key                        = "${var.enc_ssh_key}"
   backup_lambda_ssh_user             = "${var.backup_lambda_ssh_user}"

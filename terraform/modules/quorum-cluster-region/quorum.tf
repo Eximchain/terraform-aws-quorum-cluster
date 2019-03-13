@@ -480,11 +480,11 @@ data "template_file" "user_data_quorum_observer" {
 # LAUNCH CONFIGURATIONS
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_launch_configuration" "quorum_maker" {
-  count = "${data.template_file.user_data_quorum_maker.count}"
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
   name_prefix = "quorum-network-${var.network_id}-maker-${count.index}-"
 
-  image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
+  image_id      = "${var.quorum_ami == "" ? element(coalescelist(data.aws_ami.quorum.*.id, list("")), 0) : var.quorum_ami}"
   instance_type = "${var.quorum_maker_instance_type}"
   user_data     = "${element(data.template_file.user_data_quorum_maker.*.rendered, count.index)}"
 
@@ -505,11 +505,11 @@ resource "aws_launch_configuration" "quorum_maker" {
 }
 
 resource "aws_launch_configuration" "quorum_validator" {
-  count = "${data.template_file.user_data_quorum_validator.count}"
+  count = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
 
   name_prefix = "quorum-network-${var.network_id}-validator-${count.index}-"
 
-  image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
+  image_id      = "${var.quorum_ami == "" ? element(coalescelist(data.aws_ami.quorum.*.id, list("")), 0) : var.quorum_ami}"
   instance_type = "${var.quorum_validator_instance_type}"
   user_data     = "${element(data.template_file.user_data_quorum_validator.*.rendered, count.index)}"
 
@@ -530,11 +530,11 @@ resource "aws_launch_configuration" "quorum_validator" {
 }
 
 resource "aws_launch_configuration" "quorum_observer" {
-  count = "${data.template_file.user_data_quorum_observer.count}"
+  count = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
 
   name_prefix = "quorum-network-${var.network_id}-observer-${count.index}-"
 
-  image_id      = "${var.quorum_ami == "" ? data.aws_ami.quorum.id : var.quorum_ami}"
+  image_id      = "${var.quorum_ami == "" ? element(coalescelist(data.aws_ami.quorum.*.id, list("")), 0) : var.quorum_ami}"
   instance_type = "${var.quorum_observer_instance_type}"
   user_data     = "${element(data.template_file.user_data_quorum_observer.*.rendered, count.index)}"
 
@@ -558,6 +558,8 @@ resource "aws_launch_configuration" "quorum_observer" {
 # AMI
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_ami" "quorum" {
+  count = "${var.quorum_ami == "" ? 1 : 0}"
+
   most_recent = true
   owners      = ["037794263736"]
 

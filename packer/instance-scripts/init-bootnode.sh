@@ -129,7 +129,7 @@ AWS_REGION=$(cat /opt/quorum/info/aws-region.txt)
 IP_ADDR=$(cat /opt/quorum/info/public-ip.txt)
 USING_EIP=$(cat /opt/quorum/info/using-eip.txt)
 EIP_ID=$(cat /opt/quorum/info/eip-id.txt)
-CLUSTER_INDEX=$(cat /opt/quorum/info/overall-index.txt)
+CLUSTER_INDEX=$(cat /opt/quorum/info/index.txt)
 INSTANCE_ID=$(wait_for_successful_command 'curl -s http://169.254.169.254/latest/meta-data/instance-id')
 BOOT_PORT=30301
 
@@ -197,7 +197,7 @@ CONSTELLATION_PUB_KEY=$(cat /opt/quorum/constellation/private/constellation.pub)
 CONSTELLATION_PRIV_KEY=$(cat /opt/quorum/constellation/private/constellation.key)
 
 # Write bootnode address to vault
-wait_for_successful_command "vault write quorum/bootnodes/keys/$AWS_REGION/$INDEX bootnode_key=\"$BOOT_KEY\" constellation_priv_key=\"$CONSTELLATION_PRIV_KEY\""
+wait_for_successful_command "vault write quorum/bootnodes/keys/$AWS_REGION/$INDEX bootnode_key=$BOOT_KEY constellation_priv_key=$CONSTELLATION_PRIV_KEY"
 wait_for_successful_command "vault write quorum/bootnodes/addresses/$AWS_REGION/$INDEX enode=$BOOT_ADDR pub_key=$BOOT_PUB hostname=$IP_ADDR constellation_pub_key=$CONSTELLATION_PUB_KEY"
 # Wait for all bootnodes to write their address to vault
 wait_for_all_bootnodes

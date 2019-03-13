@@ -266,13 +266,10 @@ module "quorum_cluster_us_east_1" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -406,13 +403,10 @@ module "quorum_cluster_us_east_2" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -546,13 +540,10 @@ module "quorum_cluster_us_west_1" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -686,13 +677,10 @@ module "quorum_cluster_us_west_2" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -826,13 +814,10 @@ module "quorum_cluster_eu_central_1" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -966,13 +951,10 @@ module "quorum_cluster_eu_west_1" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -1106,13 +1088,10 @@ module "quorum_cluster_eu_west_2" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -1247,13 +1226,10 @@ module "quorum_cluster_ap_south_1" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -1388,13 +1364,10 @@ module "quorum_cluster_ap_northeast_1" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -1528,13 +1501,10 @@ module "quorum_cluster_ap_northeast_2" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -1668,13 +1638,10 @@ module "quorum_cluster_ap_southeast_1" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -1808,13 +1775,10 @@ module "quorum_cluster_ap_southeast_2" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -1948,13 +1912,10 @@ module "quorum_cluster_ca_central_1" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
@@ -2089,13 +2050,10 @@ module "quorum_cluster_sa_east_1" {
 
   backup_enabled                      = "${var.backup_enabled}"
   backup_lambda_ssh_private_key       = "${var.backup_lambda_ssh_private_key == "" ? join("", data.local_file.backup_lambda_ssh_private_key.*.content) : var.backup_lambda_ssh_private_key}"
-  backup_lambda_ssh_private_key_path  = "${var.backup_lambda_ssh_private_key_path}"
   backup_lambda_ssh_user              = "${var.backup_lambda_ssh_user}"
   backup_lambda_ssh_pass              = "${var.backup_lambda_ssh_pass}"
   backup_interval                     = "${var.backup_interval}"
   backup_lambda_binary                = "${var.backup_lambda_binary}"
-  backup_lambda_binary_url            = "${var.backup_lambda_binary_url}"
-  backup_lambda_output_path           = "${var.backup_lambda_output_path}"
   enc_ssh_path                        = "${var.enc_ssh_path}"
   enc_ssh_key                         = "${var.enc_ssh_key}"
 
