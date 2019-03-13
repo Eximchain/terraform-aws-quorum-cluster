@@ -209,6 +209,12 @@ function complete_constellation_config {
     echo "url = \"http://$HOSTNAME:9000/\"" >> $CONSTELLATION_CONFIG_PATH
 }
 
+function download_genesis_file {
+  local readonly DATADIR="test-network"
+  curl https://raw.githubusercontent.com/Eximchain/eximchain-network-data/master/$DATADIR/quorum-genesis.json > /opt/quorum/private/quorum-genesis.json
+}
+
+# Currently unused in gamma and prod
 function generate_genesis_file {
     # Assemble lists of addresses
     local REGIONS=$(cat /opt/quorum/info/regions.txt)
@@ -422,8 +428,8 @@ wait_for_successful_command "vault write quorum/addresses/$AWS_REGION/$CLUSTER_I
 wait_for_all_nodes
 wait_for_all_bootnodes
 
-# Generate the genesis file
-generate_genesis_file
+# Download the genesis file
+download_genesis_file
 
 init_exim
 
