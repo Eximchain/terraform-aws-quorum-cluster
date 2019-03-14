@@ -1,6 +1,7 @@
 {
   "min_packer_version": "0.12.0",
   "variables": {
+    "deployment_token": "anadama",
     "aws_region": "us-east-1",
     "extra_regions": "",
     "ami_groups": "",
@@ -132,7 +133,9 @@
   },{
     "type": "shell",
     "inline": [
-      "sudo mv /tmp/write-node-policies.py /opt/vault/bin/"
+      "sudo mv /tmp/write-node-policies.py /opt/vault/bin/",
+      "echo '{{user `deployment_token`}}' | sudo tee /opt/deployment-token.txt",
+      "sudo chmod 444 /opt/deployment-token.txt"
     ]
   }],
   "post-processors": [{

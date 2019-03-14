@@ -480,7 +480,7 @@ data "template_file" "user_data_quorum_observer" {
 # LAUNCH CONFIGURATIONS
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_launch_configuration" "quorum_maker" {
-  count = "${data.template_file.user_data_quorum_maker.count}"
+  count = "${lookup(var.maker_node_counts, var.aws_region, 0)}"
 
   name_prefix = "quorum-network-${var.network_id}-maker-${count.index}-"
 
@@ -505,7 +505,7 @@ resource "aws_launch_configuration" "quorum_maker" {
 }
 
 resource "aws_launch_configuration" "quorum_validator" {
-  count = "${data.template_file.user_data_quorum_validator.count}"
+  count = "${lookup(var.validator_node_counts, var.aws_region, 0)}"
 
   name_prefix = "quorum-network-${var.network_id}-validator-${count.index}-"
 
@@ -530,7 +530,7 @@ resource "aws_launch_configuration" "quorum_validator" {
 }
 
 resource "aws_launch_configuration" "quorum_observer" {
-  count = "${data.template_file.user_data_quorum_observer.count}"
+  count = "${lookup(var.observer_node_counts, var.aws_region, 0)}"
 
   name_prefix = "quorum-network-${var.network_id}-observer-${count.index}-"
 

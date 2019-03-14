@@ -1,6 +1,7 @@
 {
   "min_packer_version": "0.12.0",
   "variables": {
+    "deployment_token": "anadama",
     "aws_region": "us-east-1",
     "extra_regions": "us-east-2,us-west-1,us-west-2,eu-central-1,eu-west-1,eu-west-2,ap-south-1,ap-northeast-1,ap-northeast-2,ap-southeast-1,ap-southeast-2,ca-central-1,sa-east-1",
     "ami_groups": "",
@@ -140,6 +141,10 @@
     "source": "../instance-scripts/public-contract-test-sender.sh",
     "destination": "/tmp/public-contract-test-sender.sh"
   },{
+    "type": "file",
+    "source": "../instance-scripts/difficulty-stats.js",
+    "destination": "/tmp/difficulty-stats.js"
+  },{
     "type": "shell",
     "inline": [
       "sudo mv /tmp/init-quorum.sh /opt/quorum/bin/",
@@ -154,6 +159,7 @@
       "sudo mv /tmp/private-transaction-test-recipient.sh /opt/quorum/bin/",
       "sudo mv /tmp/public-transaction-test-sender.sh /opt/quorum/bin/",
       "sudo mv /tmp/public-contract-test-sender.sh /opt/quorum/bin/",
+      "sudo mv /tmp/difficulty-stats.js /opt/quorum/bin/",
       "sudo chmod 744 /opt/quorum/bin/*"
     ]
   },{
@@ -179,7 +185,9 @@
       "sudo mv /tmp/regions.txt /opt/quorum/info/",
       "sudo mv /tmp/constellation.conf /opt/quorum/constellation/config.conf",
       "sudo mv /tmp/ntp.conf /etc/ntp.conf",
-      "sudo mv /tmp/supervisord.conf /etc/supervisor/supervisord.conf"
+      "sudo mv /tmp/supervisord.conf /etc/supervisor/supervisord.conf",
+      "echo '{{user `deployment_token`}}' | sudo tee /opt/deployment-token.txt",
+      "sudo chmod 444 /opt/deployment-token.txt"
     ]
   },{
     "type": "shell",
