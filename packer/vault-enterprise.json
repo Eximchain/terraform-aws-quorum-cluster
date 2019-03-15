@@ -10,6 +10,7 @@
     "tls_public_key_path": "certs/cert.pub",
     "tls_private_key_path": "certs/cert.pem"
   },
+  "sensitive-variables": ["prebake_aws_access_key_id", "prebake_aws_secret_access_key"],
   "builders": [{
     "ami_name": "eximchain-vault-enterprise-quorum-{{isotime | clean_ami_name}}",
     "ami_description": "An Ubuntu 16.04 AMI that has Vault and Consul installed.",
@@ -56,9 +57,21 @@
     "destination": "/tmp/run-consul"
   },{
     "type": "shell",
+    "script": "provisioning-scripts/supervisor.sh"
+  },{
+    "type": "file",
+    "source": "provisioning-scripts/install-vault-enterprise-prebake",
+    "destination": "/tmp/install-vault-enterprise-prebake"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo chown ubuntu /tmp/install-vault-enterprise-prebake",
+      "sudo chmod 500 /tmp/install-vault-enterprise-prebake",
+      "/tmp/install-vault-enterprise-prebake --prebake-aws-access-key-id {{user `prebake_aws_access_key_id`}} --prebake-aws-secret-access-key {{user `prebake_aws_secret_access_key`}}"
+    ]
+  },{
+    "type": "shell",
     "scripts": [
-      "provisioning-scripts/supervisor.sh",
-      "provisioning-scripts/install-vault-enterprise",
       "provisioning-scripts/install-consul",
       "provisioning-scripts/install-dnsmasq"
     ]
