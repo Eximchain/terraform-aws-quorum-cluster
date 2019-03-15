@@ -1,5 +1,5 @@
 {
-  "min_packer_version": "0.12.0",
+  "min_packer_version": "1.3.5",
   "variables": {
     "deployment_token": "baguette",
     "vault_version": "0.11.1",
