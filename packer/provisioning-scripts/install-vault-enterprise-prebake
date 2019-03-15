@@ -142,8 +142,8 @@ function install_binaries {
   log_info "Downloading Vault $version from $url to $download_path"
   export AWS_ACCESS_KEY_ID=$prebake_aws_access_key_id
   export AWS_SECRET_ACCESS_KEY=$prebake_aws_secret_access_key
-  aws s3 cp s3://hc-enterprise-binaries/vault/pro/0.11.1/vault-enterprise_0.11.1+pro_linux_amd64.zip /tmp
-  unzip -d /tmp /tmp/vault-enterprise_0.11.1+pro_linux_amd64.zip
+  aws s3 cp s3://hc-enterprise-binaries/vault/pro/$version/vault-enterprise_$version+pro_linux_amd64.zip /tmp
+  unzip -d /tmp /tmp/vault-enterprise_$version+pro_linux_amd64.zip
 
   log_info "Moving Vault binary to $vault_dest_path"
   sudo mv "/tmp/vault" "$vault_dest_path"
