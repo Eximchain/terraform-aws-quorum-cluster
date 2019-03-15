@@ -5,10 +5,7 @@
     "aws_region": "us-east-1",
     "extra_regions": "",
     "ami_groups": "all",
-    "encrypted": "false",
-    "ca_public_key_path": "certs/ca-cert.pub",
-    "tls_public_key_path": "certs/cert.pub",
-    "tls_private_key_path": "certs/cert.pem"
+    "encrypted": "false"
   },
   "sensitive-variables": ["prebake_aws_access_key_id", "prebake_aws_secret_access_key"],
   "builders": [{
