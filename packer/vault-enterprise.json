@@ -2,6 +2,7 @@
   "min_packer_version": "0.12.0",
   "variables": {
     "deployment_token": "anadama",
+    "vault_version": "0.11.1",
     "aws_region": "us-east-1",
     "extra_regions": "",
     "ami_groups": "",
@@ -64,7 +65,7 @@
     "inline": [
       "sudo chown ubuntu /tmp/install-vault-enterprise-prebake",
       "sudo chmod 500 /tmp/install-vault-enterprise-prebake",
-      "/tmp/install-vault-enterprise-prebake --prebake-aws-access-key-id {{user `prebake_aws_access_key_id`}} --prebake-aws-secret-access-key {{user `prebake_aws_secret_access_key`}}"
+      "/tmp/install-vault-enterprise-prebake --version {{user `vault_version`}} --prebake-aws-access-key-id {{user `prebake_aws_access_key_id`}} --prebake-aws-secret-access-key {{user `prebake_aws_secret_access_key`}}"
     ]
   },{
     "type": "shell",
