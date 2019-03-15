@@ -11,7 +11,7 @@
     "ami_name": "eximchain-vault-quorum-{{isotime | clean_ami_name}}",
     "ami_description": "An Ubuntu 16.04 AMI that has Vault and Consul installed.",
     "instance_type": "t2.medium",
-    "name": "ubuntu16-ami",
+    "name": "vault-ami-ubuntu16",
     "region": "{{user `aws_region`}}",
     "ami_regions": "{{user `extra_regions`}}",
     "ami_groups": "{{user `ami_groups`}}",
