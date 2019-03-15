@@ -4,8 +4,8 @@
     "deployment_token": "anadama",
     "aws_region": "us-east-1",
     "extra_regions": "",
-    "ami_groups": "all",
-    "encrypted": "false"
+    "ami_groups": "",
+    "encrypted": "true"
   },
   "sensitive-variables": ["prebake_aws_access_key_id", "prebake_aws_secret_access_key"],
   "builders": [{

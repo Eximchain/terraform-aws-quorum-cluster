@@ -4,8 +4,8 @@
     "deployment_token": "anadama",
     "aws_region": "us-east-1",
     "extra_regions": "",
-    "ami_groups": "all",
-    "encrypted": "false"
+    "ami_groups": "",
+    "encrypted": "true"
   },
   "builders": [{
     "ami_name": "eximchain-vault-quorum-{{isotime | clean_ami_name}}",
