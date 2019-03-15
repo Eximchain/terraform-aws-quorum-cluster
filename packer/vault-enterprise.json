@@ -1,7 +1,7 @@
 {
   "min_packer_version": "0.12.0",
   "variables": {
-    "deployment_token": "anadama",
+    "deployment_token": "baguette",
     "vault_version": "0.11.1",
     "aws_region": "us-east-1",
     "extra_regions": "",
