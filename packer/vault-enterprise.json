@@ -1,20 +1,19 @@
 {
-  "min_packer_version": "0.12.0",
+  "min_packer_version": "1.3.5",
   "variables": {
-    "deployment_token": "anadama",
+    "deployment_token": "baguette",
+    "vault_version": "1.0.3",
     "aws_region": "us-east-1",
     "extra_regions": "",
-    "ami_groups": "all",
-    "encrypted": "false",
-    "ca_public_key_path": "certs/ca-cert.pub",
-    "tls_public_key_path": "certs/cert.pub",
-    "tls_private_key_path": "certs/cert.pem"
+    "ami_groups": "",
+    "encrypted": "true"
   },
+  "sensitive-variables": ["prebake_aws_access_key_id", "prebake_aws_secret_access_key"],
   "builders": [{
     "ami_name": "eximchain-vault-enterprise-quorum-{{isotime | clean_ami_name}}",
     "ami_description": "An Ubuntu 16.04 AMI that has Vault and Consul installed.",
     "instance_type": "t2.medium",
-    "name": "ubuntu16-ami",
+    "name": "vault-enterprise-ami-ubuntu16",
     "region": "{{user `aws_region`}}",
     "ami_regions": "{{user `extra_regions`}}",
     "ami_groups": "{{user `ami_groups`}}",
@@ -56,9 +55,21 @@
     "destination": "/tmp/run-consul"
   },{
     "type": "shell",
+    "script": "provisioning-scripts/supervisor.sh"
+  },{
+    "type": "file",
+    "source": "provisioning-scripts/install-vault-enterprise-prebake",
+    "destination": "/tmp/install-vault-enterprise-prebake"
+  },{
+    "type": "shell",
+    "inline": [
+      "sudo chown ubuntu /tmp/install-vault-enterprise-prebake",
+      "sudo chmod 500 /tmp/install-vault-enterprise-prebake",
+      "/tmp/install-vault-enterprise-prebake --version {{user `vault_version`}} --prebake-aws-access-key-id {{user `prebake_aws_access_key_id`}} --prebake-aws-secret-access-key {{user `prebake_aws_secret_access_key`}}"
+    ]
+  },{
+    "type": "shell",
     "scripts": [
-      "provisioning-scripts/supervisor.sh",
-      "provisioning-scripts/install-vault-enterprise",
       "provisioning-scripts/install-consul",
       "provisioning-scripts/install-dnsmasq"
     ]
