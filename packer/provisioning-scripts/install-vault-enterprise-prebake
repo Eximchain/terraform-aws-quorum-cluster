@@ -129,6 +129,8 @@ function install_binaries {
   local readonly path="$2"
   local readonly username="$3"
   local readonly custom_url="$4"
+  local readonly prebake_aws_access_key_id="$5"
+  local readonly prebake_aws_secret_access_key="$6"
 
   local readonly default_url="https://releases.hashicorp.com/vault/${version}/vault_${version}_linux_amd64.zip"
   local readonly url=${custom_url:=$default_url}
@@ -138,8 +140,10 @@ function install_binaries {
   local readonly run_vault_dest_path="$bin_dir/run-vault"
 
   log_info "Downloading Vault $version from $url to $download_path"
-  curl -o "$download_path" "$url"
-  unzip -d /tmp "$download_path"
+  export AWS_ACCESS_KEY_ID=$prebake_aws_access_key_id
+  export AWS_SECRET_ACCESS_KEY=$prebake_aws_secret_access_key
+  aws s3 cp s3://hc-enterprise-binaries/vault/pro/$version/vault-enterprise_$version+pro_linux_amd64.zip /tmp
+  unzip -d /tmp /tmp/vault-enterprise_$version+pro_linux_amd64.zip
 
   log_info "Moving Vault binary to $vault_dest_path"
   sudo mv "/tmp/vault" "$vault_dest_path"
@@ -171,6 +175,8 @@ function install {
   local path="$DEFAULT_INSTALL_PATH"
   local user="$DEFAULT_VAULT_USER"
   local url=""
+  local prebake_aws_access_key_id=""
+  local prebake_aws_secret_access_key=""
 
   while [[ $# > 0 ]]; do
     local key="$1"
@@ -190,6 +196,14 @@ function install {
         ;;
       --url)
         url="$2"
+        shift
+        ;;
+      --prebake-aws-access-key-id)
+        prebake_aws_access_key_id="$2"
+        shift
+        ;;
+      --prebake-aws-secret-access-key)
+        prebake_aws_secret_access_key="$2"
         shift
         ;;
       --help)
@@ -214,7 +228,7 @@ function install {
 
   create_vault_user "$user"
   create_vault_install_paths "$path" "$user"
-  install_binaries "$version" "$path" "$user" "$url"
+  install_binaries "$version" "$path" "$user" "$url" "$prebake_aws_access_key_id" "$prebake_aws_secret_access_key"
   configure_mlock
 
   log_info "Vault install complete!"
