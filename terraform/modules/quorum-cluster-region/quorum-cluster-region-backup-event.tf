@@ -15,9 +15,9 @@ resource "aws_s3_bucket_object" "encrypted_ssh_key" {
   bucket     = "${aws_s3_bucket.quorum_backup.id}"
   key        = "${var.enc_ssh_key}"
   
-  content_base64 = "${data.aws_kms_ciphertext.encrypt_ssh_operation.ciphertext_blob}"
+  content_base64 = "${aws_kms_ciphertext.encrypt_ssh_operation.ciphertext_blob}"
 
-  depends_on = ["data.aws_kms_ciphertext.encrypt_ssh_operation"]
+  depends_on = ["aws_kms_ciphertext.encrypt_ssh_operation"]
 }
 
 resource "aws_sns_topic" "backup_event" {
@@ -225,7 +225,7 @@ resource "aws_kms_key" "ssh_encryption_key" {
 }
 
 # Encrypt the contents of the SSH key
-data "aws_kms_ciphertext" "encrypt_ssh_operation" {
+resource "aws_kms_ciphertext" "encrypt_ssh_operation" {
   count     = "${var.backup_enabled ? local.signum_lookup : 0}"
 
   key_id    = "${aws_kms_key.ssh_encryption_key.id}"  
