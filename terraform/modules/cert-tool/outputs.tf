@@ -19,7 +19,7 @@ output "private_key_file_path" {
 }
 
 output "private_key" {
-  value     = "${var.use_kms_encryption ? element(concat(aws_kms_ciphertext.private_key.*.ciphertext_blob, list("")), 0) : tls_private_key.cert.private_key_pem}"
+  value     = "${var.use_kms_encryption ? element(concat(data.aws_kms_ciphertext.private_key.*.ciphertext_blob, list("")), 0) : tls_private_key.cert.private_key_pem}"
 }
 
 output "server_cert_arn" {
