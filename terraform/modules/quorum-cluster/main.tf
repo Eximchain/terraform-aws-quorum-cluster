@@ -2247,6 +2247,7 @@ module "internal_dns" {
 
   network_id     = "${var.network_id}"
   primary_vpc    = "${module.quorum_vault.vpc_id}"
+  primary_region = "${var.primary_region}"
 
   vault_lb_dns_name = "${module.quorum_vault.vault_dns}"
   vault_lb_zone_id  = "${module.quorum_vault.vault_lb_zone_id}"
