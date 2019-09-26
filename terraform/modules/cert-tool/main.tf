@@ -51,7 +51,7 @@ resource "aws_kms_key" "private_key" {
   deletion_window_in_days = "${var.kms_key_deletion_window}"
 }
 
-resource "aws_kms_ciphertext" "private_key" {
+data "aws_kms_ciphertext" "private_key" {
   count = "${var.use_kms_encryption ? 1 : 0}"
 
   key_id = "${aws_kms_key.private_key.key_id}"
@@ -63,7 +63,7 @@ resource "null_resource" "overwrite_private_key_with_encryption" {
   count = "${var.use_kms_encryption ? 1 : 0}"
 
   provisioner "local-exec" {
-    command = "echo '${aws_kms_ciphertext.private_key.ciphertext_blob}' > '${var.private_key_file_path}'"
+    command = "echo '${data.aws_kms_ciphertext.private_key.ciphertext_blob}' > '${var.private_key_file_path}'"
   }
 }
 

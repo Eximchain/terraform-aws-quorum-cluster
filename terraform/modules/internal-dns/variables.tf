@@ -2,10 +2,6 @@ variable "primary_vpc" {
   description = "The primary VPC to attach the hosted zone to. Should generally be the vault-consul VPC."
 }
 
-variable "primary_region" {
-  description = "The AWS region that single-region resources like the vault and consul clusters will be placed in."
-}
-
 variable "vault_lb_dns_name" {
   description = "The DNS name of the vault load balancer"
 }
