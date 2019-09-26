@@ -5,15 +5,16 @@ resource "aws_route53_zone" "root" {
   name    = "${var.root_domain}"
   comment = "Shared internal DNS for network ${var.network_id}"
 
+  // Required to create private VPC with new AWS Provider
   vpc {
     vpc_id     = "${data.aws_vpc.default.id}"
     vpc_region = "${var.primary_region}"
   }
   
-// TODO: Uncomment after apply
-//  lifecycle {
-//    ignore_changes = ["vpc"]
-//  }
+  // Required to create private VPC with new AWS Provider
+  lifecycle {
+    ignore_changes = ["vpc"]
+  }
 }
 
 resource "aws_route53_zone_association" "primary" {
